@@ -1,12 +1,12 @@
 /**
  * @file UVCamera.cpp
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Aug 22, 2013
  */
 
 #include "camera/UVCamera.h"
 
-namespace krc {
+namespace rgbd {
 
 UVCamera::UVCamera(const size_t& deviceNo, const cv::Size& size) :
         size_(size), capture_(deviceNo) {

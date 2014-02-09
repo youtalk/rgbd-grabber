@@ -1,6 +1,6 @@
 /**
  * @file PMDNano.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
 #ifndef PMDNANO_H_
@@ -14,7 +14,7 @@
 #include <boost/thread/thread.hpp>
 #include "camera/DepthCamera.h"
 
-namespace krc {
+namespace rgbd {
 
 class PMDNano: public DepthCamera {
 public:
@@ -23,15 +23,15 @@ public:
 
     virtual ~PMDNano();
 
-    inline cv::Size depthSize() const;
+    virtual cv::Size depthSize() const;
 
-    void start();
+    virtual void start();
 
-    void captureDepth(cv::Mat& buffer);
+    virtual void captureDepth(cv::Mat& buffer);
 
-    void captureAmplitude(cv::Mat& buffer);
+    virtual void captureAmplitude(cv::Mat& buffer);
 
-    void captureVertex(PointXYZRGBVector& buffer);
+    virtual void captureVertex(PointXYZRGBVector& buffer);
 
 protected:
     boost::mutex mutex_;

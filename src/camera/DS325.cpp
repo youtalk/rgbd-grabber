@@ -1,22 +1,20 @@
 /**
  * @file DS325.cpp
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 29, 2013
  */
 
 #include "DS325.h"
 
-namespace krc {
+namespace rgbd {
 
-DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat,
-             const size_t movingAverageSize) :
+DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         DepthCamera(),
         frameFormat_(frameFormat),
         depthSize_(320, 240),
         colorSize_(frameFormat == FRAME_FORMAT_VGA ? 640 : 1280,
                    frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
         context_(Context::create("localhost")),
-        movingAverageSize_(movingAverageSize),
         depthBuffer_(cv::Mat(depthSize_, CV_16U)),
         amplitudeBuffer_(cv::Mat(depthSize_, CV_16U)),
         colorBuffer_(cv::Mat(colorSize_, CV_8UC3)),
@@ -104,31 +102,6 @@ void DS325::captureVertex(PointXYZRGBVector& buffer) {
     std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(buffer));
 }
 
-void DS325::captureMovingAveragedVertex(PointXYZRGBVector& buffer) {
-    boost::mutex::scoped_lock lock(depthMutex_);
-
-    buffer.clear();
-    buffer.resize(depthSize_.width * depthSize_.height);
-    std::vector<size_t> sizes(depthSize_.width * depthSize_.height);
-
-    for (PointXYZRGBVector& v: mavertices_) {
-        for (size_t i = 0; i < buffer.size(); i++) {
-            if (v[i].z > 0.0) {
-                buffer[i].x += v[i].x;
-                buffer[i].y += v[i].y;
-                buffer[i].z += v[i].z;
-                sizes[i]++;
-            }
-        }
-    }
-
-    for (size_t i = 0; i < buffer.size(); i++) {
-        buffer[i].x /= sizes[i];
-        buffer[i].y /= sizes[i];
-        buffer[i].z /= sizes[i];
-    }
-}
-
 void DS325::captureAudio(std::vector<uchar>& buffer) {
     boost::mutex::scoped_lock lock(audioMutex_);
 
@@ -174,10 +147,6 @@ void DS325::onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData da
 
     PointXYZRGBVector vertex;
     std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(vertex));
-    mavertices_.push_back(vertex);
-
-    if (mavertices_.size() > movingAverageSize_)
-        mavertices_.pop_front();
 
     acceleration_.x = data.acceleration.x;
     acceleration_.y = data.acceleration.y;

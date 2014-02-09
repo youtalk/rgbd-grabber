@@ -1,6 +1,6 @@
 /**
  * @file UVCamera.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Aug 22, 2013
  */
 
@@ -15,9 +15,9 @@
 
 #include "camera/DepthCamera.h"
 
-namespace krc {
+namespace rgbd {
 
-class UVCamera: public krc::DepthCamera {
+class UVCamera: public rgbd::DepthCamera {
 public:
     UVCamera(const::size_t& deviceNo, const cv::Size& size);
 

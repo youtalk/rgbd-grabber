@@ -1,13 +1,13 @@
 /**
  * @file Error.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Dec 16, 2013
  */
 
 #ifndef ERROR_H_
 #define ERROR_H_
 
-namespace krc {
+namespace rgbd {
 
 class UnsupportedException: public std::domain_error {
 public:

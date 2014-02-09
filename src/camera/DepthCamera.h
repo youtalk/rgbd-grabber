@@ -1,6 +1,6 @@
 /**
  * @file DepthCamera.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
 #ifndef DEPTHCAMERA_H_
@@ -13,7 +13,7 @@
 #include <pcl/point_types.h>
 #include "util/Error.h"
 
-namespace krc {
+namespace rgbd {
 
 typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>>
         PointXYZRGBVector;
@@ -74,15 +74,6 @@ public:
    * @param buffer Returned vector of PointXYZRGB
    */
     virtual void captureVertex(PointXYZRGBVector& buffer);
-
-  /**
-   * Copy the latest 3D point cloud data to the buffer.
-   * The data is moving averaged one.
-   * Note that the buffer must be allocated in advance.
-   *
-   * @param buffer Returned vector of PointXYZRGB
-   */
-    virtual void captureMovingAveragedVertex(PointXYZRGBVector& buffer);
 
   /**
    * Copy the latest audio data to the buffer.

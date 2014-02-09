@@ -1,6 +1,6 @@
 /**
  * @file DS325.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 29, 2013
  */
 
@@ -15,36 +15,33 @@
 
 using namespace DepthSense;
 
-namespace krc {
+namespace rgbd {
 
 class DS325: public DepthCamera {
 
 public:
     DS325(const size_t deviceNo,
-          const DepthSense::FrameFormat frameFormat = FRAME_FORMAT_VGA,
-          const size_t movingAverageSize = 10);
+          const DepthSense::FrameFormat frameFormat = FRAME_FORMAT_VGA);
 
     ~DS325();
 
-    cv::Size depthSize() const;
+    virtual cv::Size depthSize() const;
 
-    cv::Size colorSize() const;
+    virtual cv::Size colorSize() const;
 
     virtual void start();
 
-    void captureDepth(cv::Mat& buffer);
+    virtual void captureDepth(cv::Mat& buffer);
 
-    void captureAmplitude(cv::Mat& buffer);
+    virtual void captureAmplitude(cv::Mat& buffer);
 
-    void captureColor(cv::Mat& buffer);
+    virtual void captureColor(cv::Mat& buffer);
 
-    void captureVertex(PointXYZRGBVector& buffer);
+    virtual void captureVertex(PointXYZRGBVector& buffer);
 
-    void captureMovingAveragedVertex(PointXYZRGBVector& buffer);
+    virtual void captureAudio(std::vector<uchar>& buffer);
 
-    void captureAudio(std::vector<uchar>& buffer);
-
-    void captureAcceleration(cv::Point3f& acc);
+    virtual void captureAcceleration(cv::Point3f& acc);
 
 protected:
     const DepthSense::FrameFormat frameFormat_;
@@ -63,8 +60,6 @@ protected:
 
     PointXYZRGBVector vertexBuffer_;
 
-    std::list<PointXYZRGBVector> mavertices_;
-
     cv::Point3f acceleration_;
 
     boost::mutex depthMutex_;
@@ -73,11 +68,11 @@ protected:
 
     boost::mutex audioMutex_;
 
-    void onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data);
+    virtual void onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data);
 
-    void onNewColorSample(ColorNode node, ColorNode::NewSampleReceivedData data);
+    virtual void onNewColorSample(ColorNode node, ColorNode::NewSampleReceivedData data);
 
-    void onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data);
+    virtual void onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data);
 
 private:
 
@@ -88,8 +83,6 @@ private:
     ColorNode color_;
 
     AudioNode audio_;
-
-    size_t movingAverageSize_;
 
     void update();
 

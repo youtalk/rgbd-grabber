@@ -1,11 +1,11 @@
 /**
- * @file DepthCamera.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @file DepthCamera.cpp
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
 #include "DepthCamera.h"
 
-namespace krc {
+namespace rgbd {
 
 DepthCamera::DepthCamera() {
 }
@@ -35,10 +35,6 @@ void DepthCamera::captureColor(cv::Mat& buffer) {
 
 void DepthCamera::captureVertex(PointXYZRGBVector& buffer) {
     throw new UnsupportedException("captureVertex");
-}
-
-void DepthCamera::captureMovingAveragedVertex(PointXYZRGBVector& buffer) {
-    throw new UnsupportedException("captureMovingAveragedVertex");
 }
 
 void DepthCamera::captureAudio(std::vector<uchar>& buffer) {

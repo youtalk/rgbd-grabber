@@ -1,11 +1,11 @@
 /**
  * @file PMDNano.cpp
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
 #include "PMDNano.h"
 
-namespace krc {
+namespace rgbd {
 
 PMDNano::PMDNano(const std::string& srcPlugin, const std::string& procPlugin,
                  const std::string& srcParam, const std::string& procParam) :
