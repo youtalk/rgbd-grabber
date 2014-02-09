@@ -1,0 +1,303 @@
+/**
+ * @file DS325.cpp
+ * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @date Jul 29, 2013
+ */
+
+#include "DS325.h"
+
+namespace krc {
+
+DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat,
+             const size_t movingAverageSize) :
+        DepthCamera(),
+        frameFormat_(frameFormat),
+        depthSize_(320, 240),
+        colorSize_(frameFormat == FRAME_FORMAT_VGA ? 640 : 1280,
+                   frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
+        context_(Context::create("localhost")),
+        movingAverageSize_(movingAverageSize),
+        depthBuffer_(cv::Mat(depthSize_, CV_16U)),
+        amplitudeBuffer_(cv::Mat(depthSize_, CV_16U)),
+        colorBuffer_(cv::Mat(colorSize_, CV_8UC3)),
+        vertexBuffer_(depthSize_.width * depthSize_.height) {
+    context_.deviceAddedEvent().connect(this, &DS325::onDeviceConnected);
+    context_.deviceRemovedEvent().connect(this, &DS325::onDeviceDisconnected);
+    std::vector<Device> devices = context_.getDevices();
+
+    if (deviceNo < devices.size()) {
+        devices[deviceNo].nodeAddedEvent().connect(this, &DS325::onNodeConnected);
+        devices[deviceNo].nodeRemovedEvent().connect(this, &DS325::onNodeDisconnected);
+
+        for (Node node: devices[deviceNo].getNodes()) {
+            if (node.is<DepthNode>() && !depth_.isSet())
+                configureDepthNode(node);
+            else if (node.is<ColorNode>() && !color_.isSet())
+                configureColorNode(node);
+            else if (node.is<AudioNode>() && !audio_.isSet())
+                configureAudioNode(node);
+
+            context_.registerNode(node);
+        }
+
+        std::cout << "DS325: opened" << std::endl;
+    } else {
+        std::cerr << "DS325: camera " << deviceNo
+                  << " cannot open" << std::endl;
+        std::exit(-1);
+    }
+
+}
+
+DS325::~DS325() {
+    if (depth_.isSet())
+        context_.unregisterNode(depth_);
+    if (color_.isSet())
+        context_.unregisterNode(color_);
+    if (audio_.isSet())
+        context_.unregisterNode(audio_);
+
+    std::cout << "DS325: closed" << std::endl;
+}
+
+cv::Size DS325::depthSize() const {
+    return depthSize_;
+}
+
+cv::Size DS325::colorSize() const {
+    return colorSize_;
+}
+
+void DS325::update() {
+    context_.startNodes();
+    context_.run();
+    context_.stopNodes();
+}
+
+void DS325::start() {
+    boost::thread t(boost::bind(&DS325::update, this));
+    sleep(3); // I'm not sure but it must be necessary
+}
+
+void DS325::captureDepth(cv::Mat& buffer) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    depthBuffer_.copyTo(buffer);
+}
+
+void DS325::captureAmplitude(cv::Mat& buffer) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    amplitudeBuffer_.copyTo(buffer);
+}
+
+void DS325::captureColor(cv::Mat& buffer) {
+    boost::mutex::scoped_lock lock(colorMutex_);
+
+    colorBuffer_.copyTo(buffer);
+}
+
+void DS325::captureVertex(PointXYZRGBVector& buffer) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    buffer.clear();
+    std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(buffer));
+}
+
+void DS325::captureMovingAveragedVertex(PointXYZRGBVector& buffer) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    buffer.clear();
+    buffer.resize(depthSize_.width * depthSize_.height);
+    std::vector<size_t> sizes(depthSize_.width * depthSize_.height);
+
+    for (PointXYZRGBVector& v: mavertices_) {
+        for (size_t i = 0; i < buffer.size(); i++) {
+            if (v[i].z > 0.0) {
+                buffer[i].x += v[i].x;
+                buffer[i].y += v[i].y;
+                buffer[i].z += v[i].z;
+                sizes[i]++;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < buffer.size(); i++) {
+        buffer[i].x /= sizes[i];
+        buffer[i].y /= sizes[i];
+        buffer[i].z /= sizes[i];
+    }
+}
+
+void DS325::captureAudio(std::vector<uchar>& buffer) {
+    boost::mutex::scoped_lock lock(audioMutex_);
+
+    buffer.clear();
+    std::copy(audioBuffer_.begin(), audioBuffer_.end(), std::back_inserter(buffer));
+}
+
+void DS325::captureAcceleration(cv::Point3f& acc) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    acc = acceleration_;
+}
+
+void DS325::onDeviceConnected(Context context, Context::DeviceAddedData data) {
+}
+
+void DS325::onDeviceDisconnected(Context context, Context::DeviceRemovedData data) {
+}
+
+void DS325::onNodeConnected(Device device, Device::NodeAddedData data) {
+}
+
+void DS325::onNodeDisconnected(Device device, Device::NodeRemovedData data) {
+}
+
+void DS325::onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data) {
+    boost::mutex::scoped_lock lock(depthMutex_);
+
+    int width, height;
+    FrameFormat_toResolution(data.captureConfiguration.frameFormat, &width, &height);
+
+    if (data.depthMap == NULL)
+        return;
+
+    std::memcpy(depthBuffer_.data, data.depthMap, data.depthMap.size() * 2);
+    std::memcpy(amplitudeBuffer_.data, data.confidenceMap, data.confidenceMap.size() * 2);
+
+    for (size_t i = 0; i < data.verticesFloatingPoint.size(); i++) {
+        vertexBuffer_[i].x = data.verticesFloatingPoint[i].x;
+        vertexBuffer_[i].y = data.verticesFloatingPoint[i].y;
+        vertexBuffer_[i].z = data.verticesFloatingPoint[i].z;
+    }
+
+    PointXYZRGBVector vertex;
+    std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(vertex));
+    mavertices_.push_back(vertex);
+
+    if (mavertices_.size() > movingAverageSize_)
+        mavertices_.pop_front();
+
+    acceleration_.x = data.acceleration.x;
+    acceleration_.y = data.acceleration.y;
+    acceleration_.z = data.acceleration.z;
+}
+
+void DS325::onNewColorSample(ColorNode node, ColorNode::NewSampleReceivedData data) {
+    boost::mutex::scoped_lock lock(colorMutex_);
+
+    int width, height;
+    FrameFormat_toResolution(data.captureConfiguration.frameFormat, &width, &height);
+
+    if (data.colorMap != NULL)
+        std::memcpy(colorBuffer_.data, data.colorMap, data.colorMap.size());
+}
+
+void DS325::onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data) {
+    boost::mutex::scoped_lock lock(audioMutex_);
+
+    audioBuffer_.clear();
+
+    for (int i = 0; i < data.audioData.size(); i++)
+        audioBuffer_.push_back(data.audioData[i]);
+}
+
+void DS325::configureDepthNode(Node node) {
+    depth_ = node.as<DepthNode>();
+
+    DepthNode::Configuration config = depth_.getConfiguration();
+    config.frameFormat = FRAME_FORMAT_QVGA;
+    config.framerate = 30;
+    config.mode = DepthNode::CAMERA_MODE_CLOSE_MODE;
+    config.saturation = false;
+
+    try {
+        context_.requestControl(depth_, 0);
+        depth_.newSampleReceivedEvent().connect(this, &DS325::onNewDepthSample);
+        depth_.setEnableDepthMap(true);
+        depth_.setEnableConfidenceMap(true);
+        depth_.setEnableVerticesFloatingPoint(true);
+        depth_.setEnableAccelerometer(true);
+        depth_.setConfiguration(config);
+    } catch (ArgumentException& e) {
+        std::printf("DEPTH Argument Exception: %s\n", e.what());
+    } catch (UnauthorizedAccessException& e) {
+        std::printf("DEPTH Unauthorized Access Exception: %s\n", e.what());
+    } catch (IOException& e) {
+        std::printf("DEPTH IO Exception: %s\n", e.what());
+    } catch (InvalidOperationException& e) {
+        std::printf("DEPTH Invalid Operation Exception: %s\n", e.what());
+    } catch (ConfigurationException& e) {
+        std::printf("DEPTH Configuration Exception: %s\n", e.what());
+    } catch (StreamingException& e) {
+        std::printf("DEPTH Streaming Exception: %s\n", e.what());
+    } catch (TimeoutException&) {
+        std::printf("DEPTH TimeoutException\n");
+    }
+}
+
+void DS325::configureColorNode(Node node) {
+    color_ = node.as<ColorNode>();
+
+    ColorNode::Configuration config = color_.getConfiguration();
+    config.frameFormat = frameFormat_;
+    config.compression = COMPRESSION_TYPE_MJPEG;
+    config.framerate = 30;
+    config.powerLineFrequency = POWER_LINE_FREQUENCY_50HZ;
+
+    try {
+        context_.requestControl(color_, 0);
+        color_.newSampleReceivedEvent().connect(this, &DS325::onNewColorSample);
+        color_.setEnableColorMap(true);
+//         color_.setBrightness(0);
+//         color_.setContrast(5);
+//         color_.setSaturation(5);
+//         color_.setHue(0);
+//         color_.setGamma(3);
+//         color_.setSharpness(5);
+//         color_.setWhiteBalance(4650);
+        color_.setWhiteBalanceAuto(true);
+        color_.setConfiguration(config);
+    } catch (ArgumentException& e) {
+        std::printf("COLOR Argument Exception: %s\n", e.what());
+    } catch (UnauthorizedAccessException& e) {
+        std::printf("COLOR Unauthorized Access Exception: %s\n", e.what());
+    } catch (IOException& e) {
+        std::printf("COLOR IO Exception: %s\n", e.what());
+    } catch (InvalidOperationException& e) {
+        std::printf("COLOR Invalid Operation Exception: %s\n", e.what());
+    } catch (ConfigurationException& e) {
+        std::printf("COLOR Configuration Exception: %s\n", e.what());
+    } catch (StreamingException& e) {
+        std::printf("COLOR Streaming Exception: %s\n", e.what());
+    } catch (TimeoutException&) {
+        std::printf("COLOR TimeoutException\n");
+    }
+}
+
+void DS325::configureAudioNode(Node node) {
+    audio_ = node.as<AudioNode>();
+
+    AudioNode::Configuration config = audio_.getConfiguration();
+    config.sampleRate = 44100;
+
+    try {
+        context_.requestControl(audio_, 0);
+        audio_.newSampleReceivedEvent().connect(this, &DS325::onNewAudioSample);
+        audio_.setConfiguration(config);
+        audio_.setInputMixerLevel(0.5f);
+    } catch (ArgumentException& e) {
+        std::printf("Argument Exception: %s\n", e.what());
+    } catch (UnauthorizedAccessException& e) {
+        std::printf("Unauthorized Access Exception: %s\n", e.what());
+    } catch (ConfigurationException& e) {
+        std::printf("Configuration Exception: %s\n", e.what());
+    } catch (StreamingException& e) {
+        std::printf("Streaming Exception: %s\n", e.what());
+    } catch (TimeoutException&) {
+        std::printf("TimeoutException\n");
+    }
+}
+
+}
