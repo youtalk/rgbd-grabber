@@ -25,9 +25,9 @@ public:
 
     cv::Size colorSize() const;
 
-    void start() const;
+    virtual void start();
 
-    void captureColor(cv::Mat& buffer);
+    virtual void captureColor(cv::Mat& buffer);
 
  private:
     const cv::Size size_;

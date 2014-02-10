@@ -24,7 +24,7 @@ cv::Size UVCamera::colorSize() const {
     return size_;
 }
 
-void UVCamera::start() const {
+void UVCamera::start() {
     boost::thread t(boost::bind(&UVCamera::update, this));
 }
 
