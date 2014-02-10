@@ -60,3 +60,11 @@ TARGET_LINK_LIBRARIES(DS325Capture ${LIB})
 ADD_EXECUTABLE(PMDNanoCapture src/PMDNanoCapture.cpp)
 ADD_DEPENDENCIES(PMDNanoCapture ${SRC})
 TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB})
+
+INSTALL(TARGETS rgbd_grabber LIBRARY DESTINATION lib)
+INSTALL(FILES
+  src/camera/DepthCamera.h src/camera/UVCamera.h src/camera/DS325.h src/camera/PMDNano.h
+  DESTINATION include/rgbd/camera)
+INSTALL(FILES
+  src/util/Error.h
+  DESTINATION include/rgbd/util)
