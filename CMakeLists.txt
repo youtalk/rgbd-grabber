@@ -42,12 +42,12 @@ SET(LIB_EXTERNAL
   ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES}
   DepthSense DepthSensePlugins pmdaccess2)
 
-ADD_LIBRARY(rgbd_grabber SHARED ${SRC})
-TARGET_LINK_LIBRARIES(rgbd_grabber ${LIB_EXTERNAL})
-SET_TARGET_PROPERTIES(rgbd_grabber PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
+ADD_LIBRARY(rgbd-grabber SHARED ${SRC})
+TARGET_LINK_LIBRARIES(rgbd-grabber ${LIB_EXTERNAL})
+SET_TARGET_PROPERTIES(rgbd-grabber PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
 
 SET(LIB
-  rgbd_grabber ${LIB_EXTERNAL})
+  rgbd-grabber ${LIB_EXTERNAL})
 
 ADD_EXECUTABLE(UVCameraCapture src/UVCameraCapture.cpp)
 ADD_DEPENDENCIES(UVCameraCapture ${SRC})
@@ -61,7 +61,7 @@ ADD_EXECUTABLE(PMDNanoCapture src/PMDNanoCapture.cpp)
 ADD_DEPENDENCIES(PMDNanoCapture ${SRC})
 TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB})
 
-INSTALL(TARGETS rgbd_grabber LIBRARY DESTINATION lib)
+INSTALL(TARGETS rgbd-grabber LIBRARY DESTINATION lib)
 INSTALL(FILES
   src/camera/DepthCamera.h src/camera/UVCamera.h src/camera/DS325.h src/camera/PMDNano.h
   DESTINATION include/rgbd/camera)
