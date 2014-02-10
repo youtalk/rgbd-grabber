@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
     std::shared_ptr<DepthCamera> camera(new PMDNano(argv[1], argv[2]));
     camera->start();
 
-    cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_16U);
-    cv::Mat amplitude = cv::Mat::zeros(camera->depthSize(), CV_16U);
+    cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_32F);
+    cv::Mat amplitude = cv::Mat::zeros(camera->depthSize(), CV_32F);
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Depth"));
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
@@ -38,11 +38,10 @@ int main(int argc, char *argv[]) {
                 p.r = p.g = p.b = 255;
         }
 
-        cv::Mat d, a;
-        depth.convertTo(d, CV_8U, 255.0 / 1000.0);
+        cv::Mat a;
         amplitude.convertTo(a, CV_8U, 255.0 / 1000.0);
 
-        cv::imshow("Depth", d);
+        cv::imshow("Depth", depth);
         cv::imshow("Amplitude", a);
         viewer->showCloud(cloud);
     }
