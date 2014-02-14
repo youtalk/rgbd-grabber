@@ -49,15 +49,15 @@ SET_TARGET_PROPERTIES(rgbd-grabber PROPERTIES VERSION ${VERSION} SOVERSION ${SOV
 SET(LIB
   rgbd-grabber ${LIB_EXTERNAL})
 
-ADD_EXECUTABLE(UVCameraCapture src/UVCameraCapture.cpp)
+ADD_EXECUTABLE(UVCameraCapture example/UVCameraCapture.cpp)
 ADD_DEPENDENCIES(UVCameraCapture ${SRC})
 TARGET_LINK_LIBRARIES(UVCameraCapture ${LIB})
 
-ADD_EXECUTABLE(DS325Capture src/DS325Capture.cpp)
+ADD_EXECUTABLE(DS325Capture example/DS325Capture.cpp)
 ADD_DEPENDENCIES(DS325Capture ${SRC})
 TARGET_LINK_LIBRARIES(DS325Capture ${LIB})
 
-ADD_EXECUTABLE(PMDNanoCapture src/PMDNanoCapture.cpp)
+ADD_EXECUTABLE(PMDNanoCapture example/PMDNanoCapture.cpp)
 ADD_DEPENDENCIES(PMDNanoCapture ${SRC})
 TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB})
 
