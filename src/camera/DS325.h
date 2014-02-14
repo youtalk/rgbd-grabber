@@ -21,7 +21,7 @@ class DS325: public DepthCamera {
 
 public:
     DS325(const size_t deviceNo,
-          const DepthSense::FrameFormat frameFormat = FRAME_FORMAT_VGA);
+          const DepthSense::FrameFormat frameFormat = FRAME_FORMAT_WXGA_H);
 
     ~DS325();
 
