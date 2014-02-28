@@ -96,8 +96,6 @@ void PMDNano::captureVertex(PointXYZRGBVector& buffer) {
     if (pmdGet3DCoordinates(handle_, vertexBuffer_, 3 * size_ * sizeof (float)))
         closeByError("pmdGet3DCoordinates");
 
-    buffer.resize(width_ * height_);
-
     for (size_t i = 0; i < width_ * height_; i++) {
         buffer[i].x = vertexBuffer_[3 * i];
         buffer[i].y = vertexBuffer_[3 * i + 1];

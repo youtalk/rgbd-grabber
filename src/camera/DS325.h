@@ -41,7 +41,7 @@ public:
 
     virtual void captureAudio(std::vector<uchar>& buffer);
 
-    virtual void captureAcceleration(cv::Point3f& acc);
+    virtual void captureAcceleration(cv::Point3f& buffer);
 
 protected:
     const DepthSense::FrameFormat frameFormat_;
@@ -49,18 +49,6 @@ protected:
     const cv::Size depthSize_;
 
     const cv::Size colorSize_;
-
-    cv::Mat depthBuffer_;
-
-    cv::Mat amplitudeBuffer_;
-
-    cv::Mat colorBuffer_;
-
-    std::vector<uchar> audioBuffer_;
-
-    PointXYZRGBVector vertexBuffer_;
-
-    cv::Point3f acceleration_;
 
     boost::mutex depthMutex_;
 
@@ -75,6 +63,11 @@ protected:
     virtual void onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data);
 
 private:
+    DepthNode::NewSampleReceivedData ddata_;
+
+    ColorNode::NewSampleReceivedData cdata_;
+
+    AudioNode::NewSampleReceivedData adata_;
 
     Context context_;
 

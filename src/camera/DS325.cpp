@@ -14,11 +14,7 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         depthSize_(320, 240),
         colorSize_(frameFormat == FRAME_FORMAT_VGA ? 640 : 1280,
                    frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
-        context_(Context::create("localhost")),
-        depthBuffer_(cv::Mat(depthSize_, CV_16U)),
-        amplitudeBuffer_(cv::Mat(depthSize_, CV_16U)),
-        colorBuffer_(cv::Mat(colorSize_, CV_8UC3)),
-        vertexBuffer_(depthSize_.width * depthSize_.height) {
+        context_(Context::create("localhost")) {
     context_.deviceAddedEvent().connect(this, &DS325::onDeviceConnected);
     context_.deviceRemovedEvent().connect(this, &DS325::onDeviceDisconnected);
     std::vector<Device> devices = context_.getDevices();
@@ -79,40 +75,45 @@ void DS325::start() {
 
 void DS325::captureDepth(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(depthMutex_);
-
-    depthBuffer_.copyTo(buffer);
+    std::memcpy(buffer.data, ddata_.depthMap, ddata_.depthMap.size() * 2);
 }
 
 void DS325::captureAmplitude(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(depthMutex_);
-
-    amplitudeBuffer_.copyTo(buffer);
+    std::memcpy(buffer.data, ddata_.confidenceMap, ddata_.confidenceMap.size() * 2);
 }
 
 void DS325::captureColor(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(colorMutex_);
-
-    colorBuffer_.copyTo(buffer);
+    std::memcpy(buffer.data, cdata_.colorMap, cdata_.colorMap.size());
 }
 
 void DS325::captureVertex(PointXYZRGBVector& buffer) {
     boost::mutex::scoped_lock lock(depthMutex_);
+    std::size_t index = 0;
 
-    buffer.clear();
-    std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(buffer));
+    for (auto& b: buffer) {
+        auto& f = ddata_.verticesFloatingPoint[index++];
+        b.x = f.x;
+        b.y = f.y;
+        b.z = f.z;
+    }
 }
 
 void DS325::captureAudio(std::vector<uchar>& buffer) {
     boost::mutex::scoped_lock lock(audioMutex_);
-
     buffer.clear();
-    std::copy(audioBuffer_.begin(), audioBuffer_.end(), std::back_inserter(buffer));
+
+    for (std::size_t i = 0; i < adata_.audioData.size(); i++)
+        buffer.push_back(adata_.audioData[i]);
 }
 
-void DS325::captureAcceleration(cv::Point3f& acc) {
+void DS325::captureAcceleration(cv::Point3f& buffer) {
     boost::mutex::scoped_lock lock(depthMutex_);
 
-    acc = acceleration_;
+    buffer.x = ddata_.acceleration.x;
+    buffer.y = ddata_.acceleration.y;
+    buffer.z = ddata_.acceleration.z;
 }
 
 void DS325::onDeviceConnected(Context context, Context::DeviceAddedData data) {
@@ -128,48 +129,28 @@ void DS325::onNodeDisconnected(Device device, Device::NodeRemovedData data) {
 }
 
 void DS325::onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data) {
-    boost::mutex::scoped_lock lock(depthMutex_);
-
     int width, height;
     FrameFormat_toResolution(data.captureConfiguration.frameFormat, &width, &height);
 
-    if (data.depthMap == NULL)
-        return;
-
-    std::memcpy(depthBuffer_.data, data.depthMap, data.depthMap.size() * 2);
-    std::memcpy(amplitudeBuffer_.data, data.confidenceMap, data.confidenceMap.size() * 2);
-
-    for (size_t i = 0; i < data.verticesFloatingPoint.size(); i++) {
-        vertexBuffer_[i].x = data.verticesFloatingPoint[i].x;
-        vertexBuffer_[i].y = data.verticesFloatingPoint[i].y;
-        vertexBuffer_[i].z = data.verticesFloatingPoint[i].z;
+    {
+        boost::mutex::scoped_lock lock(depthMutex_);
+        ddata_ = data;
     }
-
-    PointXYZRGBVector vertex;
-    std::copy(vertexBuffer_.begin(), vertexBuffer_.end(), std::back_inserter(vertex));
-
-    acceleration_.x = data.acceleration.x;
-    acceleration_.y = data.acceleration.y;
-    acceleration_.z = data.acceleration.z;
 }
 
 void DS325::onNewColorSample(ColorNode node, ColorNode::NewSampleReceivedData data) {
-    boost::mutex::scoped_lock lock(colorMutex_);
-
     int width, height;
     FrameFormat_toResolution(data.captureConfiguration.frameFormat, &width, &height);
 
-    if (data.colorMap != NULL)
-        std::memcpy(colorBuffer_.data, data.colorMap, data.colorMap.size());
+    {
+        boost::mutex::scoped_lock lock(colorMutex_);
+        cdata_ = data;
+    }
 }
 
 void DS325::onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data) {
     boost::mutex::scoped_lock lock(audioMutex_);
-
-    audioBuffer_.clear();
-
-    for (int i = 0; i < data.audioData.size(); i++)
-        audioBuffer_.push_back(data.audioData[i]);
+    adata_ = data;
 }
 
 void DS325::configureDepthNode(Node node) {
