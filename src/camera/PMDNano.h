@@ -12,7 +12,7 @@
 #include <pmdsdk2.h>
 #include <boost/bind.hpp>
 #include <boost/thread/thread.hpp>
-#include "camera/DepthCamera.h"
+#include "DepthCamera.h"
 
 namespace rgbd {
 

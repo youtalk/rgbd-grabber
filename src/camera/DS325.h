@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <boost/thread/thread.hpp>
 #include <DepthSense.hxx>
-#include "camera/DepthCamera.h"
+#include "DepthCamera.h"
 
 using namespace DepthSense;
 
