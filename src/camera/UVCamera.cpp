@@ -18,6 +18,8 @@ UVCamera::UVCamera(const size_t& deviceNo, const cv::Size& size) :
     std::cout << "UVCamera: opened" << std::endl;
 }
 UVCamera::~UVCamera() {
+    capture_.release();
+    std::cout << "UVCamera: closed" << std::endl;
 }
 
 cv::Size UVCamera::colorSize() const {
