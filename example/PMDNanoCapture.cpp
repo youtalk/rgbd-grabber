@@ -39,6 +39,9 @@ int main(int argc, char *argv[]) {
                 p.r = p.g = p.b = 255;
         }
 
+        cv::flip(depth, depth, 0);
+        cv::flip(amplitude, amplitude, 0);
+
         cv::Mat a;
         amplitude.convertTo(a, CV_8U, 255.0 / 1000.0);
 
