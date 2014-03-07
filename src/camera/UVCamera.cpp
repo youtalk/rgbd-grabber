@@ -43,7 +43,7 @@ void UVCamera::update() {
 
 void UVCamera::captureColor(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(_mutex);
-    buffer = _buffer;
+    _buffer.copyTo(buffer);
 }
 
 }
