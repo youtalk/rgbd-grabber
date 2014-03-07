@@ -32,15 +32,20 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.1.2")
-SET(SOVERSION "0.1")
+SET(VERSION "0.2.0")
+SET(SOVERSION "0.2")
 
 SET(SRC
-  src/camera/DepthCamera.cpp src/camera/UVCamera.cpp src/camera/PMDNano.cpp src/camera/DS325.cpp)
+  src/camera/DepthCamera.cpp src/camera/UVCamera.cpp)
+
+SET(SRC_DS
+  src/camera/DS325.cpp)
+
+SET(SRC_PMD
+  src/camera/PMDNano.cpp)
 
 SET(LIB_EXTERNAL
-  ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES}
-  DepthSense DepthSensePlugins pmdaccess2)
+  ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
 
 ADD_LIBRARY(rgbd-grabber SHARED ${SRC})
 TARGET_LINK_LIBRARIES(rgbd-grabber ${LIB_EXTERNAL})
@@ -52,15 +57,6 @@ SET(LIB
 ADD_EXECUTABLE(UVCameraCapture example/UVCameraCapture.cpp)
 ADD_DEPENDENCIES(UVCameraCapture ${SRC})
 TARGET_LINK_LIBRARIES(UVCameraCapture ${LIB})
-
-ADD_EXECUTABLE(DS325Capture example/DS325Capture.cpp)
-ADD_DEPENDENCIES(DS325Capture ${SRC})
-TARGET_LINK_LIBRARIES(DS325Capture ${LIB})
-
-ADD_EXECUTABLE(PMDNanoCapture example/PMDNanoCapture.cpp)
-ADD_DEPENDENCIES(PMDNanoCapture ${SRC})
-TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB})
-
 INSTALL(TARGETS rgbd-grabber LIBRARY DESTINATION lib)
 INSTALL(FILES
   src/camera/DepthCamera.h src/camera/UVCamera.h src/camera/DS325.h src/camera/PMDNano.h
@@ -68,3 +64,25 @@ INSTALL(FILES
 INSTALL(FILES
   src/util/Error.h
   DESTINATION include/rgbd/util)
+
+OPTION(USE_DS "Use DepthSense DS325 camera" OFF)
+IF(USE_DS)
+  ADD_LIBRARY(rgbd-grabber-ds SHARED ${SRC_DS})
+  TARGET_LINK_LIBRARIES(rgbd-grabber-ds ${LIB})
+  SET_TARGET_PROPERTIES(rgbd-grabber-ds PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
+  ADD_EXECUTABLE(DS325Capture example/DS325Capture.cpp)
+  ADD_DEPENDENCIES(DS325Capture ${SRC} ${SRC_DS})
+  TARGET_LINK_LIBRARIES(DS325Capture ${LIB} rgbd-grabber-ds DepthSense DepthSensePlugins)
+  INSTALL(TARGETS rgbd-grabber-ds LIBRARY DESTINATION lib)
+ENDIF()
+
+OPTION(USE_PMD "Use PMD Nano camera" OFF)
+IF(USE_PMD)
+  ADD_LIBRARY(rgbd-grabber-pmd SHARED ${SRC_PMD})
+  TARGET_LINK_LIBRARIES(rgbd-grabber-pmd ${LIB})
+  SET_TARGET_PROPERTIES(rgbd-grabber-pmd PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
+  ADD_EXECUTABLE(PMDNanoCapture example/PMDNanoCapture.cpp)
+  ADD_DEPENDENCIES(PMDNanoCapture ${SRC} ${SRC_PMD})
+  TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB} rgbd-grabber-pmd pmdaccess2)
+  INSTALL(TARGETS rgbd-grabber-pmd LIBRARY DESTINATION lib)
+ENDIF()
