@@ -10,62 +10,62 @@ namespace rgbd {
 PMDNano::PMDNano(const std::string& srcPlugin, const std::string& procPlugin,
                  const std::string& srcParam, const std::string& procParam) :
         DepthCamera(),
-        running_(true) {
+        _running(true) {
     open(srcPlugin, procPlugin, srcParam, procParam);
 
     std::cout << "PMDNano: opened" << std::endl;
 }
 
 PMDNano::~PMDNano() {
-    boost::mutex::scoped_lock lock(mutex_);
+    boost::mutex::scoped_lock lock(_mutex);
 
-    running_ = false;
-    delete[] source_;
-    delete[] buffer_;
-    delete[] vertexBuffer_;
-    pmdClose(handle_);
+    _running = false;
+    delete[] _source;
+    delete[] _buffer;
+    delete[] _vbuffer;
+    pmdClose(_handle);
 
     std::cout << "PMDNano: closed" << std::endl;
 }
 
 cv::Size PMDNano::depthSize() const {
-    return cv::Size(width_, height_);
+    return cv::Size(_width, _height);
 }
 
 void PMDNano::start() {
     boost::thread thread(boost::bind(&PMDNano::update, this));
 
-    if (pmdGetSourceDataDescription(handle_, &description_) != PMD_OK)
+    if (pmdGetSourceDataDescription(_handle, &_description) != PMD_OK)
         closeByError("pmdGetSourceDataDescription");
-    if (description_.subHeaderType != PMD_IMAGE_DATA) {
+    if (_description.subHeaderType != PMD_IMAGE_DATA) {
         std::cerr << "source is not an image." << std::endl;
-        pmdClose(handle_);
+        pmdClose(_handle);
         std::exit(-1);
     }
 
-    width_ = description_.img.numColumns;
-    height_ = description_.img.numRows;
-    size_ = width_ * height_;
-    source_ = new char[description_.size];
-    buffer_ = new float[size_];
-    vertexBuffer_ = new float[3 * size_];
+    _width = _description.img.numColumns;
+    _height = _description.img.numRows;
+    _size = _width * _height;
+    _source = new char[_description.size];
+    _buffer = new float[_size];
+    _vbuffer = new float[3 * _size];
 
-    if (pmdGetSourceData(handle_, source_, description_.size) != PMD_OK)
+    if (pmdGetSourceData(_handle, _source, _description.size) != PMD_OK)
         closeByError("pmdGetSourceData");
 }
 
 bool PMDNano::running() {
-    boost::mutex::scoped_lock lock(mutex_);
+    boost::mutex::scoped_lock lock(_mutex);
 
-    return running_;
+    return _running;
 }
 
 void PMDNano::update() {
     while (running()) {
         {
-            boost::mutex::scoped_lock lock(mutex_);
+            boost::mutex::scoped_lock lock(_mutex);
 
-            if (pmdUpdate(handle_) != PMD_OK)
+            if (pmdUpdate(_handle) != PMD_OK)
                 closeByError("pmdUpdate");
         }
         usleep(11111); // 90[Hz]
@@ -73,39 +73,39 @@ void PMDNano::update() {
 }
 
 void PMDNano::captureDepth(cv::Mat& buffer) {
-    boost::mutex::scoped_lock lock(mutex_);
+    boost::mutex::scoped_lock lock(_mutex);
 
-    if (pmdGetDistances(handle_, buffer_, size_ * sizeof (float)))
+    if (pmdGetDistances(_handle, _buffer, _size * sizeof (float)))
         closeByError("pmdGetDistances");
 
-    std::memcpy(buffer.data, buffer_, size_ * sizeof (float));
+    std::memcpy(buffer.data, _buffer, _size * sizeof (float));
 }
 
 void PMDNano::captureAmplitude(cv::Mat& buffer) {
-    boost::mutex::scoped_lock lock(mutex_);
+    boost::mutex::scoped_lock lock(_mutex);
 
-    if (pmdGetAmplitudes(handle_, buffer_, size_ * sizeof (float)))
+    if (pmdGetAmplitudes(_handle, _buffer, _size * sizeof (float)))
         closeByError("pmdGetAmplitudes");
 
-    std::memcpy(buffer.data, buffer_, size_ * sizeof (float));
+    std::memcpy(buffer.data, _buffer, _size * sizeof (float));
 }
 
 void PMDNano::captureVertex(PointXYZRGBVector& buffer) {
-    boost::mutex::scoped_lock lock(mutex_);
+    boost::mutex::scoped_lock lock(_mutex);
 
-    if (pmdGet3DCoordinates(handle_, vertexBuffer_, 3 * size_ * sizeof (float)))
+    if (pmdGet3DCoordinates(_handle, _vbuffer, 3 * _size * sizeof (float)))
         closeByError("pmdGet3DCoordinates");
 
-    for (size_t i = 0; i < width_ * height_; i++) {
-        buffer[i].x = vertexBuffer_[3 * i];
-        buffer[i].y = vertexBuffer_[3 * i + 1];
-        buffer[i].z = vertexBuffer_[3 * i + 2];
+    for (size_t i = 0; i < _width * _height; i++) {
+        buffer[i].x = _vbuffer[3 * i];
+        buffer[i].y = _vbuffer[3 * i + 1];
+        buffer[i].z = _vbuffer[3 * i + 2];
     }
 }
 
 void PMDNano::open(const std::string& srcPlugin, const std::string& procPlugin,
                    const std::string& srcParam, const std::string& procParam) {
-    if (pmdOpen(&handle_, srcPlugin.c_str(), srcParam.c_str(),
+    if (pmdOpen(&_handle, srcPlugin.c_str(), srcParam.c_str(),
                 procPlugin.c_str(), procParam.c_str()) != PMD_OK)
         closeByError("pmdOpenSourcePlugin");
 }
@@ -113,9 +113,9 @@ void PMDNano::open(const std::string& srcPlugin, const std::string& procPlugin,
 void PMDNano::closeByError(const std::string& function) {
     char error[128];
 
-    pmdGetLastError(handle_, error, 128);
+    pmdGetLastError(_handle, error, 128);
     std::cerr << function << ": " << error << std::endl;
-    pmdClose(handle_);
+    pmdClose(_handle);
     exit(1);
 }
 

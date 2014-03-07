@@ -9,21 +9,21 @@
 namespace rgbd {
 
 UVCamera::UVCamera(const size_t& deviceNo, const cv::Size& size) :
-        size_(size), capture_(deviceNo) {
-    capture_.set(CV_CAP_PROP_FRAME_WIDTH, size.width);
-    capture_.set(CV_CAP_PROP_FRAME_HEIGHT, size.height);
-    if (!capture_.isOpened())
+        _size(size), _capture(deviceNo) {
+    _capture.set(CV_CAP_PROP_FRAME_WIDTH, size.width);
+    _capture.set(CV_CAP_PROP_FRAME_HEIGHT, size.height);
+    if (!_capture.isOpened())
         std::exit(1);
 
     std::cout << "UVCamera: opened" << std::endl;
 }
 UVCamera::~UVCamera() {
-    capture_.release();
+    _capture.release();
     std::cout << "UVCamera: closed" << std::endl;
 }
 
 cv::Size UVCamera::colorSize() const {
-    return size_;
+    return _size;
 }
 
 void UVCamera::start() {
@@ -31,19 +31,19 @@ void UVCamera::start() {
 }
 
 void UVCamera::update() {
-    while (capture_.isOpened()) {
+    while (_capture.isOpened()) {
         usleep(16667); // 60 [Hz]
 
         {
-            boost::mutex::scoped_lock lock(mutex_);
-            capture_ >> buffer_;
+            boost::mutex::scoped_lock lock(_mutex);
+            _capture >> _buffer;
         }
     }
 }
 
 void UVCamera::captureColor(cv::Mat& buffer) {
-    boost::mutex::scoped_lock lock(mutex_);
-    buffer = buffer_;
+    boost::mutex::scoped_lock lock(_mutex);
+    buffer = _buffer;
 }
 
 }

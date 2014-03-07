@@ -30,13 +30,13 @@ public:
     virtual void captureColor(cv::Mat& buffer);
 
  private:
-    const cv::Size size_;
+    const cv::Size _size;
 
-    cv::VideoCapture capture_;
+    cv::VideoCapture _capture;
 
-    cv::Mat buffer_;
+    cv::Mat _buffer;
 
-    boost::mutex mutex_;
+    boost::mutex _mutex;
 
     void update();
 };

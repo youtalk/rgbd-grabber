@@ -44,17 +44,17 @@ public:
     virtual void captureAcceleration(cv::Point3f& buffer);
 
 protected:
-    const DepthSense::FrameFormat frameFormat_;
+    const DepthSense::FrameFormat _format;
 
-    const cv::Size depthSize_;
+    const cv::Size _dsize;
 
-    const cv::Size colorSize_;
+    const cv::Size _csize;
 
-    boost::mutex depthMutex_;
+    boost::mutex _dmutex;
 
-    boost::mutex colorMutex_;
+    boost::mutex _cmutex;
 
-    boost::mutex audioMutex_;
+    boost::mutex _amutex_;
 
     virtual void onNewDepthSample(DepthNode node, DepthNode::NewSampleReceivedData data);
 
@@ -63,19 +63,19 @@ protected:
     virtual void onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData data);
 
 private:
-    DepthNode::NewSampleReceivedData ddata_;
+    DepthNode::NewSampleReceivedData _ddata;
 
-    ColorNode::NewSampleReceivedData cdata_;
+    ColorNode::NewSampleReceivedData _cdata;
 
-    AudioNode::NewSampleReceivedData adata_;
+    AudioNode::NewSampleReceivedData _adata;
 
-    Context context_;
+    Context _context;
 
-    DepthNode depth_;
+    DepthNode _depth;
 
-    ColorNode color_;
+    ColorNode _color;
 
-    AudioNode audio_;
+    AudioNode _audio;
 
     void update();
 

@@ -34,25 +34,25 @@ public:
     virtual void captureVertex(PointXYZRGBVector& buffer);
 
 protected:
-    boost::mutex mutex_;
+    boost::mutex _mutex;
 
-    bool running_;
+    bool _running;
 
-    size_t width_;
+    size_t _width;
 
-    size_t height_;
+    size_t _height;
 
-    size_t size_;
+    size_t _size;
 
-    PMDHandle handle_;
+    PMDHandle _handle;
 
-    PMDDataDescription description_;
+    PMDDataDescription _description;
 
-    char* source_;
+    char* _source;
 
-    float* buffer_;
+    float* _buffer;
 
-    float* vertexBuffer_;
+    float* _vbuffer;
 
     void update();
 
