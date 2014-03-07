@@ -10,7 +10,7 @@ namespace rgbd {
 PMDNano::PMDNano(const std::string& srcPlugin, const std::string& procPlugin,
                  const std::string& srcParam, const std::string& procParam) :
         DepthCamera(),
-        _running(true) {
+        _running(false) {
     open(srcPlugin, procPlugin, srcParam, procParam);
 
     std::cout << "PMDNano: opened" << std::endl;
@@ -33,6 +33,7 @@ cv::Size PMDNano::depthSize() const {
 }
 
 void PMDNano::start() {
+    _running = true;
     boost::thread thread(boost::bind(&PMDNano::update, this));
 
     if (pmdGetSourceDataDescription(_handle, &_description) != PMD_OK)
@@ -54,14 +55,8 @@ void PMDNano::start() {
         closeByError("pmdGetSourceData");
 }
 
-bool PMDNano::running() {
-    boost::mutex::scoped_lock lock(_mutex);
-
-    return _running;
-}
-
 void PMDNano::update() {
-    while (running()) {
+    while (_running) {
         {
             boost::mutex::scoped_lock lock(_mutex);
 

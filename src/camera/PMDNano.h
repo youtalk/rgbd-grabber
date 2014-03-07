@@ -36,7 +36,7 @@ public:
 protected:
     boost::mutex _mutex;
 
-    bool _running;
+    volatile bool _running;
 
     size_t _width;
 
@@ -55,8 +55,6 @@ protected:
     float* _vbuffer;
 
     void update();
-
-    bool running();
 
 private:
     void open(const std::string& srcPlugin, const std::string& srcParam,
