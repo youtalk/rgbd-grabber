@@ -17,9 +17,9 @@
 
 namespace rgbd {
 
-class UVCamera: public rgbd::DepthCamera {
+class UVCamera: public DepthCamera {
 public:
-    UVCamera(const::size_t& deviceNo, const cv::Size& size);
+    UVCamera(const::size_t& deviceNo, const cv::Size& size = cv::Size(640, 480));
 
     virtual ~UVCamera();
 
