@@ -11,12 +11,14 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <pcl/point_types.h>
+#include <Eigen/StdVector>
 #include "Camera.h"
 #include "util/Error.h"
 
 namespace rgbd {
 
-typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>> PointXYZRGBVector;
+typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>>
+        PointXYZRGBVector;
 
 class DepthCamera: public Camera {
 public:
