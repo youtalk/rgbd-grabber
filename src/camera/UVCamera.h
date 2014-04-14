@@ -4,8 +4,7 @@
  * @date Aug 22, 2013
  */
 
-#ifndef UVCAMERA_H_
-#define UVCAMERA_H_
+#pragma once
 
 #include <cstdlib>
 #include <unistd.h>
@@ -13,13 +12,14 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "DepthCamera.h"
+#include "Camera.h"
 
 namespace rgbd {
 
-class UVCamera: public DepthCamera {
+class UVCamera: public Camera {
 public:
-    UVCamera(const::size_t& deviceNo, const cv::Size& size = cv::Size(640, 480));
+    UVCamera(const ::size_t& deviceNo,
+             const cv::Size& size = cv::Size(640, 480));
 
     virtual ~UVCamera();
 
@@ -29,7 +29,7 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
- private:
+private:
     const cv::Size _size;
 
     cv::VideoCapture _capture;
@@ -42,4 +42,3 @@ public:
 };
 
 }
-#endif /* UVCAMERA_H_ */

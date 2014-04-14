@@ -17,20 +17,12 @@ cv::Size DepthCamera::depthSize() const {
     throw new UnsupportedException("depthSize");
 }
 
-cv::Size DepthCamera::colorSize() const {
-    throw new UnsupportedException("colorSize");
-}
-
 void DepthCamera::captureDepth(cv::Mat& buffer) {
     throw new UnsupportedException("captureDepth");
 }
 
 void DepthCamera::captureAmplitude(cv::Mat& buffer) {
     throw new UnsupportedException("captureAmplitude");
-}
-
-void DepthCamera::captureColor(cv::Mat& buffer) {
-    throw new UnsupportedException("captureColor");
 }
 
 void DepthCamera::captureVertex(PointXYZRGBVector& buffer) {

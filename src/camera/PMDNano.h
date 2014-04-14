@@ -3,8 +3,8 @@
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
-#ifndef PMDNANO_H_
-#define PMDNANO_H_
+
+#pragma once
 
 #include <string>
 #include <cstdlib>
@@ -64,4 +64,3 @@ private:
 };
 
 }
-#endif /* PMDNANO_H_ */

@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2)
         return -1;
 
-    std::shared_ptr<DepthCamera> camera(new UVCamera(std::atoi(argv[1]), cv::Size(640, 480)));
+    std::shared_ptr<Camera> camera(new UVCamera(std::atoi(argv[1]), cv::Size(640, 480)));
     camera->start();
 
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
