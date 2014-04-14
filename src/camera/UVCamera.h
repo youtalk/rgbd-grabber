@@ -11,7 +11,6 @@
 #include <boost/thread/thread.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-
 #include "Camera.h"
 
 namespace rgbd {
