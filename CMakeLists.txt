@@ -32,8 +32,8 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.2.0")
-SET(SOVERSION "0.2")
+SET(VERSION "0.3.0")
+SET(SOVERSION "0.3")
 
 SET(SRC
   src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp)
@@ -43,6 +43,9 @@ SET(SRC_DS
 
 SET(SRC_PMD
   src/camera/PMDNano.cpp)
+
+SET(SRC_UEYE
+  src/camera/UEye.cpp)
 
 SET(LIB_EXTERNAL
   ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
@@ -85,4 +88,15 @@ IF(USE_PMD)
   ADD_DEPENDENCIES(PMDNanoCapture ${SRC} ${SRC_PMD})
   TARGET_LINK_LIBRARIES(PMDNanoCapture ${LIB} rgbd-grabber-pmd pmdaccess2)
   INSTALL(TARGETS rgbd-grabber-pmd LIBRARY DESTINATION lib)
+ENDIF()
+
+OPTION(USE_UEYE "Use uEye camera" OFF)
+IF(USE_UEYE)
+  ADD_LIBRARY(rgbd-grabber-ueye SHARED ${SRC_UEYE})
+  TARGET_LINK_LIBRARIES(rgbd-grabber-ueye ${LIB})
+  SET_TARGET_PROPERTIES(rgbd-grabber-ueye PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
+  ADD_EXECUTABLE(UEyeCapture example/UEyeCapture.cpp)
+  ADD_DEPENDENCIES(UEyeCapture ${SRC} ${SRC_UEYE})
+  TARGET_LINK_LIBRARIES(UEyeCapture ${LIB} rgbd-grabber-ueye ueye_api)
+  INSTALL(TARGETS rgbd-grabber-ueye LIBRARY DESTINATION lib)
 ENDIF()
