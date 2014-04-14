@@ -4,8 +4,7 @@
  * @date Jul 29, 2013
  */
 
-#ifndef DS325_H_
-#define DS325_H_
+#pragma once
 
 #include <list>
 #include <cstdio>
@@ -95,4 +94,3 @@ private:
 };
 
 }
-#endif /* DS325_H_ */
