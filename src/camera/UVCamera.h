@@ -17,7 +17,7 @@ namespace rgbd {
 
 class UVCamera: public Camera {
 public:
-    UVCamera(const ::size_t& deviceNo,
+    UVCamera(size_t deviceNo,
              const cv::Size& size = cv::Size(640, 480));
 
     virtual ~UVCamera();

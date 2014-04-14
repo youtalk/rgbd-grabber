@@ -8,7 +8,7 @@
 
 namespace rgbd {
 
-UVCamera::UVCamera(const size_t& deviceNo, const cv::Size& size) :
+UVCamera::UVCamera(size_t deviceNo, const cv::Size& size) :
         _size(size), _capture(deviceNo) {
     _capture.set(CV_CAP_PROP_FRAME_WIDTH, size.width);
     _capture.set(CV_CAP_PROP_FRAME_HEIGHT, size.height);

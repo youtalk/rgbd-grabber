@@ -7,7 +7,7 @@
 #pragma once
 
 #include <iostream>
-#include <boost/thread/thread.hpp>
+#include <cstring>
 #include <uEye.h>
 #include "Camera.h"
 
@@ -15,8 +15,8 @@ namespace rgbd {
 
 class UEye: public Camera {
 public:
-    UEye(const ::uint32_t& deviceNo,
-         const cv::Size& size = cv::Size(640, 480), double fps = 30);
+    UEye(const uint deviceNo, const cv::Size& size = cv::Size(752, 480),
+         double fps = 60);
 
     virtual ~UEye();
 
@@ -24,18 +24,16 @@ public:
 
     virtual void start();
 
-    virtual void update();
-
     virtual void captureColor(cv::Mat& buffer);
 
 private:
     const cv::Size _size;
 
-    double _fps;
+    const uint _camera;
 
-    uint32_t _camera;
+    char* _buffer;
 
-    char *_buffer;
+    int _bufferId;
 };
 
 }
