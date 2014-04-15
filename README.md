@@ -14,7 +14,7 @@ Installation
 Dependencies:
 * **Boost 1.4.6** or newer
 * **OpenCV 2.3** or newer
-* **PCL 2.3** or newer
+* **PCL 1.7** or newer
 
 ### Creative Senz3D / SoftKinetic DS325
 ~~~ sh
