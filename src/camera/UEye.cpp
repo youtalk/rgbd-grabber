@@ -45,9 +45,9 @@ UEye::UEye(const uint deviceNo, const cv::Size& size, double fps) :
 
     std::cout << "UEye: exposure = " << exposure << std::endl;
     UINT pixelClock = 30 * 2;
-    is_PixelClock(_camera, IS_PIXELCLOCK_CMD_SET, (void*)&pixelClock, sizeof(pixelClock));
-
-    is_AllocImageMem(_camera, _size.width, _size.height, bitsPerPixel, &_buffer, &_bufferId);
+    is_PixelClock(_camera, IS_PIXELCLOCK_CMD_SET, &pixelClock, sizeof(pixelClock));
+    is_AllocImageMem(_camera, _size.width, _size.height, bitsPerPixel,
+                     &_buffer, &_bufferId);
     if (_buffer != NULL)
         is_SetImageMem(_camera, _buffer, _bufferId);
     else
@@ -55,7 +55,23 @@ UEye::UEye(const uint deviceNo, const cv::Size& size, double fps) :
 
     if (sinfo.nColorMode == IS_COLORMODE_BAYER) {
         double enable = 1.0;
-        is_SetAutoParameter(_camera, IS_SET_AUTO_WB_ONCE, &enable, 0);
+        double disable = 0.0;
+        is_SetAutoParameter(_camera, IS_SET_WB_AUTO_ENABLE_ONCE, &disable, 0);
+    }
+}
+
+UEye::UEye(const uint deviceNo, const std::string& file) :
+        _camera(deviceNo) {
+    CAMINFO cinfo;
+    if (is_InitCamera(&_camera, &cinfo) != IS_SUCCESS) {
+        std::cerr << "UEye: cannot open" << std::endl;
+        std::exit(-1);
+    }
+
+    if (is_ParameterSet(_camera, IS_PARAMETERSET_CMD_LOAD_FILE,
+                        file.c_str(), 0) != IS_SUCCESS) {
+        std::cerr << "UEye: cannot load " << file << std::endl;
+        std::exit(-1);
     }
 }
 
@@ -72,7 +88,7 @@ void UEye::start() {
 }
 
 void UEye::captureColor(cv::Mat& buffer) {
-    std::memcpy(buffer.data, (uchar*)_buffer,
+    std::memcpy(buffer.data, _buffer,
                 3 * sizeof(uchar) * buffer.rows * buffer.cols);
 }
 

@@ -18,6 +18,8 @@ public:
     UEye(const uint deviceNo, const cv::Size& size = cv::Size(752, 480),
          double fps = 60);
 
+    UEye(const uint deviceNo, const std::string& file);
+
     virtual ~UEye();
 
     cv::Size colorSize() const;
@@ -27,7 +29,7 @@ public:
     virtual void captureColor(cv::Mat& buffer);
 
 private:
-    const cv::Size _size;
+    cv::Size _size;
 
     const uint _camera;
 
