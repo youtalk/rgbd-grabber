@@ -16,6 +16,13 @@ Dependencies:
 * **OpenCV 2.3** or newer
 * **PCL 1.7** or newer
 
+### UVC
+~~~ sh
+$ cmake .
+$ make
+$ bin/UVCameraCapture 0
+~~~
+
 ### Creative Senz3D / SoftKinetic DS325
 ~~~ sh
 $ cmake -DUSE_DS=ON .
