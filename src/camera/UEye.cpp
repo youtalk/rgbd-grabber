@@ -37,14 +37,14 @@ UEye::UEye(const uint deviceNo, const cv::Size& size, double fps) :
 
     is_SetFrameRate(_camera, fps, &fps);
     std::cout << "UEye: fps = " << fps << std::endl;
-    double exposure = 0.0;
 
+    double exposure = 0.0;
     double p1 = 1.0, p2 = 0.0;
     is_SetAutoParameter(_camera, IS_SET_ENABLE_AUTO_SHUTTER, &p1, &p2);
     is_Exposure(_camera, IS_EXPOSURE_CMD_GET_EXPOSURE, &exposure, sizeof(exposure));
-
     std::cout << "UEye: exposure = " << exposure << std::endl;
-    UINT pixelClock = 30 * 2;
+
+    uint pixelClock = 30 * 2;
     is_PixelClock(_camera, IS_PIXELCLOCK_CMD_SET, &pixelClock, sizeof(pixelClock));
     is_AllocImageMem(_camera, _size.width, _size.height, bitsPerPixel,
                      &_buffer, &_bufferId);
@@ -61,15 +61,16 @@ UEye::UEye(const uint deviceNo, const cv::Size& size, double fps) :
 }
 
 UEye::UEye(const uint deviceNo, const std::string& file) :
-        _camera(deviceNo) {
+        _camera(deviceNo), _size(752, 480) {
     CAMINFO cinfo;
     if (is_InitCamera(&_camera, &cinfo) != IS_SUCCESS) {
         std::cerr << "UEye: cannot open" << std::endl;
         std::exit(-1);
     }
 
+    const std::wstring wfile(file.begin(), file.end());
     if (is_ParameterSet(_camera, IS_PARAMETERSET_CMD_LOAD_FILE,
-                        file.c_str(), 0) != IS_SUCCESS) {
+                        (void*)file.c_str(), 0) != IS_SUCCESS) {
         std::cerr << "UEye: cannot load " << file << std::endl;
         std::exit(-1);
     }

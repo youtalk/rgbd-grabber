@@ -10,6 +10,7 @@
 #include <cstring>
 #include <uEye.h>
 #include "Camera.h"
+#include "ueye_cam_driver.hpp"
 
 namespace rgbd {
 

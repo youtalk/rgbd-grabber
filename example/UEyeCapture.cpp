@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
         return -1;
 
     std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), cv::Size(640, 480)));
-//    std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), "UI122xLE-C_conf.ini"));
+//    std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), argv[2]));
     camera->start();
 
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);

@@ -45,7 +45,7 @@ SET(SRC_PMD
   src/camera/PMDNano.cpp)
 
 SET(SRC_UEYE
-  src/camera/UEye.cpp)
+  src/camera/UEye.cpp src/camera/ueye_cam_driver.cpp)
 
 SET(LIB_EXTERNAL
   ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
