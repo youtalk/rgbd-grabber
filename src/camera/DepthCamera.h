@@ -17,6 +17,9 @@
 
 namespace rgbd {
 
+typedef std::vector<pcl::PointXYZ, Eigen::aligned_allocator<pcl::PointXYZ>>
+        PointXYZVector;
+
 typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>>
         PointXYZRGBVector;
 
@@ -37,7 +40,7 @@ public:
      * Copy the latest depth data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
-     * @param buffer Returned matrix of CV_32F
+     * @param buffer Returned cv::Mat of CV_32F
      */
     virtual void captureDepth(cv::Mat& buffer);
 
@@ -45,7 +48,7 @@ public:
      * Copy the latest amplitude data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
-     * @param buffer Returned matrix of CV_32F
+     * @param buffer Returned cv::Mat of CV_32F
      */
     virtual void captureAmplitude(cv::Mat& buffer);
 
@@ -53,9 +56,17 @@ public:
      * Copy the latest 3D point cloud data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
-     * @param buffer Returned vector of PointXYZRGB
+     * @param buffer Returned vector of pcl::PointXYZ
      */
-    virtual void captureVertex(PointXYZRGBVector& buffer);
+    virtual void captureVertex(PointXYZVector& buffer);
+
+    /**
+     * Copy the latest 3D point cloud data to the buffer.
+     * Note that the buffer must be allocated in advance.
+     *
+     * @param buffer Returned vector of pcl::PointXYZRGB
+     */
+    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
 
     /**
      * Copy the latest audio data to the buffer.
@@ -68,7 +79,7 @@ public:
     /**
      * Copy the latest acceleration data to the buffer.
      *
-     * @param buffer Returned 3D data of Point3f
+     * @param buffer Returned 3D data of cv::Point3f
      */
     virtual void captureAcceleration(cv::Point3f& acc);
 };

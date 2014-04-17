@@ -36,7 +36,7 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
-    virtual void captureVertex(PointXYZRGBVector& buffer);
+    virtual void captureVertex(PointXYZVector& buffer);
 
     virtual void captureAudio(std::vector<uchar>& buffer);
 

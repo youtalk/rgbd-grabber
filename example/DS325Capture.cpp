@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
     cloud->points.resize(camera->depthSize().width * camera->depthSize().height);
 
     cv::namedWindow("Depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
@@ -37,11 +37,6 @@ int main(int argc, char *argv[]) {
         camera->captureAmplitude(amplitude);
         camera->captureColor(color);
         camera->captureVertex(cloud->points);
-
-        for (auto& p: cloud->points) {
-            if (p.z > 0.0)
-                p.r = p.g = p.b = 255;
-        }
 
         cv::Mat d, a;
         depth.convertTo(d, CV_8U, 255.0 / 1000.0);

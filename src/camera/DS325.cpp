@@ -88,7 +88,7 @@ void DS325::captureColor(cv::Mat& buffer) {
     std::memcpy(buffer.data, _cdata.colorMap, _cdata.colorMap.size());
 }
 
-void DS325::captureVertex(PointXYZRGBVector& buffer) {
+void DS325::captureVertex(PointXYZVector& buffer) {
     boost::mutex::scoped_lock lock(_dmutex);
     std::size_t index = 0;
 
