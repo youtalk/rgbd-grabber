@@ -68,7 +68,7 @@ UEyeCamDriver::UEyeCamDriver(int cam_ID, string cam_name) :
     bits_per_pixel_(8) {
   cam_aoi_.s32X = 0;
   cam_aoi_.s32Y = 0;
-  cam_aoi_.s32Width = 752;
+  cam_aoi_.s32Width = 640;
   cam_aoi_.s32Height = 480;
 };
 
@@ -891,15 +891,12 @@ INT UEyeCamDriver::reallocateCamBuffer() {
     is_err = is_FreeImageMem(cam_handle_, cam_buffer_, cam_buffer_id_);
     cam_buffer_ = NULL;
   }
-  if ((is_err = is_AllocImageMem(cam_handle_,
-      cam_aoi_.s32Width / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_),
-      cam_aoi_.s32Height / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_),
+  INT width = cam_aoi_.s32Width / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_);
+  INT height = cam_aoi_.s32Height / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_);
+  if ((is_err = is_AllocImageMem(cam_handle_, width, height,
       bits_per_pixel_, &cam_buffer_, &cam_buffer_id_)) != IS_SUCCESS) {
     std::cerr << "Failed to allocate " <<
-        cam_aoi_.s32Width / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_) <<
-      " x " <<
-      cam_aoi_.s32Height / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_) <<
-      " image buffer" << std::endl;
+        width << " x " << height << " image buffer" << std::endl;
     return is_err;
   }
   if ((is_err = is_SetImageMem(cam_handle_, cam_buffer_, cam_buffer_id_)) != IS_SUCCESS) {
@@ -910,12 +907,8 @@ INT UEyeCamDriver::reallocateCamBuffer() {
     std::cerr << "Failed to query UEye camera buffer's pitch (a.k.a. stride)" << std::endl;
     return is_err;
   }
-  cam_buffer_size_ = cam_buffer_pitch_ * cam_aoi_.s32Height /
-      (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_);
-  std::cout << "Allocate internal memory - width: " <<
-      cam_aoi_.s32Width / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_) <<
-      "; height: " <<
-      cam_aoi_.s32Height / (cam_sensor_scaling_rate_ * cam_subsampling_rate_ * cam_binning_rate_) <<
+  cam_buffer_size_ = cam_buffer_pitch_ * height;
+  std::cout << "Allocate internal memory - width: " << width << "; height: " << height <<
       "; fetched pitch: " << cam_buffer_pitch_ << "; expected bpp: " << bits_per_pixel_ <<
       "; total size: " << cam_buffer_size_ << std::endl;
 
