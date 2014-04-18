@@ -62,7 +62,8 @@ ADD_DEPENDENCIES(UVCameraCapture ${SRC})
 TARGET_LINK_LIBRARIES(UVCameraCapture ${LIB})
 INSTALL(TARGETS rgbd-grabber LIBRARY DESTINATION lib)
 INSTALL(FILES
-  src/camera/DepthCamera.h src/camera/UVCamera.h src/camera/DS325.h src/camera/PMDNano.h
+  src/camera/DepthCamera.h src/camera/UVCamera.h
+  src/camera/DS325.h src/camera/PMDNano.h src/camera/UEye.h src/camera/ueye_cam_driver.hpp
   DESTINATION include/rgbd/camera)
 INSTALL(FILES
   src/util/Error.h
