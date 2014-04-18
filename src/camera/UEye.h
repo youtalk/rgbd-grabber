@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <boost/thread.hpp>
 #include <uEye.h>
 #include "Camera.h"
 #include "ueye_cam_driver.hpp"
@@ -16,9 +17,6 @@ namespace rgbd {
 
 class UEye: public Camera {
 public:
-    UEye(const uint deviceNo, const cv::Size& size = cv::Size(752, 480),
-         double fps = 60);
-
     UEye(const uint deviceNo, const std::string& file);
 
     virtual ~UEye();
@@ -32,11 +30,9 @@ public:
 private:
     cv::Size _size;
 
-    const uint _camera;
+    ueye_cam::UEyeCamDriver _driver;
 
-    char* _buffer;
-
-    int _bufferId;
+    boost::mutex _mutex;
 };
 
 }

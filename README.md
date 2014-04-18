@@ -41,5 +41,5 @@ $ bin/PMDNanoCapture /path/to/camboardnano.L64.pap /path/to/camboardnanoproc.L64
 ~~~ sh
 $ cmake -DUSE_UEYE=ON .
 $ make
-$ bin/UEyeCapture 0
+$ bin/UEyeCapture 0 /path/to/UI122xLE-C_conf.ini
 ~~~

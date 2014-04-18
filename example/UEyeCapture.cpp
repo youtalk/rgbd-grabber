@@ -16,8 +16,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2)
         return -1;
 
-    std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), cv::Size(640, 480)));
-//    std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), argv[2]));
+    std::shared_ptr<Camera> camera(new UEye(std::atoi(argv[1]), argv[2]));
     camera->start();
 
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);

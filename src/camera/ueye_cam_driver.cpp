@@ -68,7 +68,7 @@ UEyeCamDriver::UEyeCamDriver(int cam_ID, string cam_name) :
     bits_per_pixel_(8) {
   cam_aoi_.s32X = 0;
   cam_aoi_.s32Y = 0;
-  cam_aoi_.s32Width = 640;
+  cam_aoi_.s32Width = 752;
   cam_aoi_.s32Height = 480;
 };
 
