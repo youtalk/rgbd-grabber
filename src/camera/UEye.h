@@ -27,8 +27,6 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
-    virtual bool adjustWhiteBalance();
-
     virtual bool adjustColorGain(int read, int green, int blue);
 
 private:

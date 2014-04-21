@@ -40,12 +40,6 @@ void UEye::captureColor(cv::Mat& buffer) {
                 3 * sizeof (uchar) * _size.width * _size.height);
 }
 
-bool UEye::adjustWhiteBalance() {
-    double enable = 1.0;
-    return is_SetAutoParameter(_deviceNo, IS_SET_WB_AUTO_ENABLE_ONCE, &enable, NULL)
-            == IS_SUCCESS;
-}
-
 bool UEye::adjustColorGain(int red, int green, int blue) {
     bool autoGain = false;
     int masterGain = 0;
