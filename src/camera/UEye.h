@@ -27,10 +27,16 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
+    virtual bool adjustWhiteBalance();
+
+    virtual bool adjustColorGain(int read, int green, int blue);
+
 private:
-    cv::Size _size;
+    HIDS _deviceNo;
 
     ueye_cam::UEyeCamDriver _driver;
+
+    cv::Size _size;
 
     boost::mutex _mutex;
 };
