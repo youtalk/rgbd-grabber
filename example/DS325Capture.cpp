@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/visualization/cloud_viewer.h>
-#include "camera/DS325.h"
+#include "rgbd/camera/DS325.h"
 
 using namespace rgbd;
 

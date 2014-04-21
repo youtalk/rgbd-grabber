@@ -9,19 +9,17 @@ FIND_PACKAGE(Boost REQUIRED)
 FIND_PACKAGE(OpenCV REQUIRED)
 FIND_PACKAGE(PCL REQUIRED)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(/usr/include)
 INCLUDE_DIRECTORIES(/usr/local/include)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${PCL_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(/opt/softkinetic/DepthSenseSDK/include)
 
 LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/lib)
 LINK_DIRECTORIES(/usr/lib)
 LINK_DIRECTORIES(/usr/local/lib)
 LINK_DIRECTORIES(${PCL_LIBRARY_DIRS})
-LINK_DIRECTORIES(/opt/softkinetic/DepthSenseSDK/lib)
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
@@ -32,8 +30,8 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.3.0")
-SET(SOVERSION "0.3")
+SET(VERSION "0.4.0")
+SET(SOVERSION "0.4")
 
 SET(SRC
   src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp)
@@ -61,16 +59,12 @@ ADD_EXECUTABLE(UVCameraCapture example/UVCameraCapture.cpp)
 ADD_DEPENDENCIES(UVCameraCapture ${SRC})
 TARGET_LINK_LIBRARIES(UVCameraCapture ${LIB})
 INSTALL(TARGETS rgbd-grabber LIBRARY DESTINATION lib)
-INSTALL(FILES
-  src/camera/DepthCamera.h src/camera/UVCamera.h
-  src/camera/DS325.h src/camera/PMDNano.h src/camera/UEye.h src/camera/ueye_cam_driver.hpp
-  DESTINATION include/rgbd/camera)
-INSTALL(FILES
-  src/util/Error.h
-  DESTINATION include/rgbd/util)
+INSTALL(DIRECTORY include/rgbd DESTINATION include)
 
 OPTION(USE_DS "Use DepthSense DS325 camera" OFF)
 IF(USE_DS)
+  INCLUDE_DIRECTORIES(/opt/softkinetic/DepthSenseSDK/include)
+  LINK_DIRECTORIES(/opt/softkinetic/DepthSenseSDK/lib)
   ADD_LIBRARY(rgbd-grabber-ds SHARED ${SRC_DS})
   TARGET_LINK_LIBRARIES(rgbd-grabber-ds ${LIB})
   SET_TARGET_PROPERTIES(rgbd-grabber-ds PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})

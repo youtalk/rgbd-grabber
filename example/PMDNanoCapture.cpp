@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/visualization/cloud_viewer.h>
-#include "camera/PMDNano.h"
+#include "rgbd/camera/PMDNano.h"
 
 using namespace rgbd;
 

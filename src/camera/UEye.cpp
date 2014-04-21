@@ -4,7 +4,7 @@
  * @date Apr 14, 2014
  */
 
-#include "UEye.h"
+#include "rgbd/camera/UEye.h"
 
 namespace rgbd {
 

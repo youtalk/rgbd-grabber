@@ -4,7 +4,7 @@
  * @date Aug 22, 2013
  */
 
-#include "UVCamera.h"
+#include "rgbd/camera/UVCamera.h"
 
 namespace rgbd {
 

@@ -10,8 +10,8 @@
 #include <cstring>
 #include <boost/thread.hpp>
 #include <uEye.h>
-#include "Camera.h"
 #include "ueye_cam_driver.hpp"
+#include "Camera.h"
 
 namespace rgbd {
 

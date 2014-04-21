@@ -4,7 +4,7 @@
  * @date Jul 29, 2013
  */
 
-#include "DS325.h"
+#include "rgbd/camera/DS325.h"
 
 namespace rgbd {
 

@@ -3,7 +3,7 @@
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
-#include "DepthCamera.h"
+#include "rgbd/camera/DepthCamera.h"
 
 namespace rgbd {
 

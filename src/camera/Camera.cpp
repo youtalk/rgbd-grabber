@@ -4,7 +4,7 @@
  * @date Apr 14, 2014
  */
 
-#include "Camera.h"
+#include "rgbd/camera/Camera.h"
 
 namespace rgbd {
 

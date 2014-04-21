@@ -3,7 +3,7 @@
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 9, 2013
  */
-#include "PMDNano.h"
+#include "rgbd/camera/PMDNano.h"
 
 namespace rgbd {
 
