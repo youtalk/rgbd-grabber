@@ -34,7 +34,8 @@ SET(VERSION "0.4.0")
 SET(SOVERSION "0.4")
 
 SET(SRC
-  src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp)
+  src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp
+  src/camera/CameraCalibrator.cpp)
 
 SET(SRC_DS
   src/camera/DS325.cpp)
