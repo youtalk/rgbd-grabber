@@ -52,4 +52,8 @@ void CameraCalibrator::captureColor(cv::Mat& buffer) {
     cv::remap(buffer, buffer, _rectifyMaps[0], _rectifyMaps[1], CV_INTER_LINEAR);
 }
 
+void CameraCalibrator::captureRawColor(cv::Mat& buffer) {
+    _camera->captureColor(buffer);
+}
+
 }

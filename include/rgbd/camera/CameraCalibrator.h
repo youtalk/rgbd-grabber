@@ -24,6 +24,8 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
+    virtual void captureRawColor(cv::Mat& buffer);
+
 private:
     std::shared_ptr<Camera> _camera;
 
