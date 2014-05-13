@@ -27,7 +27,15 @@ class DepthCamera: public Camera {
 public:
     DepthCamera();
 
+    DepthCamera(const std::shared_ptr<Camera> camera);
+
     virtual ~DepthCamera();
+
+    virtual cv::Size colorSize() const;
+
+    virtual void start();
+
+    virtual void captureColor(cv::Mat& buffer);
 
     /**
      * Return the size of depth image.
@@ -82,6 +90,9 @@ public:
      * @param buffer Returned 3D data of cv::Point3f
      */
     virtual void captureAcceleration(cv::Point3f& acc);
+
+private:
+    std::shared_ptr<Camera> _camera;
 };
 
 }

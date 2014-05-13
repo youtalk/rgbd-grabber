@@ -1,6 +1,6 @@
 /**
  * @file UEye.h
- * @author Yutaka Kondo <yutaka.kondo@kawadarobot.co.jp>
+ * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Apr 14, 2014
  */
 
