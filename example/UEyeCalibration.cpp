@@ -30,10 +30,10 @@ bool captureBoardImage(cv::Mat& frame, size_t& count) {
         std::string fileName = stream.str();
         cv::imwrite(fileName, frame);
 
-        std::cout << "saved " << fileName << std::endl;
+        std::cout << "UEyeCalibration: saved " << fileName << std::endl;
         count++;
     } else if (key == 'q') {
-        std::cout << "finished capture" << std::endl;
+        std::cout << "UEyeCalibration: finished capture" << std::endl;
         return false;
     } else if (key == '\x1b') {
         std::exit(0);
@@ -51,7 +51,7 @@ std::vector<cv::Mat> readBoardImage(size_t count) {
         std::string fileName = stream.str();
         images.push_back(cv::imread(fileName));
 
-        std::cout << "loaded image " << fileName << std::endl;
+        std::cout << "UEyeCalibration: loaded image " << fileName << std::endl;
     }
 
     return images;
@@ -74,9 +74,9 @@ std::vector<std::vector<cv::Point2f>> calculateBoardCorners(
             cv::imshow("Chess board", images[i]);
             cv::waitKey(200);
 
-            std::cout << "found chess board " << i << std::endl;
+            std::cout << "UEyeCalibration: found chess board " << i << std::endl;
         } else {
-            std::cout << "not found chess board " << i << std::endl;
+            std::cout << "UEyeCalibration: not found chess board " << i << std::endl;
         }
     }
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
     cv::Mat distCoeffs;
 
     {
-        std::cout << "start calibration" << std::endl;
+        std::cout << "UEyeCalibration: start calibration" << std::endl;
 
         cv::FileStorage file(argv[3], cv::FileStorage::READ);
         std::vector<cv::Mat> tvecs;
@@ -151,7 +151,7 @@ int main(int argc, char* argv[]) {
                                 cameraMatrix, distCoeffs, rvecs, tvecs);
         }
 
-        std::cout << "finished calibration" << std::endl;
+        std::cout << "UEyeCalibration: finished calibration" << std::endl;
     }
     {
         double apertureWidth = 0, apertureHeight = 0;
@@ -177,7 +177,7 @@ int main(int argc, char* argv[]) {
         file << "aspectRatio" << aspectRatio;
         file.release();
 
-        std::cout << "saved " << argv[3] << std::endl;
+        std::cout << "UEyeCalibration: saved " << argv[3] << std::endl;
     }
 
     return 0;
