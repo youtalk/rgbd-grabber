@@ -1,5 +1,5 @@
 /**
- * @file DepthCameraCalibrator.h
+ * @file DS325Calibrator.h
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jun 18, 2014
  */
@@ -9,14 +9,15 @@
 #include <iostream>
 #include <memory>
 #include "DepthCamera.h"
+#include "DS325.h"
 
 namespace rgbd {
 
-class DepthCameraCalibrator: public DepthCamera {
+class DS325Calibrator: public DepthCamera {
 public:
-    DepthCameraCalibrator(std::shared_ptr<DepthCamera> camera, const std::string& file);
+    DS325Calibrator(std::shared_ptr<DS325> camera, const std::string& file);
 
-    virtual ~DepthCameraCalibrator();
+    virtual ~DS325Calibrator();
 
     virtual cv::Size colorSize() const;
 
@@ -35,7 +36,7 @@ public:
     virtual void captureRawAmplitude(cv::Mat& buffer);
 
 private:
-    std::shared_ptr<DepthCamera> _camera;
+    std::shared_ptr<DS325> _camera;
 
     cv::Mat _rectifyMaps[2];
 };

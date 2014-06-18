@@ -1,14 +1,14 @@
 /**
- * @file DepthCameraCalibrator.cpp
+ * @file DS325Calibrator.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jun 18, 2014
  */
 
-#include "rgbd/camera/DepthCameraCalibrator.h"
+#include "rgbd/camera/DS325Calibrator.h"
 
 namespace rgbd {
 
-DepthCameraCalibrator::DepthCameraCalibrator(std::shared_ptr<DepthCamera> camera,
+DS325Calibrator::DS325Calibrator(std::shared_ptr<DS325> camera,
                                    const std::string& file):
         _camera(camera) {
     cv::Mat cameraMatrix;
@@ -19,54 +19,54 @@ DepthCameraCalibrator::DepthCameraCalibrator(std::shared_ptr<DepthCamera> camera
         fs["cameraMatrix"] >> cameraMatrix;
         fs["distCoeffs"] >> distCoeffs;
 
-        std::cerr << "DepthCameraCalibrator: cameraMatrix = " << std::endl;
+        std::cerr << "DS325Calibrator: cameraMatrix = " << std::endl;
         std::cout << cameraMatrix << std::endl;
-        std::cerr << "DepthCameraCalibrator: distCoeffs = " << std::endl;
+        std::cerr << "DS325Calibrator: distCoeffs = " << std::endl;
         std::cout << distCoeffs << std::endl;
 
         cv::initUndistortRectifyMap(cameraMatrix, distCoeffs, cv::Mat(), cameraMatrix,
                                     camera->colorSize(), CV_16SC2,
                                     _rectifyMaps[0], _rectifyMaps[1]);
 
-        std::cout << "DepthCameraCalibrator: undistorted" << std::endl;
+        std::cout << "DS325Calibrator: undistorted" << std::endl;
         fs.release();
     } else {
-        std::cerr << "DepthCameraCalibrator: cannot open file" << std::endl;
+        std::cerr << "DS325Calibrator: cannot open file" << std::endl;
         std::exit(-1);
     }
 }
 
-DepthCameraCalibrator::~DepthCameraCalibrator() {
+DS325Calibrator::~DS325Calibrator() {
 }
 
-cv::Size DepthCameraCalibrator::colorSize() const {
+cv::Size DS325Calibrator::colorSize() const {
     return _camera->colorSize();
 }
 
-void DepthCameraCalibrator::start() {
+void DS325Calibrator::start() {
     _camera->start();
 }
 
-void DepthCameraCalibrator::captureColor(cv::Mat& buffer) {
+void DS325Calibrator::captureColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
     cv::remap(buffer, buffer, _rectifyMaps[0], _rectifyMaps[1], CV_INTER_LINEAR);
 }
 
-void DepthCameraCalibrator::captureRawColor(cv::Mat& buffer) {
+void DS325Calibrator::captureRawColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
 }
 
-void DepthCameraCalibrator::captureDepth(cv::Mat& buffer) {
+void DS325Calibrator::captureDepth(cv::Mat& buffer) {
 }
 
-void DepthCameraCalibrator::captureRawDepth(cv::Mat& buffer) {
+void DS325Calibrator::captureRawDepth(cv::Mat& buffer) {
     _camera->captureDepth(buffer);
 }
 
-void DepthCameraCalibrator::captureAmplitude(cv::Mat& buffer) {
+void DS325Calibrator::captureAmplitude(cv::Mat& buffer) {
 }
 
-void DepthCameraCalibrator::captureRawAmplitude(cv::Mat& buffer) {
+void DS325Calibrator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
 }
 
