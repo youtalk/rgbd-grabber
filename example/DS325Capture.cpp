@@ -45,6 +45,8 @@ int main(int argc, char *argv[]) {
         cv::Mat d, a;
         depth.convertTo(d, CV_8U, 255.0 / 1000.0);
         amplitude.convertTo(a, CV_8U, 255.0 / 1000.0);
+        cv::resize(d, d, camera->colorSize());
+        cv::resize(a, a, camera->colorSize());
 
         cv::imshow("Depth", d);
         cv::imshow("Amplitude", a);
