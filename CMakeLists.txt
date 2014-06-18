@@ -36,7 +36,7 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.5.0")
+SET(VERSION "0.5.1")
 SET(SOVERSION "0.5")
 
 SET(SRC
@@ -44,7 +44,7 @@ SET(SRC
   src/camera/CameraCalibrator.cpp)
 
 SET(SRC_DS
-  src/camera/DS325.cpp)
+  src/camera/DS325.cpp src/camera/DS325Calibrator.cpp)
 
 SET(SRC_PMD
   src/camera/PMDNano.cpp)
@@ -75,7 +75,7 @@ IF(USE_DS)
   ADD_LIBRARY(rgbd-grabber-ds SHARED ${SRC_DS})
   TARGET_LINK_LIBRARIES(rgbd-grabber-ds ${LIB})
   SET_TARGET_PROPERTIES(rgbd-grabber-ds PROPERTIES VERSION ${VERSION} SOVERSION ${SOVERSION})
-  ADD_EXECUTABLE(DS325Capture example/DS325Capture.cpp src/camera/DS325Calibrator.cpp)
+  ADD_EXECUTABLE(DS325Capture example/DS325Capture.cpp)
   ADD_DEPENDENCIES(DS325Capture ${SRC} ${SRC_DS})
   TARGET_LINK_LIBRARIES(DS325Capture ${LIB} rgbd-grabber-ds DepthSense DepthSensePlugins)
   INSTALL(TARGETS rgbd-grabber-ds LIBRARY DESTINATION lib)
