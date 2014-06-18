@@ -9,7 +9,8 @@
 namespace rgbd {
 
 DS325Calibration::DS325Calibration(const std::string& params) :
-        _csize(640, 480) {
+        _csize(640, 480),
+        _dsize(320, 240) {
     loadParameters(params);
 }
 
@@ -39,7 +40,7 @@ void DS325Calibration::calibrateDepth(cv::Mat& source, cv::Mat& result) {
     cv::resize(cropped, cropped, _csize);
     cv::Mat temp;
     cv::remap(cropped, temp, _rectifyMaps[1][0], _rectifyMaps[1][1], CV_INTER_LINEAR);
-    cv::resize(temp(validRoi[1]), result, _csize);
+    cv::resize(temp(validRoi[1]), result, _dsize);
 }
 
 void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
@@ -50,7 +51,7 @@ void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
     cv::resize(cropped, cropped, _csize);
     cv::Mat temp;
     cv::remap(cropped, temp, _rectifyMaps[1][0], _rectifyMaps[1][1], CV_INTER_LINEAR);
-    cv::resize(temp(validRoi[1]), result, _csize);
+    cv::resize(temp(validRoi[1]), result, _dsize);
 }
 
 void DS325Calibration::loadParameters(const std::string& params) {
@@ -81,7 +82,7 @@ void DS325Calibration::loadParameters(const std::string& params) {
 
         fs.release();
     } else {
-        std::cout << "Error: can not save the extrinsic parameters\n";
+        std::cerr << "DS325Calibration: can not save the extrinsic parameters\n";
         std::exit(-1);
     }
 
@@ -95,6 +96,10 @@ DS325Calibrator::DS325Calibrator(std::shared_ptr<DS325> camera,
                                    const std::string& file):
         _camera(camera),
         _calib(file) {
+    if (_camera->colorSize().width != _camera->depthSize().width * 2 ||
+        _camera->colorSize().height != _camera->depthSize().height * 2) {
+        throw UnsupportedException("color size != depth size * 2");
+    }
 }
 
 DS325Calibrator::~DS325Calibrator() {
@@ -102,6 +107,10 @@ DS325Calibrator::~DS325Calibrator() {
 
 cv::Size DS325Calibrator::colorSize() const {
     return _camera->colorSize();
+}
+
+cv::Size DS325Calibrator::depthSize() const {
+    return _camera->depthSize();
 }
 
 void DS325Calibrator::start() {
@@ -133,6 +142,10 @@ void DS325Calibrator::captureAmplitude(cv::Mat& buffer) {
 
 void DS325Calibrator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
+}
+
+void DS325Calibrator::captureVertex(PointXYZVector& buffer) {
+    _camera->captureVertex(buffer);
 }
 
 }

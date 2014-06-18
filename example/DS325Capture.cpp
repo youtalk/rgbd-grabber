@@ -10,6 +10,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/visualization/cloud_viewer.h>
 #include "rgbd/camera/DS325.h"
+#include "rgbd/camera/DS325Calibrator.h"
 
 using namespace rgbd;
 
@@ -17,7 +18,10 @@ int main(int argc, char *argv[]) {
     if (argc < 2)
         return -1;
 
-    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1])));
+//    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1])));
+    std::shared_ptr<DepthCamera> camera(new DS325Calibrator(
+            std::shared_ptr<DS325>(new DS325(
+                    std::atoi(argv[1]), FRAME_FORMAT_VGA)), argv[2]));
     camera->start();
 
     cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_16U);

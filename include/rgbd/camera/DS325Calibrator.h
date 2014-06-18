@@ -28,6 +28,8 @@ public:
 private:
     cv::Size _csize;
 
+    cv::Size _dsize;
+
     cv::Mat cameraMatrix[2], distCoeffs[2];
 
     cv::Mat R, T, R1, R2, P1, P2, Q, F;
@@ -47,6 +49,8 @@ public:
 
     virtual cv::Size colorSize() const;
 
+    virtual cv::Size depthSize() const;
+
     virtual void start();
 
     virtual void captureColor(cv::Mat& buffer);
@@ -60,6 +64,8 @@ public:
     virtual void captureAmplitude(cv::Mat& buffer);
 
     virtual void captureRawAmplitude(cv::Mat& buffer);
+
+    virtual void captureVertex(PointXYZVector& buffer);
 
 private:
     std::shared_ptr<DS325> _camera;
