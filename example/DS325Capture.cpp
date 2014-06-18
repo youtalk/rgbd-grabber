@@ -15,7 +15,7 @@
 using namespace rgbd;
 
 int main(int argc, char *argv[]) {
-    if (argc < 2)
+    if (argc < 3)
         return -1;
 
 //    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1])));
