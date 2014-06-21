@@ -24,11 +24,13 @@ $ bin/UVCameraCapture 0
 ~~~
 
 ### Creative Senz3D / SoftKinetic DS325
-See also the example of calibration data `data/ds325-calib-example.yml` for a DS325 camera.
+See also the example of parameters `data/ds325-streo-params.xml` for a DS325 camera.
 ~~~ sh
 $ cmake -DUSE_DS=ON .
 $ make
-$ bin/DS325Capture 0 data/ds325-calib-example.yml
+$ bin/DS325GetCalibrationData
+$ bin/DS325Calibration
+$ bin/DS325Capture 0 /path/to/params.xml
 ~~~
 
 ### pmd CamBoard nano
@@ -39,7 +41,7 @@ $ bin/PMDNanoCapture /path/to/camboardnano.L64.pap /path/to/camboardnanoproc.L64
 ~~~
 
 ### iDS uEye LE
-See also the examples of configuration file `data/ueye-conf-example.ini` and calibration data `data/ueye-calib-example.ini` for an uEye camera.
+See also the examples of configuration file `data/ueye-conf.ini` and calibration data `data/ueye-calib.ini` for an uEye camera.
 ~~~ sh
 $ cmake -DUSE_UEYE=ON .
 $ make
