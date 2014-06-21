@@ -12,11 +12,11 @@
 
 using namespace google;
 
-DEFINE_string(camera, "0", "camera id");
+DEFINE_int32(camera, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(depth, "depth_", "depth file prefix");
 DEFINE_string(color, "color_", "color file prefix");
-DEFINE_string(type, ".png", "file type");
+DEFINE_string(suffix, ".png", "file suffix");
 
 void findChessboards(cv::Mat& color, cv::Mat& amplitude) {
     #define MAX_DEPTH 1000
@@ -44,8 +44,8 @@ void findChessboards(cv::Mat& color, cv::Mat& amplitude) {
                 CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE)) {
         if (cv::waitKey(1) == 't') {
             std::stringstream cs, as;
-            cs << FLAGS_dir << "/" << FLAGS_color << imageNum << FLAGS_type;
-            as << FLAGS_dir << "/" << FLAGS_depth << imageNum << FLAGS_type;
+            cs << FLAGS_dir << "/" << FLAGS_color << imageNum << FLAGS_suffix;
+            as << FLAGS_dir << "/" << FLAGS_depth << imageNum << FLAGS_suffix;
 
             cv::imwrite(cs.str(), color);
             cv::imwrite(as.str(), amplitude);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
     ParseCommandLineFlags(&argc, &argv, true);
 
     std::shared_ptr<rgbd::DepthCamera> camera(
-            new rgbd::DS325(std::atoi(FLAGS_camera.c_str()), FRAME_FORMAT_VGA));
+            new rgbd::DS325(FLAGS_camera, FRAME_FORMAT_VGA));
     camera->start();
 
     std::string execstr = "mkdir -p " + FLAGS_dir;
@@ -81,6 +81,9 @@ int main(int argc, char* argv[]) {
     cv::Mat color(camera->colorSize(), CV_8UC3);
     cv::Mat amplitude(camera->depthSize(), CV_16UC1);
 
+    cv::namedWindow("color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+    cv::namedWindow("depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+
     while (cv::waitKey(10) != 0x1b) {
         camera->captureColor(color);
         camera->captureAmplitude(amplitude);
@@ -88,6 +91,7 @@ int main(int argc, char* argv[]) {
         findChessboards(color, amplitude);
     }
 
+    cv::destroyAllWindows();
     return 0;
 }
 
