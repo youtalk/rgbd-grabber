@@ -19,38 +19,48 @@ int main(int argc, char *argv[]) {
         return -1;
 
 //    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1])));
-    std::shared_ptr<DepthCamera> camera(new DS325Calibrator(
+    std::shared_ptr<DS325Calibrator> camera(new DS325Calibrator(
             std::shared_ptr<DS325>(new DS325(
                     std::atoi(argv[1]), FRAME_FORMAT_VGA)), argv[2]));
     camera->start();
 
     cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_16U);
+    cv::Mat draw = cv::Mat::zeros(camera->depthSize(), CV_16U);
     cv::Mat amplitude = cv::Mat::zeros(camera->depthSize(), CV_16U);
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
+    cv::Mat craw = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
     cloud->points.resize(camera->depthSize().width * camera->depthSize().height);
 
     cv::namedWindow("Depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+    cv::namedWindow("Raw depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     cv::namedWindow("Amplitude", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     cv::namedWindow("Color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+    cv::namedWindow("Raw color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
     while (cv::waitKey(10) != 0x1b) {
         camera->captureDepth(depth);
+        camera->captureRawDepth(draw);
         camera->captureAmplitude(amplitude);
         camera->captureColor(color);
+        camera->captureRawColor(craw);
         camera->captureVertex(cloud->points);
 
-        cv::Mat d, a;
+        cv::Mat d, a, r;
         depth.convertTo(d, CV_8U, 255.0 / 1000.0);
         amplitude.convertTo(a, CV_8U, 255.0 / 1000.0);
+        draw.convertTo(r, CV_8U, 255.0 / 1000.0);
         cv::resize(d, d, camera->colorSize());
         cv::resize(a, a, camera->colorSize());
+        cv::resize(r, r, camera->colorSize());
 
         cv::imshow("Depth", d);
+        cv::imshow("Raw depth", r);
         cv::imshow("Amplitude", a);
         cv::imshow("Color", color);
+        cv::imshow("Raw color", craw);
         viewer->showCloud(cloud);
     }
 
