@@ -41,7 +41,7 @@ $ bin/PMDNanoCapture /path/to/camboardnano.L64.pap /path/to/camboardnanoproc.L64
 ~~~
 
 ### iDS uEye LE
-See also the examples of configuration file `data/ueye-conf.ini` and calibration data `data/ueye-calib.ini` for an uEye camera.
+See also the examples of configuration file `data/ueye-conf.ini` and calibration data `data/ueye-calib.xml` for an uEye camera.
 ~~~ sh
 $ cmake -DUSE_UEYE=ON .
 $ make
