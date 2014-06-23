@@ -10,7 +10,7 @@
 #include <gflags/gflags.h>
 #include "rgbd/camera/DS325.h"
 
-using namespace google;
+using namespace gflags;
 
 DEFINE_int32(camera, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
