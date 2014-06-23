@@ -26,17 +26,16 @@ void ColorCalibrator::start() {
 }
 
 void ColorCalibrator::setGrayImage(cv::Mat& gray) {
-    cv::Mat color = cv::Mat::zeros(colorSize(), CV_8UC3);
     std::vector<cv::Mat> bgr;
-    cv::split(color, bgr);
+    cv::split(gray, bgr);
 
     double rsum = 0.0;
     double bsum = 0.0;
 
     for (size_t y = 0; y < gray.rows; y++) {
         for (size_t x = 0; x < gray.cols; x++) {
-            rsum += bgr[1].at<float>(y, x) / bgr[2].at<float>(y, x);
-            bsum += bgr[1].at<float>(y, x) / bgr[0].at<float>(y, x);
+            rsum += (double) bgr[1].at<uint8_t>(y, x) / bgr[2].at<uint8_t>(y, x);
+            bsum += (double) bgr[1].at<uint8_t>(y, x) / bgr[0].at<uint8_t>(y, x);
         }
     }
 

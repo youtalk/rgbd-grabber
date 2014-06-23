@@ -70,14 +70,14 @@ void DS325Calibration::loadParameters(const std::string& params) {
         fs["P1"] >> P1;
         fs["P2"] >> P2;
         fs["Q"] >> Q;
-        cv::Mat_<int> vroiMat;
-        fs["validROI"] >> vroiMat;
+        cv::Mat_<int> roi;
+        fs["validROI"] >> roi;
 
         for (int i = 0; i < 2; ++i) {
-            validROI[i].x = vroiMat.at<int>(i, 0);
-            validROI[i].y = vroiMat.at<int>(i, 1);
-            validROI[i].width = vroiMat.at<int>(i, 2);
-            validROI[i].height = vroiMat.at<int>(i, 3);
+            validROI[i].x = roi.at<int>(i, 0);
+            validROI[i].y = roi.at<int>(i, 1);
+            validROI[i].width = roi.at<int>(i, 2);
+            validROI[i].height = roi.at<int>(i, 3);
         }
 
         fs.release();
