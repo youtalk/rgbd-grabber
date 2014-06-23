@@ -36,7 +36,7 @@ private:
 
     cv::Mat _rectifyMaps[2][2];
 
-    cv::Rect validRoi[2];
+    cv::Rect validROI[2];
 
     void loadParameters(const std::string& params);
 };

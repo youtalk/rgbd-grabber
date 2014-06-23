@@ -21,7 +21,7 @@ void DS325Calibration::calibrateColor(cv::Mat& source, cv::Mat& result) {
     cv::Mat temp;
 
     cv::remap(source, temp, _rectifyMaps[0][0], _rectifyMaps[0][1], CV_INTER_LINEAR);
-    cv::resize(temp(validRoi[0]), result, _csize);
+    cv::resize(temp(validROI[0]), result, _csize);
 }
 
 void DS325Calibration::calibrateDepth(cv::Mat& source, cv::Mat& result) {
@@ -40,7 +40,7 @@ void DS325Calibration::calibrateDepth(cv::Mat& source, cv::Mat& result) {
     cv::resize(cropped, cropped, _csize);
     cv::Mat temp;
     cv::remap(cropped, temp, _rectifyMaps[1][0], _rectifyMaps[1][1], CV_INTER_LINEAR);
-    cv::resize(temp(validRoi[1]), result, _dsize);
+    cv::resize(temp(validROI[1]), result, _dsize);
 }
 
 void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
@@ -51,7 +51,7 @@ void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
     cv::resize(cropped, cropped, _csize);
     cv::Mat temp;
     cv::remap(cropped, temp, _rectifyMaps[1][0], _rectifyMaps[1][1], CV_INTER_LINEAR);
-    cv::resize(temp(validRoi[1]), result, _dsize);
+    cv::resize(temp(validROI[1]), result, _dsize);
 }
 
 void DS325Calibration::loadParameters(const std::string& params) {
@@ -71,13 +71,13 @@ void DS325Calibration::loadParameters(const std::string& params) {
         fs["P2"] >> P2;
         fs["Q"] >> Q;
         cv::Mat_<int> vroiMat;
-        fs["vroi"] >> vroiMat;
+        fs["validROI"] >> vroiMat;
 
         for (int i = 0; i < 2; ++i) {
-            validRoi[i].x = vroiMat.at<int>(i, 0);
-            validRoi[i].y = vroiMat.at<int>(i, 1);
-            validRoi[i].width = vroiMat.at<int>(i, 2);
-            validRoi[i].height = vroiMat.at<int>(i, 3);
+            validROI[i].x = vroiMat.at<int>(i, 0);
+            validROI[i].y = vroiMat.at<int>(i, 1);
+            validROI[i].width = vroiMat.at<int>(i, 2);
+            validROI[i].height = vroiMat.at<int>(i, 3);
         }
 
         fs.release();

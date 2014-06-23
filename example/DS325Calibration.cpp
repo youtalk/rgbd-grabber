@@ -12,15 +12,6 @@
 
 using namespace google;
 
-void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depthes,
-                const int &fileNum);
-int findChessboard(
-        cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depthes,
-        cv::vector<cv::vector<cv::vector<cv::Point2f> > > &imagePoints,
-        const cv::Size patternSize, const int &fileNum);
-void setWorldPoints(cv::vector<cv::vector<cv::Point3f> > &worldPoints,
-                    const cv::Size patternSize, const int &fileNum);
-
 DEFINE_int32(camera, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(depth, "depth_", "depth file prefix");
@@ -28,12 +19,10 @@ DEFINE_string(color, "color_", "color file prefix");
 DEFINE_string(suffix, ".png", "file suffix");
 DEFINE_int32(number, 1, "number of files");
 
-double g_squareSize = 250.0;
-
-void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depthes,
+void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
                 const int &fileNum) {
     colors.clear();
-    depthes.clear();
+    depths.clear();
 
     for (int i = 0; i < fileNum; ++i) {
         std::stringstream colorFile, depthFile;
@@ -46,19 +35,19 @@ void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depthes,
 
         cv::Mat depth = cv::imread(depthFile.str(), CV_LOAD_IMAGE_ANYDEPTH);
         depth.convertTo(depth, CV_8U, 255.0 / 1000.0);
-        cv::resize(depth, depth, cv::Size(), 2.0, 2.0);
+        cv::resize(depth, depth, color.size());
         cv::Mat roi;
-        cv::resize(depth(cv::Rect(40, 43, 498, 498 / 4 * 3)), roi, color.size());
-        depthes.push_back(roi);
+        cv::resize(depth(cv::Rect(40, 43, 498, 498 / 4 * 3)), roi, color.size()); // TODO
+        depths.push_back(roi);
 
         cv::imshow("color", colors[i]);
-        cv::imshow("depth", depthes[i]);
+        cv::imshow("depth", depths[i]);
         cv::waitKey(100);
     }
 }
 
 int findChessboard(
-        cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depthes,
+        cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
         cv::vector<cv::vector<cv::vector<cv::Point2f>>> &imagePoints,
         const cv::Size patternSize, const int &fileNum) {
     for (int i = 0; i < colors.size(); ++i) {
@@ -67,7 +56,7 @@ int findChessboard(
                 colors[i], patternSize, imagePoints[0][i],
                 CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE) &&
             cv::findChessboardCorners(
-                depthes[i], patternSize, imagePoints[1][i],
+                depths[i], patternSize, imagePoints[1][i],
                 CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE)) {
 
             cv::cornerSubPix(
@@ -75,20 +64,20 @@ int findChessboard(
                     cv::Size(11, 11), cv::Size(-1, -1),
                     cv::TermCriteria(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, 30, 0.01));
             cv::cornerSubPix(
-                    depthes[i], imagePoints[1][i],
+                    depths[i], imagePoints[1][i],
                     cv::Size(11, 11), cv::Size(-1, -1),
                     cv::TermCriteria(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, 30, 0.01));
 
             cv::drawChessboardCorners(colors[i], patternSize,
                                       (cv::Mat)(imagePoints[0][i]), true);
-            cv::drawChessboardCorners(depthes[i], patternSize,
+            cv::drawChessboardCorners(depths[i], patternSize,
                                       (cv::Mat)(imagePoints[1][i]), true);
             cv::imshow("color", colors[i]);
-            cv::imshow("depth", depthes[i]);
+            cv::imshow("depth", depths[i]);
         } else {
             std::cout << "cannot find all corners" << std::endl;
             colors.erase(colors.begin() + i);
-            depthes.erase(depthes.begin() + i);
+            depths.erase(depths.begin() + i);
             imagePoints[0].erase(imagePoints[0].begin() + i);
             imagePoints[1].erase(imagePoints[1].begin() + i);
             std::cout << colors.size() << std::endl;
@@ -102,7 +91,8 @@ int findChessboard(
 }
 
 void setWorldPoints(cv::vector<cv::vector<cv::Point3f>> &worldPoints,
-                    const cv::Size patternSize, const int &fileNum) {
+                    const cv::Size patternSize, double squareSize,
+                    const int &fileNum) {
     worldPoints.clear();
     worldPoints.resize(fileNum);
 
@@ -110,38 +100,35 @@ void setWorldPoints(cv::vector<cv::vector<cv::Point3f>> &worldPoints,
         for (int j = 0; j < patternSize.height; j++)
             for (int k = 0; k < patternSize.width; k++)
                 worldPoints[i].push_back(
-                        cv::Point3f(k * g_squareSize, j * g_squareSize, 0));
+                        cv::Point3f(k * squareSize, j * squareSize, 0));
     }
 }
 
 int main(int argc, char *argv[]) {
     ParseCommandLineFlags(&argc, &argv, true);
 
-    cv::vector<cv::Mat> colors(0), depthes(0);
-    int numFile = FLAGS_number;
-    const cv::Size patternSize(9, 6);
-    cv::vector<cv::vector<cv::Point3f> > worldPoints;
-    cv::vector<cv::vector<cv::vector<cv::Point2f> > > imagePoints(2);
-    cv::TermCriteria criteria( CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.001);
-
-    for (int i = 0; i < 2; ++i)
-        imagePoints[i].resize(numFile);
-
-    cv::vector<cv::Mat> cameraMatrix(2);
-    cv::vector<cv::Mat> distCoeffs(2);
-    cv::vector<cv::Mat> rotationVectors(2);
-    cv::vector<cv::Mat> translationVectors(2);
-
     cv::namedWindow("color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     cv::namedWindow("depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
-    loadImages(colors, depthes, FLAGS_number);
-    numFile = findChessboard(colors, depthes, imagePoints, patternSize, numFile);
+    cv::vector<cv::Mat> colors(0), depths(0);
+    int numFile = FLAGS_number;
+    const cv::Size patternSize(9, 6);
+    cv::vector<cv::vector<cv::Point3f>> worldPoints;
+    cv::vector<cv::vector<cv::vector<cv::Point2f>>> imagePoints(2);
+    cv::TermCriteria criteria(CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.001);
+
+    for (size_t i = 0; i < 2; i++)
+        imagePoints[i].resize(numFile);
+
+    loadImages(colors, depths, FLAGS_number);
+    numFile = findChessboard(colors, depths, imagePoints, patternSize, numFile);
 
     std::cout << "number of correct files:" << numFile << std::endl;
-    setWorldPoints(worldPoints, patternSize, numFile);
+    setWorldPoints(worldPoints, patternSize, 24.0, numFile);
 
     std::cout << "calibrate streo cameras" << std::endl;
+    cv::vector<cv::Mat> cameraMatrix(2);
+    cv::vector<cv::Mat> distCoeffs(2);
     cameraMatrix[0] = cv::Mat::eye(3, 3, CV_64FC1);
     cameraMatrix[1] = cv::Mat::eye(3, 3, CV_64FC1);
     distCoeffs[0] = cv::Mat(8, 1, CV_64FC1);
@@ -236,14 +223,14 @@ int main(int argc, char *argv[]) {
     cv::waitKey(0);
 
     cv::Mat R1, R2, P1, P2, Q;
-    cv::Rect validRoi[2];
+    cv::Rect validROI[2];
 
     stereoRectify(cameraMatrix[0], distCoeffs[0], cameraMatrix[1],
                   distCoeffs[1], colors[0].size(), R, T, R1, R2, P1, P2, Q,
-                  cv::CALIB_ZERO_DISPARITY, 1, colors[0].size(), &validRoi[0],
-                  &validRoi[1]);
+                  cv::CALIB_ZERO_DISPARITY, 1, colors[0].size(), &validROI[0],
+                  &validROI[1]);
 
-    std::cout << "valid ROI: " << validRoi[0] << " " << validRoi[1] << std::endl;
+    std::cout << "valid ROI: " << validROI[0] << " " << validROI[1] << std::endl;
 
     cv::vector<cv::Point2f> allimgpt[2];
     for (int k = 0; k < 2; k++) {
@@ -274,12 +261,12 @@ int main(int argc, char *argv[]) {
                                 CV_16SC2,
                                 rmap[1][0], rmap[1][1]);
 
-    cv::Mat_<int> vroiMat(2, 4);
+    cv::Mat_<int> validROIMat(2, 4);
     for (int i = 0; i < 2; ++i) {
-        vroiMat.at<int>(i, 0) = validRoi[i].x;
-        vroiMat.at<int>(i, 1) = validRoi[i].y;
-        vroiMat.at<int>(i, 2) = validRoi[i].width;
-        vroiMat.at<int>(i, 3) = validRoi[i].height;
+        validROIMat.at<int>(i, 0) = validROI[i].x;
+        validROIMat.at<int>(i, 1) = validROI[i].y;
+        validROIMat.at<int>(i, 2) = validROI[i].width;
+        validROIMat.at<int>(i, 3) = validROI[i].height;
     }
 
     cv::FileStorage fs("streo-params.xml", CV_STORAGE_WRITE);
@@ -287,7 +274,7 @@ int main(int argc, char *argv[]) {
         fs << "M1" << cameraMatrix[0] << "D1" << distCoeffs[0] << "M2"
            << cameraMatrix[1] << "D2" << distCoeffs[1];
         fs << "R" << R << "T" << T << "R1" << R1 << "R2" << R2 << "P1" << P1
-           << "P2" << P2 << "Q" << Q << "vroi" << vroiMat;
+           << "P2" << P2 << "Q" << Q << "validROI" << validROIMat;
         fs.release();
     }
 
@@ -315,7 +302,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "check quality" << std::endl;
-    loadImages(colors, depthes, FLAGS_number);
+    loadImages(colors, depths, FLAGS_number);
 
     cv::Mat canvas;
     double sf;
@@ -340,24 +327,24 @@ int main(int argc, char *argv[]) {
                 cv::resize(cimg, canvasPart, canvasPart.size(), 0, 0,
                            CV_INTER_AREA);
 
-                cv::Rect vroi(cvRound(validRoi[k].x * sf),
-                              cvRound(validRoi[k].y * sf),
-                              cvRound(validRoi[k].width * sf),
-                              cvRound(validRoi[k].height * sf));
+                cv::Rect vroi(cvRound(validROI[k].x * sf),
+                              cvRound(validROI[k].y * sf),
+                              cvRound(validROI[k].width * sf),
+                              cvRound(validROI[k].height * sf));
                 cv::rectangle(canvasPart, vroi, cv::Scalar(0, 0, 255), 3, 8);
 
             } else {
-                cv::Mat img = depthes[i].clone(), rimg, cimg;
+                cv::Mat img = depths[i].clone(), rimg, cimg;
                 cv::remap(img, rimg, rmap[k][0], rmap[k][1], CV_INTER_LINEAR);
                 cvtColor(rimg, cimg, CV_GRAY2BGR);
                 cv::Mat canvasPart = canvas(cv::Rect(w * k, 0, w, h));
                 cv::resize(cimg, canvasPart, canvasPart.size(), 0, 0,
                            CV_INTER_AREA);
 
-                cv::Rect vroi(cvRound(validRoi[k].x * sf),
-                              cvRound(validRoi[k].y * sf),
-                              cvRound(validRoi[k].width * sf),
-                              cvRound(validRoi[k].height * sf));
+                cv::Rect vroi(cvRound(validROI[k].x * sf),
+                              cvRound(validROI[k].y * sf),
+                              cvRound(validROI[k].width * sf),
+                              cvRound(validROI[k].height * sf));
                 cv::rectangle(canvasPart, vroi, cv::Scalar(0, 0, 255), 3, 8);
 
             }

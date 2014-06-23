@@ -84,10 +84,10 @@
   <data>
     1. 0. 0. -3.2710087585449219e+02 0. 1. 0. -2.4587077713012695e+02 0.
     0. 0. 5.1334734139931356e+02 0. 0. 3.7137276606971437e-03 0.</data></Q>
-<vroi type_id="opencv-matrix">
+<validROI type_id="opencv-matrix">
   <rows>2</rows>
   <cols>4</cols>
   <dt>i</dt>
   <data>
-    79 47 528 395 17 30 567 414</data></vroi>
+    79 47 528 395 17 30 567 414</data></validROI>
 </opencv_storage>
