@@ -35,7 +35,8 @@ void UEye::start() {
 void UEye::captureColor(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(_mutex);
 
-    const char* data = _driver.processNextFrame(33);
+    // Wait for up to 1000ms to capture next frame.
+    const char* data = _driver.processNextFrame(1000);
     std::memcpy(buffer.data, data,
                 3 * sizeof (uchar) * _size.width * _size.height);
 }

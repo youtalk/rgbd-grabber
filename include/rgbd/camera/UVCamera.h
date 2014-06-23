@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <iostream>
 #include <cstdlib>
 #include <unistd.h>
 #include <boost/thread/thread.hpp>
