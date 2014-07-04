@@ -54,12 +54,4 @@ void DepthCamera::captureColoredVertex(PointXYZRGBVector& buffer) {
     throw new UnsupportedException("captureColoredVertex");
 }
 
-void DepthCamera::captureAudio(std::vector<uchar>& buffer) {
-    throw new UnsupportedException("captureAudio");
-}
-
-void DepthCamera::captureAcceleration(cv::Point3f& acc) {
-    throw new UnsupportedException("captureAcceleration");
-}
-
 }

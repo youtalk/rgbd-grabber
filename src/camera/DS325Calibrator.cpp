@@ -94,7 +94,7 @@ void DS325Calibration::loadParameters(const std::string& params) {
 
 DS325Calibrator::DS325Calibrator(std::shared_ptr<DS325> camera,
                                    const std::string& file):
-        _camera(camera),
+        DepthCameraCalibrator(camera),
         _calib(file) {
     if (_camera->colorSize().width != _camera->depthSize().width * 2 ||
         _camera->colorSize().height != _camera->depthSize().height * 2) {
@@ -105,25 +105,9 @@ DS325Calibrator::DS325Calibrator(std::shared_ptr<DS325> camera,
 DS325Calibrator::~DS325Calibrator() {
 }
 
-cv::Size DS325Calibrator::colorSize() const {
-    return _camera->colorSize();
-}
-
-cv::Size DS325Calibrator::depthSize() const {
-    return _camera->depthSize();
-}
-
-void DS325Calibrator::start() {
-    _camera->start();
-}
-
 void DS325Calibrator::captureColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
     _calib.calibrateColor(buffer, buffer);
-}
-
-void DS325Calibrator::captureRawColor(cv::Mat& buffer) {
-    _camera->captureColor(buffer);
 }
 
 void DS325Calibrator::captureDepth(cv::Mat& buffer) {
@@ -131,17 +115,9 @@ void DS325Calibrator::captureDepth(cv::Mat& buffer) {
     _calib.calibrateDepth(buffer, buffer);
 }
 
-void DS325Calibrator::captureRawDepth(cv::Mat& buffer) {
-    _camera->captureDepth(buffer);
-}
-
 void DS325Calibrator::captureAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
     _calib.calibrateAmplitude(buffer, buffer);
-}
-
-void DS325Calibrator::captureRawAmplitude(cv::Mat& buffer) {
-    _camera->captureAmplitude(buffer);
 }
 
 void DS325Calibrator::captureVertex(PointXYZVector& buffer) {

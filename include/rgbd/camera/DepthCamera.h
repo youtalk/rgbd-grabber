@@ -76,21 +76,6 @@ public:
      */
     virtual void captureColoredVertex(PointXYZRGBVector& buffer);
 
-    /**
-     * Copy the latest audio data to the buffer.
-     * Note that the buffer must be allocated in advance.
-     *
-     * @param buffer Returned value of uchar
-     */
-    virtual void captureAudio(std::vector<uchar>& buffer);
-
-    /**
-     * Copy the latest acceleration data to the buffer.
-     *
-     * @param buffer Returned 3D data of cv::Point3f
-     */
-    virtual void captureAcceleration(cv::Point3f& acc);
-
 private:
     std::shared_ptr<Camera> _camera;
 };

@@ -41,7 +41,8 @@ SET(SOVERSION "0.7")
 
 SET(SRC
   src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp
-  src/camera/CameraCalibrator.cpp src/camera/ColorCalibrator.cpp src/camera/CameraRotator.cpp)
+  src/camera/CameraCalibrator.cpp src/camera/DepthCameraCalibrator.cpp
+  src/camera/ColorCalibrator.cpp src/camera/CameraRotator.cpp)
 
 SET(SRC_DS
   src/camera/DS325.cpp src/camera/DS325Calibrator.cpp)
