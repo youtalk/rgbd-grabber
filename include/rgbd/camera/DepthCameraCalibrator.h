@@ -10,7 +10,7 @@
 
 namespace rgbd {
 
-class DepthCameraCalibrator: rgbd::DepthCamera {
+class DepthCameraCalibrator: public DepthCamera {
 public:
     DepthCameraCalibrator(std::shared_ptr<DepthCamera> camera);
 

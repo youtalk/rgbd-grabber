@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         return -1;
 
 //    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1])));
-    std::shared_ptr<DS325Calibrator> camera(new DS325Calibrator(
+    std::shared_ptr<DepthCameraCalibrator> camera(new DS325Calibrator(
             std::shared_ptr<DS325>(new DS325(
                     std::atoi(argv[1]), FRAME_FORMAT_VGA)), argv[2]));
     camera->start();
