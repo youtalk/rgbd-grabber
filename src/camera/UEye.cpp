@@ -8,8 +8,11 @@
 
 namespace rgbd {
 
-UEye::UEye(const uint deviceNo, const std::string& file) :
-        _deviceNo(deviceNo), _driver(deviceNo, "uEye"), _size(640, 480) {
+UEye::UEye(const uint deviceNo, const std::string& file,
+           const std::string& name) :
+        _deviceNo(deviceNo),
+        _driver(deviceNo, name),
+        _size(640, 480) {
     if (_driver.connectCam() != IS_SUCCESS) {
         std::cerr << "UEye: failed to initialize UEye camera" << std::endl;
         std::exit(-1);
@@ -36,18 +39,10 @@ void UEye::start() {
 void UEye::captureColor(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(_mutex);
 
-    // Wait for up to 1000ms to capture next frame.
-    const char* data = _driver.processNextFrame(1000);
+    // Wait for up to 10 sec to capture next frame.
+    const char* data = _driver.processNextFrame(10000);
     std::memcpy(buffer.data, data,
                 3 * sizeof (uchar) * _size.width * _size.height);
-}
-
-bool UEye::adjustColorGain(int red, int green, int blue) {
-    bool autoGain = false;
-    int masterGain = 0;
-    bool gainBoost = false;
-    return _driver.setGain(autoGain, masterGain, red, green, blue, gainBoost)
-            == IS_SUCCESS;
 }
 
 }

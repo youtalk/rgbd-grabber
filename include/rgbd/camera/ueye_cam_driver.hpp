@@ -359,6 +359,8 @@ public:
     const static char* err2str(INT error);
 
 protected:
+    static int CAMERA_BUFFER_ID;
+
     INT reallocateCamBuffer();
 
     HIDS cam_handle_;

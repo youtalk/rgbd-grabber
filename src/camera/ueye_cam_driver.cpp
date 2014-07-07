@@ -51,10 +51,12 @@ using namespace std;
 
 namespace ueye_cam {
 
+int UEyeCamDriver::CAMERA_BUFFER_ID = 1;
+
 UEyeCamDriver::UEyeCamDriver(int cam_ID, string cam_name) :
         cam_handle_((HIDS) 0),
         cam_buffer_(NULL),
-        cam_buffer_id_(0),
+        cam_buffer_id_(CAMERA_BUFFER_ID++),
         cam_buffer_pitch_(0),
         cam_buffer_size_(0),
         cam_name_(cam_name),

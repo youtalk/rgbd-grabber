@@ -17,7 +17,8 @@ namespace rgbd {
 
 class UEye: public Camera {
 public:
-    UEye(const uint deviceNo, const std::string& file);
+    UEye(const uint deviceNo, const std::string& file,
+         const std::string& name = "uEye");
 
     virtual ~UEye();
 
@@ -26,8 +27,6 @@ public:
     virtual void start();
 
     virtual void captureColor(cv::Mat& buffer);
-
-    virtual bool adjustColorGain(int read, int green, int blue);
 
 private:
     HIDS _deviceNo;
