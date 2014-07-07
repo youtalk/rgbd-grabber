@@ -17,7 +17,8 @@ namespace rgbd {
 
 class UEye: public Camera {
 public:
-    UEye(const uint deviceNo, const std::string& file);
+    UEye(const uint deviceNo, const std::string& file,
+         const std::string& name = "uEye");
 
     virtual ~UEye();
 
