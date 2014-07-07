@@ -40,12 +40,13 @@ int main(int argc, char *argv[]) {
         camera1->captureColor(color1);
         camera2->captureColor(color2);
 
-        cv::Mat c1, c2;
-        cv::resize(color1, c1, cv::Size(color1.cols / 2, color1.rows / 2));
-        cv::resize(color2, c2, cv::Size(color2.cols / 2, color2.rows / 2));
-
-        cv::imshow("Color left", c1);
-        cv::imshow("Color right", c2);
+//        cv::Mat c1, c2;
+//        cv::resize(color1, c1, cv::Size(color1.cols / 2, color1.rows / 2));
+//        cv::resize(color2, c2, cv::Size(color2.cols / 2, color2.rows / 2));
+//        cv::imshow("Color left", c1);
+//        cv::imshow("Color right", c2);
+        cv::imshow("Color left", color1);
+        cv::imshow("Color right", color2);
     }
 
     return 0;
