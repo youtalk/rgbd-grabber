@@ -85,7 +85,7 @@ std::vector<std::vector<cv::Point2f>> calculateBoardCorners(
 
 std::vector<std::vector<cv::Point3f>> calculateWorldPoints(
         std::vector<std::vector<cv::Point2f>>& imagePoints,
-        const cv::Size& patternSize, size_t checkSize) {
+        const cv::Size& patternSize, float checkSize) {
     std::vector<std::vector<cv::Point3f>> worldPoints(imagePoints.size());
 
     for (size_t i = 0; i < imagePoints.size(); i++) {
@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
     camera->start();
 
     size_t index = 0;
-    const size_t checkSize = 24;
+    float checkSize = 24.0;
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
     cv::namedWindow("Capture", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
