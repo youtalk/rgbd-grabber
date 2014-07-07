@@ -42,12 +42,4 @@ void UEye::captureColor(cv::Mat& buffer) {
                 3 * sizeof (uchar) * _size.width * _size.height);
 }
 
-bool UEye::adjustColorGain(int red, int green, int blue) {
-    bool autoGain = false;
-    int masterGain = 0;
-    bool gainBoost = false;
-    return _driver.setGain(autoGain, masterGain, red, green, blue, gainBoost)
-            == IS_SUCCESS;
-}
-
 }
