@@ -36,8 +36,8 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.8.0")
-SET(SOVERSION "0.8")
+SET(VERSION "0.9.0")
+SET(SOVERSION "0.9")
 
 SET(SRC
   src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp
