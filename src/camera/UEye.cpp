@@ -9,12 +9,13 @@
 namespace rgbd {
 
 UEye::UEye(const uint deviceNo, const std::string& file) :
-        _deviceNo(deviceNo), _driver(deviceNo, "uEye"), _size(752, 480) {
+        _deviceNo(deviceNo), _driver(deviceNo, "uEye"), _size(640, 480) {
     if (_driver.connectCam() != IS_SUCCESS) {
         std::cerr << "UEye: failed to initialize UEye camera" << std::endl;
         std::exit(-1);
     }
     _driver.loadCamConfig(file);
+    _size = _driver.getCameraSize();
 }
 
 UEye::~UEye() {
