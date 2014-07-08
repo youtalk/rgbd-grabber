@@ -8,23 +8,23 @@
 
 namespace rgbd {
 
-DS325Calibration::DS325Calibration(const std::string& params) :
+DS325CalibWorker::DS325CalibWorker(const std::string& params) :
         _csize(640, 480),
         _dsize(320, 240) {
     loadParameters(params);
 }
 
-DS325Calibration::~DS325Calibration() {
+DS325CalibWorker::~DS325CalibWorker() {
 }
 
-void DS325Calibration::calibrateColor(cv::Mat& source, cv::Mat& result) {
+void DS325CalibWorker::calibrateColor(cv::Mat& source, cv::Mat& result) {
     cv::Mat temp;
 
     cv::remap(source, temp, _rectifyMaps[0][0], _rectifyMaps[0][1], CV_INTER_LINEAR);
     cv::resize(temp(validROI[0]), result, _csize);
 }
 
-void DS325Calibration::calibrateDepth(cv::Mat& source, cv::Mat& result) {
+void DS325CalibWorker::calibrateDepth(cv::Mat& source, cv::Mat& result) {
     const uint MAX_DEPTH = 1000;
     const uint MIN_DEPTH = 0;
 
@@ -43,7 +43,7 @@ void DS325Calibration::calibrateDepth(cv::Mat& source, cv::Mat& result) {
     cv::resize(temp(validROI[1]), result, _dsize);
 }
 
-void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
+void DS325CalibWorker::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
     cv::Mat scaled;
     cv::resize(source, scaled, _csize);
 
@@ -54,7 +54,7 @@ void DS325Calibration::calibrateAmplitude(cv::Mat& source, cv::Mat& result) {
     cv::resize(temp(validROI[1]), result, _dsize);
 }
 
-void DS325Calibration::loadParameters(const std::string& params) {
+void DS325CalibWorker::loadParameters(const std::string& params) {
     cv::FileStorage fs(params.c_str(), CV_STORAGE_READ);
 
     if (fs.isOpened()) {

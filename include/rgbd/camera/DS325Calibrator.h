@@ -13,11 +13,11 @@
 
 namespace rgbd {
 
-class DS325Calibration {
+class DS325CalibWorker {
 public:
-    DS325Calibration(const std::string& params);
+    DS325CalibWorker(const std::string& params);
 
-    ~DS325Calibration();
+    ~DS325CalibWorker();
 
     void calibrateColor(cv::Mat &source, cv::Mat &result);
 
@@ -56,7 +56,7 @@ public:
     virtual void captureVertex(PointXYZVector& buffer);
 
 private:
-    DS325Calibration _calib;
+    DS325CalibWorker _calib;
 };
 
 }
