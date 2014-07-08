@@ -24,6 +24,8 @@ public:
 
     cv::Size colorSize() const;
 
+    std::shared_ptr<ueye_cam::UEyeCamDriver> driver();
+
     virtual void start();
 
     virtual void captureColor(cv::Mat& buffer);
@@ -31,7 +33,7 @@ public:
 private:
     HIDS _deviceNo;
 
-    ueye_cam::UEyeCamDriver _driver;
+    std::shared_ptr<ueye_cam::UEyeCamDriver> _driver;
 
     cv::Size _size;
 
