@@ -19,34 +19,34 @@ int main(int argc, char *argv[]) {
     if (argc < 5)
         return -1;
 
-    std::shared_ptr<UEye> raw1(new UEye(std::atoi(argv[1]), argv[3], "Left"));
-    std::shared_ptr<rgbd::CameraCalibrator> camera1(
-            new rgbd::CameraCalibrator(raw1, argv[4]));
-    camera1->start();
+    std::shared_ptr<UEye> lraw(new UEye(std::atoi(argv[1]), argv[3], "Left"));
+    std::shared_ptr<rgbd::CameraCalibrator> lcamera(
+            new rgbd::CameraCalibrator(lraw, argv[4]));
+    lcamera->start();
 
-    std::shared_ptr<UEye> raw2(new UEye(std::atoi(argv[2]), argv[3], "Right"));
-    std::shared_ptr<rgbd::CameraCalibrator> camera2(
-            new rgbd::CameraCalibrator(raw2, argv[5]));
-    camera2->start();
+    std::shared_ptr<UEye> rraw(new UEye(std::atoi(argv[2]), argv[3], "Right"));
+    std::shared_ptr<rgbd::CameraCalibrator> rcamera(
+            new rgbd::CameraCalibrator(rraw, argv[5]));
+    rcamera->start();
 
-    cv::Mat color1 = cv::Mat::zeros(camera1->colorSize(), CV_8UC3);
-    cv::Mat color2 = cv::Mat::zeros(camera2->colorSize(), CV_8UC3);
+    cv::Mat lcolor = cv::Mat::zeros(lcamera->colorSize(), CV_8UC3);
+    cv::Mat rcolor = cv::Mat::zeros(rcamera->colorSize(), CV_8UC3);
 
-    cv::namedWindow("Color left", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
-    cv::namedWindow("Color right", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+    cv::namedWindow("Left color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+    cv::namedWindow("Right color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     int key = 0;
 
     while ((key = cv::waitKey(10)) != 0x1b) {
-        camera1->captureColor(color1);
-        camera2->captureColor(color2);
+        lcamera->captureColor(lcolor);
+        rcamera->captureColor(rcolor);
 
-//        cv::Mat c1, c2;
-//        cv::resize(color1, c1, cv::Size(color1.cols / 2, color1.rows / 2));
-//        cv::resize(color2, c2, cv::Size(color2.cols / 2, color2.rows / 2));
-//        cv::imshow("Color left", c1);
-//        cv::imshow("Color right", c2);
-        cv::imshow("Color left", color1);
-        cv::imshow("Color right", color2);
+//        cv::Mat lc, rc;
+//        cv::resize(lcolor, lc, cv::Size(lcolor.cols / 2, lcolor.rows / 2));
+//        cv::resize(rcolor, rc, cv::Size(rcolor.cols / 2, rcolor.rows / 2));
+//        cv::imshow("Left color", lc);
+//        cv::imshow("Right color", rc);
+        cv::imshow("Left color", lcolor);
+        cv::imshow("Right color", rcolor);
     }
 
     return 0;
