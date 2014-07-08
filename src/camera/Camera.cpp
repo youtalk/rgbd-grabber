@@ -18,6 +18,9 @@ cv::Size Camera::colorSize() const {
     throw new UnsupportedException("colorSize");
 }
 
+void Camera::start() {
+}
+
 void Camera::captureColor(cv::Mat& buffer) {
     throw new UnsupportedException("captureColor");
 }

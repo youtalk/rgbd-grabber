@@ -30,7 +30,7 @@ public:
     /**
      * Start the device updating.
      */
-    virtual void start() = 0;
+    virtual void start();
 
     /**
      * Copy the latest color data to the buffer.
