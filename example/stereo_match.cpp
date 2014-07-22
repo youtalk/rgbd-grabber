@@ -50,8 +50,6 @@ int main(int argc, char** argv) {
         print_help();
         return 0;
     }
-    const char* img1_filename = 0;
-    const char* img2_filename = 0;
     const char* intrinsic_filename = 0;
     const char* extrinsic_filename = 0;
     const char* disparity_filename = 0;
@@ -63,19 +61,13 @@ int main(int argc, char** argv) {
     int alg = STEREO_SGBM;
     int SADWindowSize = 0, numberOfDisparities = 0;
     bool no_display = false;
-    float scale = 1.f;
 
     StereoBM bm;
     StereoSGBM sgbm;
     StereoVar var;
 
     for (int i = 1; i < argc; i++) {
-        if (argv[i][0] != '-') {
-            if (!img1_filename)
-                img1_filename = argv[i];
-            else
-                img2_filename = argv[i];
-        } else if (strncmp(argv[i], algorithm_opt, strlen(algorithm_opt))
+        if (strncmp(argv[i], algorithm_opt, strlen(algorithm_opt))
                 == 0) {
             char* _alg = argv[i] + strlen(algorithm_opt);
             alg = strcmp(_alg, "bm") == 0 ? STEREO_BM :
@@ -102,11 +94,6 @@ int main(int argc, char** argv) {
                 printf("Command-line parameter error: The block size (--blocksize=<...>) must be a positive odd number\n");
                 return -1;
             }
-        } else if (strncmp(argv[i], scale_opt, strlen(scale_opt)) == 0) {
-            if (sscanf(argv[i] + strlen(scale_opt), "%f", &scale) != 1 || scale < 0) {
-                printf("Command-line parameter error: The scale factor (--scale=<...>) must be a positive floating-point number\n");
-                return -1;
-            }
         } else if (strcmp(argv[i], nodisplay_opt) == 0)
             no_display = true;
         else if (strcmp(argv[i], "-i") == 0)
@@ -124,11 +111,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    if (!img1_filename || !img2_filename) {
-        printf("Command-line parameter error: both left and right images must be specified\n");
-        return -1;
-    }
-
     if ((intrinsic_filename != 0) ^ (extrinsic_filename != 0)) {
         printf("Command-line parameter error: either both intrinsic and extrinsic parameters must be specified, or none of them (when the stereo pair is already rectified)\n");
         return -1;
@@ -139,18 +121,13 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    int color_mode = alg == STEREO_BM ? 0 : -1;
-    Mat img1 = imread(img1_filename, color_mode);
-    Mat img2 = imread(img2_filename, color_mode);
+    std::shared_ptr<rgbd::Camera> left(new rgbd::UEye(1, "../xm-vision/data/ueye/ueye-xm02eye-conf-half.ini"));
+    left->start();
+    std::shared_ptr<rgbd::Camera> right(new rgbd::UEye(2, "../xm-vision/data/ueye/ueye-xm02eye-conf-half.ini"));
+    right->start();
 
-    if (scale != 1.f) {
-        Mat temp1, temp2;
-        int method = scale < 1 ? INTER_AREA : INTER_CUBIC;
-        resize(img1, temp1, Size(), scale, scale, method);
-        img1 = temp1;
-        resize(img2, temp2, Size(), scale, scale, method);
-        img2 = temp2;
-    }
+    Mat img1 = cv::Mat::zeros(left->colorSize(), CV_8UC3);
+    Mat img2 = cv::Mat::zeros(right->colorSize(), CV_8UC3);
 
     Size img_size = img1.size();
 
@@ -171,9 +148,6 @@ int main(int argc, char** argv) {
         fs["D1"] >> D1;
         fs["M2"] >> M2;
         fs["D2"] >> D2;
-
-        M1 *= scale;
-        M2 *= scale;
 
         fs.open(extrinsic_filename, CV_STORAGE_READ);
         if (!fs.isOpened()) {
@@ -243,10 +217,6 @@ int main(int argc, char** argv) {
     var.flags = var.USE_SMART_ID | var.USE_AUTO_PARAMS |
                 var.USE_INITIAL_DISPARITY | var.USE_MEDIAN_FILTERING;
 
-    std::shared_ptr<rgbd::Camera> left(new rgbd::UEye(1, "../xm-vision/data/ueye/ueye-xm02eye-conf.ini"));
-    left->start();
-    std::shared_ptr<rgbd::Camera> right(new rgbd::UEye(2, "../xm-vision/data/ueye/ueye-xm02eye-conf.ini"));
-    right->start();
     int key = 0;
 
     while ((key = cv::waitKey(10)) != 0x1b) {

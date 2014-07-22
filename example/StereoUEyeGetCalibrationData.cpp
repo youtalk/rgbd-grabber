@@ -25,13 +25,13 @@ void findChessboards(cv::Mat& left, cv::Mat& right) {
     cv::Size patternSize = cv::Size(9, 6);
     std::vector<cv::Point2f> imagePoints[2];
 
-//    if (cv::findChessboardCorners(
-//            left, patternSize, imagePoints[0],
-//            CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE) &&
-//        cv::findChessboardCorners(
-//                right, patternSize, imagePoints[1],
-//                CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE)) {
-        if (cv::waitKey(1) == 't') {
+    if (cv::waitKey(10) == 't') {
+        if (cv::findChessboardCorners(
+                left, patternSize, imagePoints[0],
+                CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE) &&
+            cv::findChessboardCorners(
+                right, patternSize, imagePoints[1],
+                CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE)) {
             std::stringstream ls, rs;
             ls << FLAGS_dir << "/left_" << imageNum << FLAGS_suffix;
             rs << FLAGS_dir << "/right_" << imageNum << FLAGS_suffix;
@@ -41,14 +41,16 @@ void findChessboards(cv::Mat& left, cv::Mat& right) {
 
             std::cout << "save: " << ls.str() << ", " << rs.str() << std::endl;
             imageNum++;
+            cv::rectangle(left, cv::Point(5, 5),
+                          cv::Point(left.cols - 5, left.rows - 5),
+                          cv::Scalar(255, 0, 0), 3);
+        } else {
+            cv::rectangle(left, cv::Point(5, 5),
+                          cv::Point(left.cols - 5, left.rows - 5),
+                          cv::Scalar(0, 0, 255), 3);
         }
+    }
 
-//        cv::rectangle(left, cv::Point(5, 5), cv::Point(left.cols - 5, left.rows - 5),
-//                      cv::Scalar(255, 0, 0), 3);
-//    } else {
-//        cv::rectangle(left, cv::Point(5, 5), cv::Point(left.cols - 5, left.rows - 5),
-//                      cv::Scalar(0, 0, 255), 3);
-//    }
 
     cv::Mat lc, rc;
     cv::resize(left, lc, cv::Size(left.cols / 2, left.rows / 2));
