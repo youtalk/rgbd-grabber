@@ -61,7 +61,6 @@ static void StereoCalib(const vector<string>& imagelist, Size boardSize,
     }
 
     bool displayCorners = false; //true;
-    const int maxScale = 2;
     const float squareSize = 0.024; // Set this to your actual square size
     // ARRAY AND VECTOR STORAGE:
 
@@ -89,24 +88,10 @@ static void StereoCalib(const vector<string>& imagelist, Size boardSize,
                      << " has the size different from the first image size. Skipping the pair\n";
                 break;
             }
-            bool found = false;
             vector<Point2f>& corners = imagePoints[k][j];
-            for (int scale = 1; scale <= maxScale; scale++) {
-                Mat timg;
-                if (scale == 1)
-                    timg = img;
-                else
-                    resize(img, timg, Size(), scale, scale);
-                found = findChessboardCorners(timg, boardSize, corners,
-                CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE);
-                if (found) {
-                    if (scale > 1) {
-                        Mat cornersMat(corners);
-                        cornersMat *= 1. / scale;
-                    }
-                    break;
-                }
-            }
+            bool found = findChessboardCorners(
+                    img, boardSize, corners,
+                    CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE);
             if (displayCorners) {
                 cout << filename << endl;
                 Mat cimg, cimg1;

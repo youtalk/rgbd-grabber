@@ -11,9 +11,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/contrib/contrib.hpp"
-
+#include <pcl/visualization/cloud_viewer.h>
 #include <stdio.h>
-
 #include "rgbd/camera/UEye.h"
 
 using namespace cv;
@@ -23,20 +22,6 @@ static void print_help() {
     printf("\nUsage: stereo_match <left_image> <right_image> [--algorithm=bm|sgbm|hh|var] [--blocksize=<block_size>]\n"
            "[--max-disparity=<max_disparity>] [--scale=scale_factor>] [-i <intrinsic_filename>] [-e <extrinsic_filename>]\n"
            "[--no-display] [-o <disparity_image>] [-p <point_cloud_file>]\n");
-}
-
-static void saveXYZ(const char* filename, const Mat& mat) {
-    const double max_z = 1.0e4;
-    FILE* fp = fopen(filename, "wt");
-    for (int y = 0; y < mat.rows; y++) {
-        for (int x = 0; x < mat.cols; x++) {
-            Vec3f point = mat.at<Vec3f>(y, x);
-            if (fabs(point[2] - max_z) < FLT_EPSILON || fabs(point[2]) > max_z)
-                continue;
-            fprintf(fp, "%f %f %f\n", point[0], point[1], point[2]);
-        }
-    }
-    fclose(fp);
 }
 
 int main(int argc, char** argv) {
@@ -222,6 +207,11 @@ int main(int argc, char** argv) {
 
     int key = 0;
 
+
+    std::shared_ptr<pcl::visualization::CloudViewer> viewer(
+            new pcl::visualization::CloudViewer("Vertex"));
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
+
     while ((key = cv::waitKey(10)) != 0x1b) {
         left->captureColor(img1);
         right->captureColor(img2);
@@ -254,12 +244,37 @@ int main(int argc, char** argv) {
         else
             disp.convertTo(disp8, CV_8U);
 
+        Mat xyz;
+        reprojectImageTo3D(disp, xyz, Q, true);
+
+        cloud->points.clear();
+        size_t index = 0;
+        double max_z = 1.0e4;
+
+        for (int y = 0; y < xyz.rows; y++) {
+            for (int x = 0; x < xyz.cols; x++) {
+                Vec3f p = xyz.at<Vec3f>(y, x);
+
+                if (fabs(p[2] - max_z) < FLT_EPSILON || fabs(p[2]) >= max_z)
+                    continue;
+
+                if (p[2] > 1.0)
+                    continue;
+
+                cloud->points.push_back(pcl::PointXYZ(p[0], p[1], p[2]));
+            }
+        }
+
+        viewer->showCloud(cloud);
+
         namedWindow("left", 1);
         imshow("left", img1(V1));
         namedWindow("right", 1);
         imshow("right", img2(V2));
         namedWindow("disparity", 0);
         imshow("disparity", disp8);
+
+
     }
 
 
