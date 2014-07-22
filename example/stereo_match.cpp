@@ -134,6 +134,7 @@ int main(int argc, char** argv) {
     Rect roi1, roi2;
     Mat Q;
     Mat map11, map12, map21, map22;
+    Rect V1, V2;
 
     if (intrinsic_filename) {
         // reading intrinsic parameters
@@ -158,6 +159,8 @@ int main(int argc, char** argv) {
         Mat R, T, R1, P1, R2, P2;
         fs["R"] >> R;
         fs["T"] >> T;
+        fs["V1"] >> V1;
+        fs["V2"] >> V2;
 
         stereoRectify(M1, D1, M2, D2, img_size, R, T, R1, R2, P1, P2, Q,
                       CALIB_ZERO_DISPARITY, -1, img_size, &roi1, &roi2);
@@ -252,9 +255,9 @@ int main(int argc, char** argv) {
             disp.convertTo(disp8, CV_8U);
 
         namedWindow("left", 1);
-        imshow("left", img1);
+        imshow("left", img1(V1));
         namedWindow("right", 1);
-        imshow("right", img2);
+        imshow("right", img2(V2));
         namedWindow("disparity", 0);
         imshow("disparity", disp8);
     }
