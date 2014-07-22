@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
 
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>());
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
 
     while ((key = cv::waitKey(10)) != 0x1b) {
         left->captureColor(img1);
@@ -258,17 +258,26 @@ int main(int argc, char** argv) {
                 if (fabs(p[2] - max_z) < FLT_EPSILON || fabs(p[2]) >= max_z)
                     continue;
 
-                cloud->points.push_back(pcl::PointXYZ(p[0], p[1], p[2]));
+                Vec3b bgr = img1.at<Vec3b>(y, x);
+                pcl::PointXYZRGB point;
+                point.x = p[0];
+                point.y = -p[1];
+                point.z = -p[2];
+                point.b = bgr[0];
+                point.g = bgr[1];
+                point.r = bgr[2];
+
+                cloud->points.push_back(point);
             }
         }
 
         viewer->showCloud(cloud);
 
         namedWindow("left", 1);
-        imshow("left", img1(roi1));
+        imshow("left", img1);
         namedWindow("right", 1);
-        imshow("right", img2(roi2));
-        namedWindow("disparity", 0);
+        imshow("right", img2);
+        namedWindow("disparity", 1);
         imshow("disparity", disp8);
 
 
