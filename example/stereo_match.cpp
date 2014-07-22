@@ -258,9 +258,6 @@ int main(int argc, char** argv) {
                 if (fabs(p[2] - max_z) < FLT_EPSILON || fabs(p[2]) >= max_z)
                     continue;
 
-                if (p[2] > 1.0)
-                    continue;
-
                 cloud->points.push_back(pcl::PointXYZ(p[0], p[1], p[2]));
             }
         }
@@ -268,9 +265,9 @@ int main(int argc, char** argv) {
         viewer->showCloud(cloud);
 
         namedWindow("left", 1);
-        imshow("left", img1(V1));
+        imshow("left", img1(roi1));
         namedWindow("right", 1);
-        imshow("right", img2(V2));
+        imshow("right", img2(roi2));
         namedWindow("disparity", 0);
         imshow("disparity", disp8);
 
