@@ -44,17 +44,16 @@ protected:
 
     cv::Mat _lcolor, _rcolor;
 
-    cv::Rect roi1, roi2;
-
-    cv::Mat Q;
-
-    cv::Mat map11, map12, map21, map22;
-
-    cv::StereoSGBM sgbm;
-
-    void loadInExtrinsics(const std::string& intrinsics, const std::string& extrinsics);
+    cv::StereoSGBM _sgbm;
 
     void setUpStereoParams();
+
+private:
+    cv::Mat _map11, _map12, _map21, _map22;
+
+    cv::Mat _Q;
+
+    void loadInExtrinsics(const std::string& intrinsics, const std::string& extrinsics);
 
     void reprojectImage(cv::Mat& xyz);
 };

@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
     cloud->points.resize(camera->depthSize().width * camera->depthSize().height);
 
-    cv::namedWindow("Left", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
-    cv::namedWindow("Right", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+//    cv::namedWindow("Left", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
+//    cv::namedWindow("Right", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     int key = 0;
 
     while ((key = cv::waitKey(10)) != 0x1b) {
@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
         camera->captureColorR(rcolor);
         camera->captureColoredVertex(cloud->points);
 
-        cv::imshow("Left", lcolor);
-        cv::imshow("Right", rcolor);
+//        cv::imshow("Left", lcolor);
+//        cv::imshow("Right", rcolor);
         viewer->showCloud(cloud);
     }
 

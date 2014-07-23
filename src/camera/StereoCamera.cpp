@@ -49,22 +49,22 @@ void StereoCamera::captureColor(cv::Mat& buffer) {
 void StereoCamera::captureColorL(cv::Mat& buffer) {
     _lcamera->captureColor(_lcolor);
 
-    cv::remap(_lcolor, buffer, map11, map12, cv::INTER_LINEAR);
+    cv::remap(_lcolor, buffer, _map11, _map12, cv::INTER_LINEAR);
     _lcolor = buffer;
 }
 
 void StereoCamera::captureColorR(cv::Mat& buffer) {
     _rcamera->captureColor(_rcolor);
 
-    cv::remap(_rcolor, buffer, map21, map22, cv::INTER_LINEAR);
+    cv::remap(_rcolor, buffer, _map21, _map22, cv::INTER_LINEAR);
     _rcolor = buffer;
 }
 
 void StereoCamera::reprojectImage(cv::Mat& xyz) {
-    cv::Mat disp;
-    sgbm(_lcolor, _rcolor, disp);
+    cv::Mat disparity;
+    _sgbm(_lcolor, _rcolor, disparity);
 
-    cv::reprojectImageTo3D(disp, xyz, Q, true);
+    cv::reprojectImageTo3D(disparity, xyz, _Q, true);
 }
 
 void StereoCamera::captureVertex(PointXYZVector& buffer) {
@@ -126,12 +126,16 @@ void StereoCamera::loadInExtrinsics(const std::string& intrinsics,
     cv::FileStorage fs(intrinsics, CV_STORAGE_READ);
     cv::Mat M1, D1, M2, D2;
     cv::Mat R, T, R1, P1, R2, P2;
+    cv::Rect roi1, roi2;
 
     if (fs.isOpened()) {
         fs["M1"] >> M1;
         fs["D1"] >> D1;
         fs["M2"] >> M2;
         fs["D2"] >> D2;
+    } else {
+        std::cerr << "StereoCamera: cannot open " << intrinsics << std::endl;
+        std::exit(-1);
     }
 
     fs.open(extrinsics, CV_STORAGE_READ);
@@ -139,27 +143,33 @@ void StereoCamera::loadInExtrinsics(const std::string& intrinsics,
     if (fs.isOpened()) {
         fs["R"] >> R;
         fs["T"] >> T;
+    } else {
+        std::cerr << "StereoCamera: cannot open " << extrinsics << std::endl;
+        std::exit(-1);
     }
 
     cv::Size size = colorSize();
-    cv::stereoRectify(M1, D1, M2, D2, size, R, T, R1, R2, P1, P2, Q,
+    cv::stereoRectify(M1, D1, M2, D2, size, R, T, R1, R2, P1, P2, _Q,
                       cv::CALIB_ZERO_DISPARITY, -1, size, &roi1, &roi2);
-    cv::initUndistortRectifyMap(M1, D1, R1, P1, size, CV_16SC2, map11, map12);
-    cv::initUndistortRectifyMap(M2, D2, R2, P2, size, CV_16SC2, map21, map22);
+    std::cout << "StereoCamera: stereo rectified" << std::endl;
+
+    cv::initUndistortRectifyMap(M1, D1, R1, P1, size, CV_16SC2, _map11, _map12);
+    cv::initUndistortRectifyMap(M2, D2, R2, P2, size, CV_16SC2, _map21, _map22);
+    std::cout << "StereoCamera: undistorted" << std::endl;
 }
 
 void StereoCamera::setUpStereoParams() {
-    sgbm.preFilterCap = 63;
-    sgbm.SADWindowSize = 3;
-    sgbm.P1 = 8 * 3 * sgbm.SADWindowSize * sgbm.SADWindowSize;
-    sgbm.P2 = 32 * 3 * sgbm.SADWindowSize * sgbm.SADWindowSize;
-    sgbm.minDisparity = 0;
-    sgbm.numberOfDisparities = 64;
-    sgbm.uniquenessRatio = 10;
-    sgbm.speckleWindowSize = 100;
-    sgbm.speckleRange = 32;
-    sgbm.disp12MaxDiff = 1;
-    sgbm.fullDP = false;
+    _sgbm.preFilterCap = 63;
+    _sgbm.SADWindowSize = 3;
+    _sgbm.P1 = 8 * 3 * _sgbm.SADWindowSize * _sgbm.SADWindowSize;
+    _sgbm.P2 = 32 * 3 * _sgbm.SADWindowSize * _sgbm.SADWindowSize;
+    _sgbm.minDisparity = 0;
+    _sgbm.numberOfDisparities = 64;
+    _sgbm.uniquenessRatio = 10;
+    _sgbm.speckleWindowSize = 100;
+    _sgbm.speckleRange = 32;
+    _sgbm.disp12MaxDiff = 1;
+    _sgbm.fullDP = false;
 }
 
 }

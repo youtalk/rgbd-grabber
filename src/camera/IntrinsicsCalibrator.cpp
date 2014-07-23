@@ -24,19 +24,19 @@ IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
             fs["distCoeffs"] >> distCoeffs;
         }
 
-        std::cerr << "CameraCalibrator: cameraMatrix = " << std::endl;
+        std::cerr << "IntrinsicsCalibrator: cameraMatrix = " << std::endl;
         std::cout << cameraMatrix << std::endl;
-        std::cerr << "CameraCalibrator: distCoeffs = " << std::endl;
+        std::cerr << "IntrinsicsCalibrator: distCoeffs = " << std::endl;
         std::cout << distCoeffs << std::endl;
 
         cv::initUndistortRectifyMap(cameraMatrix, distCoeffs, cv::Mat(), cameraMatrix,
                                     camera->colorSize(), CV_16SC2,
                                     _rectifyMaps[0], _rectifyMaps[1]);
 
-        std::cout << "CameraCalibrator: undistorted" << std::endl;
+        std::cout << "IntrinsicsCalibrator: undistorted" << std::endl;
         fs.release();
     } else {
-        std::cerr << "CameraCalibrator: cannot open file " << intrinsics << std::endl;
+        std::cerr << "IntrinsicsCalibrator: cannot open " << intrinsics << std::endl;
         std::exit(-1);
     }
 }

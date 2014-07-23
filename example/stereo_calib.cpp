@@ -204,7 +204,6 @@ static void StereoCalib(const vector<string>& imagelist, Size boardSize,
     if (fs.isOpened()) {
         fs << "R" << R << "T" << T << "R1" << R1 << "R2" << R2 << "P1" << P1
            << "P2" << P2 << "Q" << Q;
-        fs << "V1" << validRoi[0] << "V2" << validRoi[1];
         fs.release();
     } else
         cout << "Error: can not save the intrinsic parameters\n";
