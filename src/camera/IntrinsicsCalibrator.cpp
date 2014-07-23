@@ -9,15 +9,20 @@
 namespace rgbd {
 
 IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
-                                   const std::string& file):
+                                           const std::string& intrinsics):
         _camera(camera) {
     cv::Mat cameraMatrix;
     cv::Mat distCoeffs;
-    cv::FileStorage fs(file , CV_STORAGE_READ);
+    cv::FileStorage fs(intrinsics , CV_STORAGE_READ);
 
     if (fs.isOpened()) {
-        fs["cameraMatrix"] >> cameraMatrix;
-        fs["distCoeffs"] >> distCoeffs;
+        if (!fs["cameraMatrix"].isNone() && !fs["distCoeffs"].isNone()) {
+            fs["cameraMatrix"] >> cameraMatrix;
+            fs["distCoeffs"] >> distCoeffs;
+        } else if (!fs["M"].isNone() && !fs["D"].isNone()) {
+            fs["M"] >> cameraMatrix;
+            fs["D"] >> distCoeffs;
+        }
 
         std::cerr << "CameraCalibrator: cameraMatrix = " << std::endl;
         std::cout << cameraMatrix << std::endl;
@@ -31,7 +36,7 @@ IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
         std::cout << "CameraCalibrator: undistorted" << std::endl;
         fs.release();
     } else {
-        std::cerr << "CameraCalibrator: cannot open file" << std::endl;
+        std::cerr << "CameraCalibrator: cannot open file " << intrinsics << std::endl;
         std::exit(-1);
     }
 }

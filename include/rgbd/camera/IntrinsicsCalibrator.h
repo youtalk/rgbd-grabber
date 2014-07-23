@@ -14,7 +14,8 @@ namespace rgbd {
 
 class IntrinsicsCalibrator: public Camera {
 public:
-    IntrinsicsCalibrator(std::shared_ptr<Camera> camera, const std::string& file);
+    IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
+                         const std::string& intrinsics);
 
     virtual ~IntrinsicsCalibrator();
 
