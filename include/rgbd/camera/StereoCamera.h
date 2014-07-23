@@ -7,11 +7,12 @@
 #pragma once
 
 #include <memory>
-#include "rgbd/camera/Camera.h"
+#include <opencv2/calib3d/calib3d.hpp>
+#include "rgbd/camera/DepthCamera.h"
 
 namespace rgbd {
 
-class StereoCamera: public Camera {
+class StereoCamera: public DepthCamera {
 public:
     StereoCamera(std::shared_ptr<Camera> left, std::shared_ptr<Camera> right,
                  const std::string& intrinsics, const std::string& extrinsics);
@@ -24,6 +25,8 @@ public:
 
     virtual cv::Size colorSizeR() const;
 
+    cv::Size depthSize() const;
+
     virtual void start();
 
     void captureColor(cv::Mat& buffer);
@@ -32,10 +35,28 @@ public:
 
     virtual void captureColorR(cv::Mat& buffer);
 
-protected:
-    std::shared_ptr<Camera> _left;
+    virtual void captureVertex(PointXYZVector& buffer);
 
-    std::shared_ptr<Camera> _right;
+    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+
+protected:
+    std::shared_ptr<Camera> _lcamera, _rcamera;
+
+    cv::Mat _lcolor, _rcolor;
+
+    cv::Rect roi1, roi2;
+
+    cv::Mat Q;
+
+    cv::Mat map11, map12, map21, map22;
+
+    cv::StereoSGBM sgbm;
+
+    void loadInExtrinsics(const std::string& intrinsics, const std::string& extrinsics);
+
+    void setUpStereoParams();
+
+    void reprojectImage(cv::Mat& xyz);
 };
 
 }
