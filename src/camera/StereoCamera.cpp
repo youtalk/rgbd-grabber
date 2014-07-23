@@ -48,22 +48,20 @@ void StereoCamera::captureColor(cv::Mat& buffer) {
 
 void StereoCamera::captureColorL(cv::Mat& buffer) {
     _lcamera->captureColor(_lcolor);
-
     cv::remap(_lcolor, buffer, _map11, _map12, cv::INTER_LINEAR);
     _lcolor = buffer;
 }
 
 void StereoCamera::captureColorR(cv::Mat& buffer) {
     _rcamera->captureColor(_rcolor);
-
     cv::remap(_rcolor, buffer, _map21, _map22, cv::INTER_LINEAR);
     _rcolor = buffer;
 }
 
 void StereoCamera::reprojectImage(cv::Mat& xyz) {
     cv::Mat disparity;
-    _sgbm(_lcolor, _rcolor, disparity);
 
+    _sgbm(_lcolor, _rcolor, disparity);
     cv::reprojectImageTo3D(disparity, xyz, _Q, true);
 }
 

@@ -24,12 +24,11 @@ int main(int argc, char *argv[]) {
             left, right, argv[4], argv[5]));
     camera->start();
 
-    cv::Mat lcolor = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
-    cv::Mat rcolor = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
+    cv::Mat lcolor;
+    cv::Mat rcolor;
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
-    cloud->points.resize(camera->depthSize().width * camera->depthSize().height);
 
 //    cv::namedWindow("Left", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 //    cv::namedWindow("Right", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
