@@ -1,14 +1,14 @@
 /**
- * @file CameraCalibrator.cpp
+ * @file IntrinsicsCalibrator.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Apr 22, 2014
  */
 
-#include "rgbd/camera/CameraCalibrator.h"
+#include "rgbd/camera/IntrinsicsCalibrator.h"
 
 namespace rgbd {
 
-CameraCalibrator::CameraCalibrator(std::shared_ptr<Camera> camera,
+IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
                                    const std::string& file):
         _camera(camera) {
     cv::Mat cameraMatrix;
@@ -36,23 +36,23 @@ CameraCalibrator::CameraCalibrator(std::shared_ptr<Camera> camera,
     }
 }
 
-CameraCalibrator::~CameraCalibrator() {
+IntrinsicsCalibrator::~IntrinsicsCalibrator() {
 }
 
-cv::Size CameraCalibrator::colorSize() const {
+cv::Size IntrinsicsCalibrator::colorSize() const {
     return _camera->colorSize();
 }
 
-void CameraCalibrator::start() {
+void IntrinsicsCalibrator::start() {
     _camera->start();
 }
 
-void CameraCalibrator::captureColor(cv::Mat& buffer) {
+void IntrinsicsCalibrator::captureColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
     cv::remap(buffer, buffer, _rectifyMaps[0], _rectifyMaps[1], CV_INTER_LINEAR);
 }
 
-void CameraCalibrator::captureRawColor(cv::Mat& buffer) {
+void IntrinsicsCalibrator::captureRawColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
 }
 

@@ -1,5 +1,5 @@
 /**
- * @file CameraCalibrator.h
+ * @file IntrinsicsCalibrator.h
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Apr 22, 2014
  */
@@ -12,11 +12,11 @@
 
 namespace rgbd {
 
-class CameraCalibrator: public Camera {
+class IntrinsicsCalibrator: public Camera {
 public:
-    CameraCalibrator(std::shared_ptr<Camera> camera, const std::string& file);
+    IntrinsicsCalibrator(std::shared_ptr<Camera> camera, const std::string& file);
 
-    virtual ~CameraCalibrator();
+    virtual ~IntrinsicsCalibrator();
 
     virtual cv::Size colorSize() const;
 
