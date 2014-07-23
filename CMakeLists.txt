@@ -40,7 +40,8 @@ SET(VERSION "0.9.1")
 SET(SOVERSION "0.9")
 
 SET(SRC
-  src/camera/Camera.cpp src/camera/DepthCamera.cpp src/camera/UVCamera.cpp
+  src/camera/Camera.cpp  src/camera/StereoCamera.cpp src/camera/DepthCamera.cpp
+  src/camera/UVCamera.cpp
   src/camera/IntrinsicsCalibrator.cpp src/camera/DepthCameraCalibrator.cpp
   src/camera/ColorCalibrator.cpp src/camera/CameraRotator.cpp)
 

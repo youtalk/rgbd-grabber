@@ -16,12 +16,12 @@ IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
     cv::FileStorage fs(intrinsics , CV_STORAGE_READ);
 
     if (fs.isOpened()) {
-        if (!fs["cameraMatrix"].isNone() && !fs["distCoeffs"].isNone()) {
-            fs["cameraMatrix"] >> cameraMatrix;
-            fs["distCoeffs"] >> distCoeffs;
-        } else if (!fs["M"].isNone() && !fs["D"].isNone()) {
+        if (!fs["M"].isNone() && !fs["D"].isNone()) {
             fs["M"] >> cameraMatrix;
             fs["D"] >> distCoeffs;
+        } else if (!fs["cameraMatrix"].isNone() && !fs["distCoeffs"].isNone()) {
+            fs["cameraMatrix"] >> cameraMatrix;
+            fs["distCoeffs"] >> distCoeffs;
         }
 
         std::cerr << "CameraCalibrator: cameraMatrix = " << std::endl;
