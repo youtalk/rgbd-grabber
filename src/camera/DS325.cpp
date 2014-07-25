@@ -13,7 +13,7 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         _format(frameFormat),
         _dsize(320, 240),
         _csize(frameFormat == FRAME_FORMAT_VGA ? 640 : 1280,
-                   frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
+               frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
         _context(Context::create("localhost")) {
     _context.deviceAddedEvent().connect(this, &DS325::onDeviceConnected);
     _context.deviceRemovedEvent().connect(this, &DS325::onDeviceDisconnected);
@@ -36,8 +36,7 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
 
         std::cout << "DS325: opened" << std::endl;
     } else {
-        std::cerr << "DS325: camera " << deviceNo
-                  << " cannot open" << std::endl;
+        std::cerr << "DS325: camera " << deviceNo << " cannot open" << std::endl;
         std::exit(-1);
     }
 
