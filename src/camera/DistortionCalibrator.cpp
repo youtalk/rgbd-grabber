@@ -1,14 +1,14 @@
 /**
- * @file IntrinsicsCalibrator.cpp
+ * @file DistortionCalibrator.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Apr 22, 2014
  */
 
-#include "rgbd/camera/IntrinsicsCalibrator.h"
+#include "rgbd/camera/DistortionCalibrator.h"
 
 namespace rgbd {
 
-IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
+DistortionCalibrator::DistortionCalibrator(std::shared_ptr<Camera> camera,
                                            const std::string& intrinsics):
         _camera(camera) {
     cv::Mat cameraMatrix;
@@ -24,40 +24,40 @@ IntrinsicsCalibrator::IntrinsicsCalibrator(std::shared_ptr<Camera> camera,
             fs["distCoeffs"] >> distCoeffs;
         }
 
-        std::cerr << "IntrinsicsCalibrator: cameraMatrix = " << std::endl;
+        std::cerr << "DistortionCalibrator: cameraMatrix = " << std::endl;
         std::cout << cameraMatrix << std::endl;
-        std::cerr << "IntrinsicsCalibrator: distCoeffs = " << std::endl;
+        std::cerr << "DistortionCalibrator: distCoeffs = " << std::endl;
         std::cout << distCoeffs << std::endl;
 
         cv::initUndistortRectifyMap(cameraMatrix, distCoeffs, cv::Mat(), cameraMatrix,
                                     camera->colorSize(), CV_16SC2,
                                     _rectifyMaps[0], _rectifyMaps[1]);
 
-        std::cout << "IntrinsicsCalibrator: undistorted" << std::endl;
+        std::cout << "DistortionCalibrator: undistorted" << std::endl;
         fs.release();
     } else {
-        std::cerr << "IntrinsicsCalibrator: cannot open " << intrinsics << std::endl;
+        std::cerr << "DistortionCalibrator: cannot open " << intrinsics << std::endl;
         std::exit(-1);
     }
 }
 
-IntrinsicsCalibrator::~IntrinsicsCalibrator() {
+DistortionCalibrator::~DistortionCalibrator() {
 }
 
-cv::Size IntrinsicsCalibrator::colorSize() const {
+cv::Size DistortionCalibrator::colorSize() const {
     return _camera->colorSize();
 }
 
-void IntrinsicsCalibrator::start() {
+void DistortionCalibrator::start() {
     _camera->start();
 }
 
-void IntrinsicsCalibrator::captureColor(cv::Mat& buffer) {
+void DistortionCalibrator::captureColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
     cv::remap(buffer, buffer, _rectifyMaps[0], _rectifyMaps[1], CV_INTER_LINEAR);
 }
 
-void IntrinsicsCalibrator::captureRawColor(cv::Mat& buffer) {
+void DistortionCalibrator::captureRawColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
 }
 

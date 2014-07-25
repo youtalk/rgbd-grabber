@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "rgbd/camera/UEye.h"
-#include "rgbd/camera/IntrinsicsCalibrator.h"
+#include "rgbd/camera/DistortionCalibrator.h"
 #include "rgbd/camera/ColorCalibrator.h"
 #include "rgbd/camera/CameraRotator.h"
 
@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
         return -1;
 
     std::shared_ptr<UEye> original(new UEye(std::atoi(argv[1]), argv[2]));
-    std::shared_ptr<rgbd::IntrinsicsCalibrator> calibrated(
-            new rgbd::IntrinsicsCalibrator(original, argv[3]));
+    std::shared_ptr<rgbd::DistortionCalibrator> calibrated(
+            new rgbd::DistortionCalibrator(original, argv[3]));
     std::shared_ptr<rgbd::ColorCalibrator> camera(
             new rgbd::ColorCalibrator(calibrated));
 //    std::shared_ptr<rgbd::CameraRotator> camera(
