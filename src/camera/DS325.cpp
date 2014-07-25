@@ -11,10 +11,24 @@ namespace rgbd {
 DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         DepthCamera(),
         _format(frameFormat),
+        _compression(COMPRESSION_TYPE_MJPEG),
         _dsize(320, 240),
-        _csize(frameFormat == FRAME_FORMAT_VGA ? 640 : 1280,
-               frameFormat == FRAME_FORMAT_VGA ? 480 : 720),
         _context(Context::create("localhost")) {
+    if (_format == FRAME_FORMAT_WXGA_H) {
+        _csize.width = 1280;
+        _csize.height = 720;
+    } else if (_format == FRAME_FORMAT_VGA) {
+        _csize.width = 640;
+        _csize.height = 480;
+    } else if (_format == FRAME_FORMAT_QVGA) {
+        _csize.width = 320;
+        _csize.height = 240;
+        _compression = COMPRESSION_TYPE_YUY2;
+    } else {
+        std::cerr << "DS325: invalid frame format" << std::endl;
+        std::exit(-1);
+    }
+
     _context.deviceAddedEvent().connect(this, &DS325::onDeviceConnected);
     _context.deviceRemovedEvent().connect(this, &DS325::onDeviceDisconnected);
     std::vector<Device> devices = _context.getDevices();
@@ -84,7 +98,14 @@ void DS325::captureAmplitude(cv::Mat& buffer) {
 
 void DS325::captureColor(cv::Mat& buffer) {
     boost::mutex::scoped_lock lock(_cmutex);
+
+    if (_compression == COMPRESSION_TYPE_YUY2)
+        buffer = cv::Mat::zeros(_csize, CV_8UC2);
+
     std::memcpy(buffer.data, _cdata.colorMap, _cdata.colorMap.size());
+
+    if (_compression == COMPRESSION_TYPE_YUY2)
+        cv::cvtColor(buffer, buffer, CV_YUV2BGR_YUY2);
 }
 
 void DS325::captureVertex(PointXYZVector& buffer) {
@@ -96,6 +117,36 @@ void DS325::captureVertex(PointXYZVector& buffer) {
         b.x = f.x;
         b.y = f.y;
         b.z = f.z;
+    }
+}
+
+void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
+    if (_format != FRAME_FORMAT_QVGA)
+        return;
+
+    cv::Mat color;
+    captureColor(color);
+
+    boost::mutex::scoped_lock dlock(_dmutex);
+    buffer.clear();
+
+    for (size_t i = 0; i < _ddata.verticesFloatingPoint.size(); i++) {
+        auto& f = _ddata.verticesFloatingPoint[i];
+        auto& uv = _ddata.uvMap[i];
+
+        if (uv.u == -FLT_MAX || uv.v == -FLT_MAX)
+            continue;
+
+        auto& pixel = color.at<cv::Vec3b>(size_t(uv.v * _csize.height), size_t(uv.u * _csize.width));
+        pcl::PointXYZRGB point;
+        point.x = f.x;
+        point.y = f.y;
+        point.z = f.z;
+        point.b = pixel[0];
+        point.g = pixel[1];
+        point.r = pixel[2];
+
+        buffer.push_back(point);
     }
 }
 
@@ -167,6 +218,7 @@ void DS325::configureDepthNode(Node node) {
         _depth.setEnableDepthMap(true);
         _depth.setEnableConfidenceMap(true);
         _depth.setEnableVerticesFloatingPoint(true);
+        _depth.setEnableUvMap(true);
         _depth.setEnableAccelerometer(true);
         _depth.setConfiguration(config);
     } catch (ArgumentException& e) {
@@ -191,7 +243,7 @@ void DS325::configureColorNode(Node node) {
 
     ColorNode::Configuration config = _color.getConfiguration();
     config.frameFormat = _format;
-    config.compression = COMPRESSION_TYPE_MJPEG;
+    config.compression = _compression;
     config.framerate = 30;
     config.powerLineFrequency = POWER_LINE_FREQUENCY_50HZ;
 

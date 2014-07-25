@@ -38,6 +38,8 @@ public:
 
     virtual void captureVertex(PointXYZVector& buffer);
 
+    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+
     /**
      * Copy the latest audio data to the buffer.
      * Note that the buffer must be allocated in advance.
@@ -56,9 +58,11 @@ public:
 protected:
     const DepthSense::FrameFormat _format;
 
+    DepthSense::CompressionType _compression;
+
     const cv::Size _dsize;
 
-    const cv::Size _csize;
+    cv::Size _csize;
 
     boost::mutex _dmutex;
 
