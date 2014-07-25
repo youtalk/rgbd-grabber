@@ -9,7 +9,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "rgbd/camera/UEye.h"
-#include "rgbd/camera/CameraCalibrator.h"
+#include "rgbd/camera/DistortionCalibrator.h"
 #include "rgbd/camera/ColorCalibrator.h"
 #include "rgbd/camera/CameraRotator.h"
 
@@ -20,16 +20,15 @@ int main(int argc, char *argv[]) {
         return -1;
 
     std::shared_ptr<UEye> original(new UEye(std::atoi(argv[1]), argv[2]));
-    std::shared_ptr<rgbd::CameraCalibrator> calibrated(
-            new rgbd::CameraCalibrator(original, argv[3]));
+    std::shared_ptr<rgbd::DistortionCalibrator> undistorted(
+            new rgbd::DistortionCalibrator(original, argv[3]));
     std::shared_ptr<rgbd::ColorCalibrator> camera(
-            new rgbd::ColorCalibrator(calibrated));
+            new rgbd::ColorCalibrator(undistorted));
 //    std::shared_ptr<rgbd::CameraRotator> camera(
 //            new rgbd::CameraRotator(calibrated, 90));
     camera->start();
 
-    cv::Mat raw = cv::Mat::zeros(camera->colorSize().width,
-                                 camera->colorSize().height, CV_8UC3);
+    cv::Mat raw = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
 
     cv::namedWindow("Raw", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);

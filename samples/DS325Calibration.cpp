@@ -46,7 +46,7 @@ void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
     }
 }
 
-int findChessboard(
+int findChessboards(
         cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
         cv::vector<cv::vector<cv::vector<cv::Point2f>>> &imagePoints,
         const cv::Size patternSize, const int &fileNum) {
@@ -121,12 +121,12 @@ int main(int argc, char *argv[]) {
         imagePoints[i].resize(numFile);
 
     loadImages(colors, depths, FLAGS_number);
-    numFile = findChessboard(colors, depths, imagePoints, patternSize, numFile);
+    numFile = findChessboards(colors, depths, imagePoints, patternSize, numFile);
 
     std::cout << "number of correct files:" << numFile << std::endl;
     setWorldPoints(worldPoints, patternSize, 24.0, numFile);
 
-    std::cout << "calibrate streo cameras" << std::endl;
+    std::cout << "calibrate stereo cameras" << std::endl;
     cv::vector<cv::Mat> cameraMatrix(2);
     cv::vector<cv::Mat> distCoeffs(2);
     cameraMatrix[0] = cv::Mat::eye(3, 3, CV_64FC1);
@@ -269,7 +269,7 @@ int main(int argc, char *argv[]) {
         validROIMat.at<int>(i, 3) = validROI[i].height;
     }
 
-    cv::FileStorage fs("streo-params.xml", CV_STORAGE_WRITE);
+    cv::FileStorage fs("stereo-params.xml", CV_STORAGE_WRITE);
     if (fs.isOpened()) {
         fs << "M1" << cameraMatrix[0] << "D1" << distCoeffs[0] << "M2"
            << cameraMatrix[1] << "D2" << distCoeffs[1];
@@ -288,7 +288,7 @@ int main(int argc, char *argv[]) {
                                 apertureHeight, fovx, fovy, focalLength,
                                 principalPoint, aspectRatio);
 
-    cv::FileStorage wfs("streo-conf.xml", cv::FileStorage::WRITE);
+    cv::FileStorage wfs("stereo-conf.xml", cv::FileStorage::WRITE);
 
     if (wfs.isOpened()) {
         wfs << "apertureWidth" << apertureWidth;
