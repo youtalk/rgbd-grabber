@@ -46,7 +46,7 @@ void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
     }
 }
 
-int findChessboard(
+int findChessboards(
         cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
         cv::vector<cv::vector<cv::vector<cv::Point2f>>> &imagePoints,
         const cv::Size patternSize, const int &fileNum) {
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
         imagePoints[i].resize(numFile);
 
     loadImages(colors, depths, FLAGS_number);
-    numFile = findChessboard(colors, depths, imagePoints, patternSize, numFile);
+    numFile = findChessboards(colors, depths, imagePoints, patternSize, numFile);
 
     std::cout << "number of correct files:" << numFile << std::endl;
     setWorldPoints(worldPoints, patternSize, 24.0, numFile);

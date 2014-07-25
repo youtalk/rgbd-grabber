@@ -122,7 +122,3 @@ IF(USE_UEYE)
   TARGET_LINK_LIBRARIES(StereoCameraCalibration ${LIB} ${PROJECT_NAME}-ueye ueye_api gflags)
   INSTALL(TARGETS ${PROJECT_NAME}-ueye LIBRARY DESTINATION lib)
 ENDIF()
-
-ADD_EXECUTABLE(stereo_calib samples/stereo_calib.cpp)
-ADD_DEPENDENCIES(stereo_calib ${SRC} ${SRC_UEYE})
-TARGET_LINK_LIBRARIES(stereo_calib ${LIB})
