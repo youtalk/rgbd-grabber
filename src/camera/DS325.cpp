@@ -121,8 +121,10 @@ void DS325::captureVertex(PointXYZVector& buffer) {
 }
 
 void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
-    if (_format != FRAME_FORMAT_QVGA)
-        return;
+    if (_format != FRAME_FORMAT_QVGA) {
+        std::cerr << "DS325: invalid frame format" << std::endl;
+        std::exit(-1);
+    }
 
     cv::Mat color;
     captureColor(color);
@@ -137,7 +139,8 @@ void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
         if (uv.u == -FLT_MAX || uv.v == -FLT_MAX)
             continue;
 
-        auto& pixel = color.at<cv::Vec3b>(size_t(uv.v * _csize.height), size_t(uv.u * _csize.width));
+        auto& pixel = color.at<cv::Vec3b>(cvRound(uv.v * _csize.height),
+                                          cvRound(uv.u * _csize.width));
         pcl::PointXYZRGB point;
         point.x = f.x;
         point.y = f.y;
