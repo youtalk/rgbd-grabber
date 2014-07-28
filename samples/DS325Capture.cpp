@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2)
         return -1;
 
-    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1]), FRAME_FORMAT_QVGA));
+    std::shared_ptr<DepthCamera> camera(new DS325(std::atoi(argv[1]), FRAME_FORMAT_WXGA_H));
     camera->start();
 
     cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_16U);
@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     cv::namedWindow("Amplitude", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     cv::namedWindow("Color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
-    while (cv::waitKey(10) != 0x1b) {
+    while (cv::waitKey(30) != 0x1b) {
         camera->captureDepth(depth);
         camera->captureAmplitude(amplitude);
         camera->captureColor(color);

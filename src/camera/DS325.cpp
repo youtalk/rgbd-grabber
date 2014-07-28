@@ -53,7 +53,6 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         std::cerr << "DS325: camera " << deviceNo << " cannot open" << std::endl;
         std::exit(-1);
     }
-
 }
 
 DS325::~DS325() {
@@ -83,7 +82,7 @@ void DS325::update() {
 
 void DS325::start() {
     boost::thread t(boost::bind(&DS325::update, this));
-    sleep(3); // I'm not sure but it must be necessary
+    sleep(3);
 }
 
 void DS325::captureDepth(cv::Mat& buffer) {
@@ -121,12 +120,7 @@ void DS325::captureVertex(PointXYZVector& buffer) {
 }
 
 void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
-    if (_format != FRAME_FORMAT_QVGA) {
-        std::cerr << "DS325: invalid frame format" << std::endl;
-        std::exit(-1);
-    }
-
-    cv::Mat color;
+    cv::Mat color = cv::Mat::zeros(_csize, CV_8UC3);
     captureColor(color);
 
     boost::mutex::scoped_lock dlock(_dmutex);
