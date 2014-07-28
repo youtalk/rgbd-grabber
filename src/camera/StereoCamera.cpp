@@ -14,6 +14,12 @@ StereoCamera::StereoCamera(std::shared_ptr<Camera> left, std::shared_ptr<Camera>
         _rcamera(right),
         _lcolor(cv::Mat::zeros(_lcamera->colorSize(), CV_8UC3)),
         _rcolor(cv::Mat::zeros(_rcamera->colorSize(), CV_8UC3)) {
+    if (_lcamera->colorSize().width != _rcamera->colorSize().width ||
+        _lcamera->colorSize().height != _rcamera->colorSize().height) {
+        std::cerr << "StereoCamera: left camera size != right camera size" << std::endl;
+        std::exit(-1);
+    }
+
     loadInExtrinsics(intrinsics, extrinsics);
     setUpStereoParams();
 }
@@ -71,13 +77,13 @@ void StereoCamera::captureVertex(PointXYZVector& buffer) {
 
     buffer.clear();
     size_t index = 0;
-    double max_z = 1.0e4;
+    double zmax = 1.0e4;
 
     for (int y = 0; y < xyz.rows; y++) {
         for (int x = 0; x < xyz.cols; x++) {
             cv::Vec3f p = xyz.at<cv::Vec3f>(y, x);
 
-            if (fabs(p[2] - max_z) < FLT_EPSILON || fabs(p[2]) >= max_z)
+            if (fabs(p[2] - zmax) < FLT_EPSILON || fabs(p[2]) >= zmax)
                 continue;
 
             pcl::PointXYZ point;
@@ -91,18 +97,21 @@ void StereoCamera::captureVertex(PointXYZVector& buffer) {
 }
 
 void StereoCamera::captureColoredVertex(PointXYZRGBVector& buffer) {
+    captureColorL(_lcolor);
+    captureColorR(_rcolor);
+
     cv::Mat xyz;
     reprojectImage(xyz);
 
     buffer.clear();
     size_t index = 0;
-    double max_z = 1.0e4;
+    double zmax = 1.0e4;
 
     for (int y = 0; y < xyz.rows; y++) {
         for (int x = 0; x < xyz.cols; x++) {
             cv::Vec3f p = xyz.at<cv::Vec3f>(y, x);
 
-            if (fabs(p[2] - max_z) < FLT_EPSILON || fabs(p[2]) >= max_z)
+            if (fabs(p[2] - zmax) < FLT_EPSILON || fabs(p[2]) >= zmax)
                 continue;
 
             cv::Vec3b bgr = _lcolor.at<cv::Vec3b>(y, x);
