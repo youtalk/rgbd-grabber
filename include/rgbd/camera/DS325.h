@@ -85,11 +85,11 @@ private:
 
     Context _context;
 
-    DepthNode _depth;
+    DepthNode _dnode;
 
-    ColorNode _color;
+    ColorNode _cnode;
 
-    AudioNode _audio;
+    AudioNode _anode;
 
     void update();
 

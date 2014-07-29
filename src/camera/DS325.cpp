@@ -38,11 +38,11 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
         devices[deviceNo].nodeRemovedEvent().connect(this, &DS325::onNodeDisconnected);
 
         for (Node node: devices[deviceNo].getNodes()) {
-            if (node.is<DepthNode>() && !_depth.isSet())
+            if (node.is<DepthNode>() && !_dnode.isSet())
                 configureDepthNode(node);
-            else if (node.is<ColorNode>() && !_color.isSet())
+            else if (node.is<ColorNode>() && !_cnode.isSet())
                 configureColorNode(node);
-            else if (node.is<AudioNode>() && !_audio.isSet())
+            else if (node.is<AudioNode>() && !_anode.isSet())
                 configureAudioNode(node);
 
             _context.registerNode(node);
@@ -56,12 +56,12 @@ DS325::DS325(const size_t deviceNo, const DepthSense::FrameFormat frameFormat) :
 }
 
 DS325::~DS325() {
-    if (_depth.isSet())
-        _context.unregisterNode(_depth);
-    if (_color.isSet())
-        _context.unregisterNode(_color);
-    if (_audio.isSet())
-        _context.unregisterNode(_audio);
+    if (_dnode.isSet())
+        _context.unregisterNode(_dnode);
+    if (_cnode.isSet())
+        _context.unregisterNode(_cnode);
+    if (_anode.isSet())
+        _context.unregisterNode(_anode);
 
     std::cout << "DS325: closed" << std::endl;
 }
@@ -202,23 +202,23 @@ void DS325::onNewAudioSample(AudioNode node, AudioNode::NewSampleReceivedData da
 }
 
 void DS325::configureDepthNode(Node node) {
-    _depth = node.as<DepthNode>();
+    _dnode = node.as<DepthNode>();
 
-    DepthNode::Configuration config = _depth.getConfiguration();
+    DepthNode::Configuration config = _dnode.getConfiguration();
     config.frameFormat = FRAME_FORMAT_QVGA;
     config.framerate = 30;
     config.mode = DepthNode::CAMERA_MODE_CLOSE_MODE;
     config.saturation = false;
 
     try {
-        _context.requestControl(_depth, 0);
-        _depth.newSampleReceivedEvent().connect(this, &DS325::onNewDepthSample);
-        _depth.setEnableDepthMap(true);
-        _depth.setEnableConfidenceMap(true);
-        _depth.setEnableVerticesFloatingPoint(true);
-        _depth.setEnableUvMap(true);
-        _depth.setEnableAccelerometer(true);
-        _depth.setConfiguration(config);
+        _context.requestControl(_dnode, 0);
+        _dnode.newSampleReceivedEvent().connect(this, &DS325::onNewDepthSample);
+        _dnode.setEnableDepthMap(true);
+        _dnode.setEnableConfidenceMap(true);
+        _dnode.setEnableVerticesFloatingPoint(true);
+        _dnode.setEnableUvMap(true);
+        _dnode.setEnableAccelerometer(true);
+        _dnode.setConfiguration(config);
     } catch (ArgumentException& e) {
         std::printf("DEPTH Argument Exception: %s\n", e.what());
     } catch (UnauthorizedAccessException& e) {
@@ -237,18 +237,18 @@ void DS325::configureDepthNode(Node node) {
 }
 
 void DS325::configureColorNode(Node node) {
-    _color = node.as<ColorNode>();
+    _cnode = node.as<ColorNode>();
 
-    ColorNode::Configuration config = _color.getConfiguration();
+    ColorNode::Configuration config = _cnode.getConfiguration();
     config.frameFormat = _format;
     config.compression = _compression;
     config.framerate = 30;
     config.powerLineFrequency = POWER_LINE_FREQUENCY_50HZ;
 
     try {
-        _context.requestControl(_color, 0);
-        _color.newSampleReceivedEvent().connect(this, &DS325::onNewColorSample);
-        _color.setEnableColorMap(true);
+        _context.requestControl(_cnode, 0);
+        _cnode.newSampleReceivedEvent().connect(this, &DS325::onNewColorSample);
+        _cnode.setEnableColorMap(true);
 //        _color.setBrightness(0);
 //        _color.setContrast(5);
 //        _color.setSaturation(5);
@@ -256,8 +256,8 @@ void DS325::configureColorNode(Node node) {
 //        _color.setGamma(3);
 //        _color.setWhiteBalance(4650);
 //        _color.setSharpness(5);
-        _color.setWhiteBalanceAuto(true);
-        _color.setConfiguration(config);
+        _cnode.setWhiteBalanceAuto(true);
+        _cnode.setConfiguration(config);
     } catch (ArgumentException& e) {
         std::printf("COLOR Argument Exception: %s\n", e.what());
     } catch (UnauthorizedAccessException& e) {
@@ -276,16 +276,16 @@ void DS325::configureColorNode(Node node) {
 }
 
 void DS325::configureAudioNode(Node node) {
-    _audio = node.as<AudioNode>();
+    _anode = node.as<AudioNode>();
 
-    AudioNode::Configuration config = _audio.getConfiguration();
+    AudioNode::Configuration config = _anode.getConfiguration();
     config.sampleRate = 44100;
 
     try {
-        _context.requestControl(_audio, 0);
-        _audio.newSampleReceivedEvent().connect(this, &DS325::onNewAudioSample);
-        _audio.setConfiguration(config);
-        _audio.setInputMixerLevel(0.5f);
+        _context.requestControl(_anode, 0);
+        _anode.newSampleReceivedEvent().connect(this, &DS325::onNewAudioSample);
+        _anode.setConfiguration(config);
+        _anode.setInputMixerLevel(0.5f);
     } catch (ArgumentException& e) {
         std::printf("AUDIO Argument Exception: %s\n", e.what());
     } catch (UnauthorizedAccessException& e) {
