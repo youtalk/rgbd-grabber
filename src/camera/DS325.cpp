@@ -111,11 +111,11 @@ void DS325::captureVertex(PointXYZVector& buffer) {
     boost::mutex::scoped_lock lock(_dmutex);
     std::size_t index = 0;
 
-    for (auto& b: buffer) {
+    for (auto& point: buffer) {
         auto& f = _ddata.verticesFloatingPoint[index++];
-        b.x = f.x;
-        b.y = f.y;
-        b.z = f.z;
+        point.x = f.x;
+        point.y = f.y;
+        point.z = f.z;
     }
 }
 
@@ -133,15 +133,16 @@ void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
         if (uv.u == -FLT_MAX || uv.v == -FLT_MAX)
             continue;
 
-        auto& pixel = color.at<cv::Vec3b>(cvRound(uv.v * _csize.height),
-                                          cvRound(uv.u * _csize.width));
+        // TODO: More accurate coloring
+        auto& p = color.at<cv::Vec3b>(cvRound(uv.v * _csize.height),
+                                      cvRound(uv.u * _csize.width));
         pcl::PointXYZRGB point;
         point.x = f.x;
         point.y = f.y;
         point.z = f.z;
-        point.b = pixel[0];
-        point.g = pixel[1];
-        point.r = pixel[2];
+        point.b = p[0];
+        point.g = p[1];
+        point.r = p[2];
 
         buffer.push_back(point);
     }
@@ -231,7 +232,7 @@ void DS325::configureDepthNode(Node node) {
     } catch (StreamingException& e) {
         std::printf("DEPTH Streaming Exception: %s\n", e.what());
     } catch (TimeoutException&) {
-        std::printf("DEPTH TimeoutException\n");
+        std::printf("DEPTH Timeout Exception\n");
     }
 }
 
@@ -248,13 +249,13 @@ void DS325::configureColorNode(Node node) {
         _context.requestControl(_color, 0);
         _color.newSampleReceivedEvent().connect(this, &DS325::onNewColorSample);
         _color.setEnableColorMap(true);
-//         color_.setBrightness(0);
-//         color_.setContrast(5);
-//         color_.setSaturation(5);
-//         color_.setHue(0);
-//         color_.setGamma(3);
-//         color_.setSharpness(5);
-//         color_.setWhiteBalance(4650);
+//        _color.setBrightness(0);
+//        _color.setContrast(5);
+//        _color.setSaturation(5);
+//        _color.setHue(0);
+//        _color.setGamma(3);
+//        _color.setWhiteBalance(4650);
+//        _color.setSharpness(5);
         _color.setWhiteBalanceAuto(true);
         _color.setConfiguration(config);
     } catch (ArgumentException& e) {
@@ -270,7 +271,7 @@ void DS325::configureColorNode(Node node) {
     } catch (StreamingException& e) {
         std::printf("COLOR Streaming Exception: %s\n", e.what());
     } catch (TimeoutException&) {
-        std::printf("COLOR TimeoutException\n");
+        std::printf("COLOR Timeout Exception\n");
     }
 }
 
@@ -286,15 +287,15 @@ void DS325::configureAudioNode(Node node) {
         _audio.setConfiguration(config);
         _audio.setInputMixerLevel(0.5f);
     } catch (ArgumentException& e) {
-        std::printf("Argument Exception: %s\n", e.what());
+        std::printf("AUDIO Argument Exception: %s\n", e.what());
     } catch (UnauthorizedAccessException& e) {
-        std::printf("Unauthorized Access Exception: %s\n", e.what());
+        std::printf("AUDIO Unauthorized Access Exception: %s\n", e.what());
     } catch (ConfigurationException& e) {
-        std::printf("Configuration Exception: %s\n", e.what());
+        std::printf("AUDIO Configuration Exception: %s\n", e.what());
     } catch (StreamingException& e) {
-        std::printf("Streaming Exception: %s\n", e.what());
+        std::printf("AUDIO Streaming Exception: %s\n", e.what());
     } catch (TimeoutException&) {
-        std::printf("TimeoutException\n");
+        std::printf("AUDIO Timeout Exception\n");
     }
 }
 
