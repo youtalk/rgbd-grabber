@@ -12,7 +12,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <pcl/point_types.h>
 #include <Eigen/StdVector>
-#include "../share/Error.h"
+#include "../common/Error.h"
 #include "Camera.h"
 
 namespace rgbd {
