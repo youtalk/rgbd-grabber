@@ -10,13 +10,13 @@ namespace rgbd {
 
 ColorRotator::ColorRotator(std::shared_ptr<ColorCamera> camera, int angle) :
         _camera(camera),
-        _originalBuffer(cv::Mat::zeros(camera->colorSize(), CV_8UC3)),
+        _cbuffer(cv::Mat::zeros(camera->colorSize(), CV_8UC3)),
         _angle(angle) {
     if (_angle == 0 || _angle == 180 || _angle == -180) {
-        _size = camera->colorSize();
+        _csize = camera->colorSize();
     } else if (_angle == 90 || _angle == -90) {
-        _size.width = camera->colorSize().height;
-        _size.height = camera->colorSize().width;
+        _csize.width = camera->colorSize().height;
+        _csize.height = camera->colorSize().width;
     } else {
         throw UnsupportedException("Angle must be -90, 0, 90, or 180.");
     }
@@ -26,7 +26,7 @@ ColorRotator::~ColorRotator() {
 }
 
 cv::Size ColorRotator::colorSize() const {
-    return _size;
+    return _csize;
 }
 
 void ColorRotator::start() {
@@ -34,18 +34,18 @@ void ColorRotator::start() {
 }
 
 void ColorRotator::captureColor(cv::Mat& buffer) {
-    _camera->captureColor(_originalBuffer);
+    _camera->captureColor(_cbuffer);
 
     if (_angle == 0) {
-        _originalBuffer.copyTo(buffer);
+        _cbuffer.copyTo(buffer);
     } else if (_angle == 90) {
-        cv::transpose(_originalBuffer, buffer);
+        cv::transpose(_cbuffer, buffer);
         cv::flip(buffer, buffer, 0);
     } else if (_angle == -90) {
-        cv::transpose(_originalBuffer, buffer);
+        cv::transpose(_cbuffer, buffer);
         cv::flip(buffer, buffer, 1);
     } else {
-        cv::flip(_originalBuffer, buffer, -1);
+        cv::flip(_cbuffer, buffer, -1);
     }
 }
 

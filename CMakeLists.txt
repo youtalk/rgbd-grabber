@@ -43,7 +43,7 @@ SET(SRC
   src/camera/ColorCamera.cpp src/camera/DepthCamera.cpp
   src/camera/StereoCamera.cpp src/camera/UVCamera.cpp
   src/camera/DistortionCalibrator.cpp src/camera/DepthCameraCalibrator.cpp
-  src/camera/ColorCalibrator.cpp src/camera/ColorRotator.cpp)
+  src/camera/ColorCalibrator.cpp src/camera/ColorRotator.cpp src/camera/DepthRotator.cpp)
 
 SET(SRC_DS
   src/camera/DS325.cpp src/camera/DS325Calibrator.cpp)

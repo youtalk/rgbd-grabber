@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-#include "../common/Error.h"
+#include "rgbd/common/Error.h"
 
 namespace rgbd {
 

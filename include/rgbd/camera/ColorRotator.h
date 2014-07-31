@@ -26,12 +26,12 @@ public:
 
     virtual void captureRawColor(cv::Mat& buffer);
 
-private:
+protected:
     std::shared_ptr<ColorCamera> _camera;
 
-    cv::Mat _originalBuffer;
+    cv::Size _csize;
 
-    cv::Size _size;
+    cv::Mat _cbuffer;
 
     const int _angle;
 };
