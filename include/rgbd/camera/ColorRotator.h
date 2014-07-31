@@ -8,15 +8,15 @@
 
 #include <iostream>
 #include <memory>
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
-class CameraRotator: public Camera {
+class ColorRotator: public ColorCamera {
 public:
-    CameraRotator(std::shared_ptr<Camera> camera, int angle = 0);
+    ColorRotator(std::shared_ptr<ColorCamera> camera, int angle = 0);
 
-    virtual ~CameraRotator();
+    virtual ~ColorRotator();
 
     virtual cv::Size colorSize() const;
 
@@ -27,7 +27,7 @@ public:
     virtual void captureRawColor(cv::Mat& buffer);
 
 private:
-    std::shared_ptr<Camera> _camera;
+    std::shared_ptr<ColorCamera> _camera;
 
     cv::Mat _originalBuffer;
 

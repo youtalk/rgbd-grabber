@@ -8,13 +8,13 @@
 
 #include <iostream>
 #include <memory>
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
-class ColorCalibrator: public Camera {
+class ColorCalibrator: public ColorCamera {
 public:
-    ColorCalibrator(std::shared_ptr<Camera> camera);
+    ColorCalibrator(std::shared_ptr<ColorCamera> camera);
 
     virtual ~ColorCalibrator();
 
@@ -29,7 +29,7 @@ public:
     virtual void captureRawColor(cv::Mat& buffer);
 
 private:
-    std::shared_ptr<Camera> _camera;
+    std::shared_ptr<ColorCamera> _camera;
 
     double _rscale;
 

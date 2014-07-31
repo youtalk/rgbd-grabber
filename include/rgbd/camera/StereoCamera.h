@@ -14,7 +14,7 @@ namespace rgbd {
 
 class StereoCamera: public DepthCamera {
 public:
-    StereoCamera(std::shared_ptr<Camera> left, std::shared_ptr<Camera> right,
+    StereoCamera(std::shared_ptr<ColorCamera> left, std::shared_ptr<ColorCamera> right,
                  const std::string& intrinsics, const std::string& extrinsics);
 
     virtual ~StereoCamera();
@@ -40,7 +40,7 @@ public:
     virtual void captureColoredVertex(PointXYZRGBVector& buffer);
 
 protected:
-    std::shared_ptr<Camera> _lcamera, _rcamera;
+    std::shared_ptr<ColorCamera> _lcamera, _rcamera;
 
     cv::Mat _lcolor, _rcolor;
 

@@ -10,7 +10,7 @@ namespace rgbd {
 DepthCamera::DepthCamera() {
 }
 
-rgbd::DepthCamera::DepthCamera(const std::shared_ptr<Camera> camera) :
+rgbd::DepthCamera::DepthCamera(const std::shared_ptr<ColorCamera> camera) :
     _camera(camera) {
 }
 

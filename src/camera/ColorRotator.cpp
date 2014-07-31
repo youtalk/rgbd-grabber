@@ -1,14 +1,14 @@
 /**
- * @file CameraRotator.cpp
+ * @file ColorRotator.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jun 23, 2014
  */
 
-#include "rgbd/camera/CameraRotator.h"
+#include "rgbd/camera/ColorRotator.h"
 
 namespace rgbd {
 
-CameraRotator::CameraRotator(std::shared_ptr<Camera> camera, int angle) :
+ColorRotator::ColorRotator(std::shared_ptr<ColorCamera> camera, int angle) :
         _camera(camera),
         _originalBuffer(cv::Mat::zeros(camera->colorSize(), CV_8UC3)),
         _angle(angle) {
@@ -22,18 +22,18 @@ CameraRotator::CameraRotator(std::shared_ptr<Camera> camera, int angle) :
     }
 }
 
-CameraRotator::~CameraRotator() {
+ColorRotator::~ColorRotator() {
 }
 
-cv::Size CameraRotator::colorSize() const {
+cv::Size ColorRotator::colorSize() const {
     return _size;
 }
 
-void CameraRotator::start() {
+void ColorRotator::start() {
     _camera->start();
 }
 
-void CameraRotator::captureColor(cv::Mat& buffer) {
+void ColorRotator::captureColor(cv::Mat& buffer) {
     _camera->captureColor(_originalBuffer);
 
     if (_angle == 0) {
@@ -49,7 +49,7 @@ void CameraRotator::captureColor(cv::Mat& buffer) {
     }
 }
 
-void CameraRotator::captureRawColor(cv::Mat& buffer) {
+void ColorRotator::captureRawColor(cv::Mat& buffer) {
     _camera->captureColor(buffer);
 }
 

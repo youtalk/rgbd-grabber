@@ -1,5 +1,5 @@
 /**
- * @file Camera.h
+ * @file ColorCamera.h
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Apr 14, 2014
  */
@@ -14,11 +14,11 @@
 
 namespace rgbd {
 
-class Camera {
+class ColorCamera {
 public:
-    Camera();
+    ColorCamera();
 
-    virtual ~Camera();
+    virtual ~ColorCamera();
 
     /**
      * Return the size of color image.

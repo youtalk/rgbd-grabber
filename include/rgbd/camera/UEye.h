@@ -11,11 +11,11 @@
 #include <boost/thread.hpp>
 #include <uEye.h>
 #include "ueye_cam_driver.hpp"
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
-class UEye: public Camera {
+class UEye: public ColorCamera {
 public:
     UEye(const uint deviceNo, const std::string& file,
          const std::string& name = "uEye");

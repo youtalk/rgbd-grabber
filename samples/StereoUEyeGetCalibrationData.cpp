@@ -65,11 +65,11 @@ void findChessboards(cv::Mat& left, cv::Mat& right) {
 int main(int argc, char* argv[]) {
     ParseCommandLineFlags(&argc, &argv, true);
 
-    std::shared_ptr<rgbd::Camera> lcamera(
+    std::shared_ptr<rgbd::ColorCamera> lcamera(
             new rgbd::UEye(FLAGS_lcamera, FLAGS_lconf, "left"));
     lcamera->start();
 
-    std::shared_ptr<rgbd::Camera> rcamera(
+    std::shared_ptr<rgbd::ColorCamera> rcamera(
             new rgbd::UEye(FLAGS_rcamera, FLAGS_rconf, "right"));
     rcamera->start();
 

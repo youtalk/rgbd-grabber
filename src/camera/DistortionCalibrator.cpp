@@ -8,7 +8,7 @@
 
 namespace rgbd {
 
-DistortionCalibrator::DistortionCalibrator(std::shared_ptr<Camera> camera,
+DistortionCalibrator::DistortionCalibrator(std::shared_ptr<ColorCamera> camera,
                                            const std::string& intrinsics):
         _camera(camera) {
     cv::Mat cameraMatrix;

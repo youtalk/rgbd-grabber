@@ -349,7 +349,7 @@ INT UEyeCamDriver::setSubsampling(int& rate, bool reallocate_buffer) {
         } else if (currRate == IS_SUBSAMPLING_16X) {
             rate = 16;
         } else {
-            std::cerr << "Camera has unsupported sampling rate (" << currRate
+            std::cerr << "ColorCamera.has unsupported sampling rate (" << currRate
                       << "), resetting to 1X" << std::endl;
             if ((is_err = is_SetSubSampling(cam_handle_, IS_SUBSAMPLING_DISABLE))
                 != IS_SUCCESS) {
@@ -428,7 +428,7 @@ INT UEyeCamDriver::setBinning(int& rate, bool reallocate_buffer) {
         } else if (currRate == IS_BINNING_16X) {
             rate = 16;
         } else {
-            std::cerr << "Camera has unsupported binning rate (" << currRate
+            std::cerr << "ColorCamera.has unsupported binning rate (" << currRate
                       << "), resetting to 1X" << std::endl;
             if ((is_err = is_SetBinning(cam_handle_, IS_BINNING_DISABLE)) != IS_SUCCESS) {
                 std::cerr << "Could not set binning rate to 1X ("

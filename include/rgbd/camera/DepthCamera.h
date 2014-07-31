@@ -13,7 +13,7 @@
 #include <pcl/point_types.h>
 #include <Eigen/StdVector>
 #include "../common/Error.h"
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
@@ -23,11 +23,11 @@ typedef std::vector<pcl::PointXYZ, Eigen::aligned_allocator<pcl::PointXYZ>>
 typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>>
         PointXYZRGBVector;
 
-class DepthCamera: public Camera {
+class DepthCamera: public ColorCamera {
 public:
     DepthCamera();
 
-    DepthCamera(const std::shared_ptr<Camera> camera);
+    DepthCamera(const std::shared_ptr<ColorCamera> camera);
 
     virtual ~DepthCamera();
 
@@ -77,7 +77,7 @@ public:
     virtual void captureColoredVertex(PointXYZRGBVector& buffer);
 
 private:
-    std::shared_ptr<Camera> _camera;
+    std::shared_ptr<ColorCamera> _camera;
 };
 
 }

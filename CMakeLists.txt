@@ -36,14 +36,14 @@ SET(CMAKE_CXX_LINK_FLAGS_DEBUG "-pg")
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
 
-SET(VERSION "0.9.4")
+SET(VERSION "0.9.5")
 SET(SOVERSION "0.9")
 
 SET(SRC
-  src/camera/Camera.cpp  src/camera/StereoCamera.cpp src/camera/DepthCamera.cpp
-  src/camera/UVCamera.cpp
+  src/camera/ColorCamera.cpp src/camera/DepthCamera.cpp
+  src/camera/StereoCamera.cpp src/camera/UVCamera.cpp
   src/camera/DistortionCalibrator.cpp src/camera/DepthCameraCalibrator.cpp
-  src/camera/ColorCalibrator.cpp src/camera/CameraRotator.cpp)
+  src/camera/ColorCalibrator.cpp src/camera/ColorRotator.cpp)
 
 SET(SRC_DS
   src/camera/DS325.cpp src/camera/DS325Calibrator.cpp)

@@ -8,13 +8,13 @@
 
 #include <iostream>
 #include <memory>
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
-class DistortionCalibrator: public Camera {
+class DistortionCalibrator: public ColorCamera {
 public:
-    DistortionCalibrator(std::shared_ptr<Camera> camera,
+    DistortionCalibrator(std::shared_ptr<ColorCamera> camera,
                          const std::string& intrinsics);
 
     virtual ~DistortionCalibrator();
@@ -28,7 +28,7 @@ public:
     virtual void captureRawColor(cv::Mat& buffer);
 
 private:
-    std::shared_ptr<Camera> _camera;
+    std::shared_ptr<ColorCamera> _camera;
 
     cv::Mat _rectifyMaps[2];
 };

@@ -8,7 +8,7 @@
 
 namespace rgbd {
 
-StereoCamera::StereoCamera(std::shared_ptr<Camera> left, std::shared_ptr<Camera> right,
+StereoCamera::StereoCamera(std::shared_ptr<ColorCamera> left, std::shared_ptr<ColorCamera> right,
                            const std::string& intrinsics, const std::string& extrinsics) :
         _lcamera(left),
         _rcamera(right),

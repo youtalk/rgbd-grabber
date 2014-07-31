@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
     if (argc < 4)
         return -1;
 
-    std::shared_ptr<rgbd::Camera> camera(new rgbd::UEye(std::atoi(argv[1]), argv[2]));
+    std::shared_ptr<rgbd::ColorCamera> camera(new rgbd::UEye(std::atoi(argv[1]), argv[2]));
     camera->start();
 
     size_t index = 0;

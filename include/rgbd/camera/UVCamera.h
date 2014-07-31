@@ -12,11 +12,11 @@
 #include <boost/thread/thread.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "Camera.h"
+#include "ColorCamera.h"
 
 namespace rgbd {
 
-class UVCamera: public Camera {
+class UVCamera: public ColorCamera {
 public:
     UVCamera(size_t deviceNo,
              const cv::Size& size = cv::Size(640, 480));

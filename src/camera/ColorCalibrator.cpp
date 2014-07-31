@@ -8,7 +8,7 @@
 
 namespace rgbd {
 
-ColorCalibrator::ColorCalibrator(std::shared_ptr<Camera> camera) :
+ColorCalibrator::ColorCalibrator(std::shared_ptr<ColorCamera> camera) :
         _camera(camera),
         _rscale(1.0),
         _bscale(1.0) {
