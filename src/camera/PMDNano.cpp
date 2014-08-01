@@ -87,14 +87,16 @@ void PMDNano::captureAmplitude(cv::Mat& buffer) {
 
 void PMDNano::captureVertex(PointCloud::Ptr buffer) {
     boost::mutex::scoped_lock lock(_mutex);
+    size_t index = 0;
 
     if (pmdGet3DCoordinates(_handle, _vbuffer, 3 * _size * sizeof (float)))
         closeByError("pmdGet3DCoordinates");
 
-    for (size_t i = 0; i < buffer->size(); i++) {
-        buffer->points[i].x = _vbuffer[3 * i];
-        buffer->points[i].y = _vbuffer[3 * i + 1];
-        buffer->points[i].z = _vbuffer[3 * i + 2];
+    for (auto& point: buffer->points) {
+        point.x = _vbuffer[3 * index];
+        point.y = _vbuffer[3 * index + 1];
+        point.z = _vbuffer[3 * index + 2];
+        index++;
     }
 }
 
