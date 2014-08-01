@@ -54,10 +54,6 @@ protected:
     cv::Mat _abuffer;
 
     Eigen::Matrix4f _rotation;
-
-    PointCloud::Ptr _vbuffer;
-
-    ColoredPointCloud::Ptr _cvbuffer;
 };
 
 }
