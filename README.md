@@ -15,6 +15,7 @@ Dependencies:
 * **Boost 1.46** or newer
 * **OpenCV 2.3** or newer
 * **PCL 1.7** or newer
+* **gflags 2.1** or newer
 
 ### UVC
 ~~~ sh
