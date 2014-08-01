@@ -13,7 +13,9 @@ DepthRotator::DepthRotator(std::shared_ptr<DepthCamera> camera, int angle) :
         DepthCamera(),
         _camera(camera),
         _dbuffer(cv::Mat::zeros(camera->depthSize(), CV_16U)),
-        _abuffer(cv::Mat::zeros(camera->depthSize(), CV_16U)) {
+        _abuffer(cv::Mat::zeros(camera->depthSize(), CV_16U)),
+        _vbuffer(new PointCloud(_dsize.width, _dsize.height)),
+        _cvbuffer(new ColoredPointCloud(_dsize.width, _dsize.height)) {
     if (_angle == 0 || _angle == 180 || _angle == -180) {
         _dsize = camera->depthSize();
     } else if (_angle == 90 || _angle == -90) {
@@ -23,8 +25,12 @@ DepthRotator::DepthRotator(std::shared_ptr<DepthCamera> camera, int angle) :
         throw UnsupportedException("Angle must be -90, 0, 90, or 180.");
     }
 
-    double cos_theta = std::cos(_angle * M_PI / 180.0);
-    double sin_theta = std::sin(_angle * M_PI / 180.0);
+    double c = std::cos(_angle * M_PI / 180.0);
+    double s = std::sin(_angle * M_PI / 180.0);
+    _rotation << c, -s, 0, 0, \
+                 s,  c, 0, 0, \
+                 0,  0, 1, 0, \
+                 0,  0, 0, 1;
 }
 
 DepthRotator::~DepthRotator() {
@@ -90,21 +96,19 @@ void DepthRotator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
 }
 
-void DepthRotator::captureVertex(PointCloud buffer) {
-    _camera->captureVertex(buffer);
-    // TODO: Rotate buffer
-}
-
-void DepthRotator::captureRawVertex(PointCloud buffer) {
+void DepthRotator::captureVertex(PointCloud::Ptr buffer) {
     _camera->captureVertex(buffer);
 }
 
-void DepthRotator::captureColoredVertex(ColoredPointCloud buffer) {
+void DepthRotator::captureRawVertex(PointCloud::Ptr buffer) {
+    _camera->captureVertex(buffer);
+}
+
+void DepthRotator::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
     _camera->captureColoredVertex(buffer);
-    // TODO: Rotate buffer
 }
 
-void DepthRotator::captureRawColoredVertex(ColoredPointCloud buffer) {
+void DepthRotator::captureRawColoredVertex(ColoredPointCloud::Ptr buffer) {
     _camera->captureColoredVertex(buffer);
 }
 

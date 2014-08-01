@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
-    ColoredPointCloud cloud(new pcl::PointCloud<pcl::PointXYZRGB>(
+    ColoredPointCloud::Ptr cloud(new ColoredPointCloud(
             camera->depthSize().width, camera->depthSize().height));
 
     cv::namedWindow("Depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);

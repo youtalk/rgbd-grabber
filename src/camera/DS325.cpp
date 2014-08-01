@@ -107,7 +107,7 @@ void DS325::captureColor(cv::Mat& buffer) {
         cv::cvtColor(buffer, buffer, CV_YUV2BGR_YUY2);
 }
 
-void DS325::captureVertex(PointCloud buffer) {
+void DS325::captureVertex(PointCloud::Ptr buffer) {
     boost::mutex::scoped_lock lock(_dmutex);
     std::size_t index = 0;
 
@@ -119,7 +119,7 @@ void DS325::captureVertex(PointCloud buffer) {
     }
 }
 
-void rgbd::DS325::captureColoredVertex(ColoredPointCloud buffer) {
+void rgbd::DS325::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
     cv::Mat color = cv::Mat::zeros(_csize, CV_8UC3);
     captureColor(color);
 

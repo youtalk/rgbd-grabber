@@ -46,11 +46,11 @@ void DepthCamera::captureAmplitude(cv::Mat& buffer) {
     throw new UnsupportedException("captureAmplitude");
 }
 
-void DepthCamera::captureVertex(PointCloud buffer) {
+void DepthCamera::captureVertex(PointCloud::Ptr buffer) {
     throw new UnsupportedException("captureVertex");
 }
 
-void DepthCamera::captureColoredVertex(ColoredPointCloud buffer) {
+void DepthCamera::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
     throw new UnsupportedException("captureColoredVertex");
 }
 

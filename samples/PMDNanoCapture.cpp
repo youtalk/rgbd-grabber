@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     cv::Mat amplitude = cv::Mat::zeros(camera->depthSize(), CV_32F);
     std::shared_ptr<pcl::visualization::CloudViewer> viewer(
             new pcl::visualization::CloudViewer("Vertex"));
-    PointCloud cloud(new pcl::PointCloud<pcl::PointXYZ>(
+    PointCloud::Ptr cloud(new PointCloud(
             camera->depthSize().width, camera->depthSize().height));
 
     cv::namedWindow("Depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);

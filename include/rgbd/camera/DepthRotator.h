@@ -36,13 +36,13 @@ public:
 
     virtual void captureRawAmplitude(cv::Mat& buffer);
 
-    virtual void captureVertex(PointCloud buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
-    virtual void captureRawVertex(PointCloud buffer);
+    virtual void captureRawVertex(PointCloud::Ptr buffer);
 
-    virtual void captureColoredVertex(ColoredPointCloud buffer);
+    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
 
-    virtual void captureRawColoredVertex(ColoredPointCloud buffer);
+    virtual void captureRawColoredVertex(ColoredPointCloud::Ptr buffer);
 
 protected:
     std::shared_ptr<DepthCamera> _camera;
@@ -52,6 +52,12 @@ protected:
     cv::Mat _dbuffer;
 
     cv::Mat _abuffer;
+
+    Eigen::Matrix4f _rotation;
+
+    PointCloud::Ptr _vbuffer;
+
+    ColoredPointCloud::Ptr _cvbuffer;
 };
 
 }

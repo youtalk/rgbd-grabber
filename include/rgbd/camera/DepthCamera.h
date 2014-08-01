@@ -18,9 +18,9 @@
 
 namespace rgbd {
 
-typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloud;
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
-typedef pcl::PointCloud<pcl::PointXYZRGB>::Ptr ColoredPointCloud;
+typedef pcl::PointCloud<pcl::PointXYZRGB> ColoredPointCloud;
 
 class DepthCamera: public ColorCamera {
 public:
@@ -65,7 +65,7 @@ public:
      *
      * @param buffer Returned pcl::PointCloud<pcl::PointXYZ>::Ptr
      */
-    virtual void captureVertex(PointCloud buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
     /**
      * Copy the latest 3D point cloud data to the buffer.
@@ -73,7 +73,7 @@ public:
      *
      * @param buffer Returned pcl::PointCloud<pcl::PointXYZRGB>::Ptr
      */
-    virtual void captureColoredVertex(ColoredPointCloud buffer);
+    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
 
 private:
     std::shared_ptr<ColorCamera> _camera;
