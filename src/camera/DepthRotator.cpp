@@ -22,6 +22,13 @@ DepthRotator::DepthRotator(std::shared_ptr<DepthCamera> camera, int angle) :
     } else {
         throw UnsupportedException("Angle must be -90, 0, 90, or 180.");
     }
+
+    double c = std::cos(_angle * M_PI / 180.0);
+    double s = std::sin(_angle * M_PI / 180.0);
+    _rotation << c, -s,  0,  0,
+                 s,  c,  0,  0,
+                 0,  0,  1,  0,
+                 0,  0,  0,  1;
 }
 
 DepthRotator::~DepthRotator() {
@@ -87,21 +94,31 @@ void DepthRotator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
 }
 
-void DepthRotator::captureVertex(PointXYZVector& buffer) {
+void DepthRotator::captureVertex(PointCloud::Ptr buffer) {
+    PointCloud temp1, temp2;
+
     _camera->captureVertex(buffer);
-    // TODO: Rotate buffer
+    std::copy(buffer->points.begin(), buffer->points.end(),
+              std::back_inserter(temp1.points));
+    pcl::transformPointCloud(temp1, temp2, _rotation);
+    std::copy(temp2.points.begin(), temp2.points.end(), buffer->points.begin());
 }
 
-void DepthRotator::captureRawVertex(PointXYZVector& buffer) {
+void DepthRotator::captureRawVertex(PointCloud::Ptr buffer) {
     _camera->captureVertex(buffer);
 }
 
-void DepthRotator::captureColoredVertex(PointXYZRGBVector& buffer) {
+void DepthRotator::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
+    ColoredPointCloud temp1, temp2;
+
     _camera->captureColoredVertex(buffer);
-    // TODO: Rotate buffer
+    std::copy(buffer->points.begin(), buffer->points.end(),
+              std::back_inserter(temp1.points));
+    pcl::transformPointCloud(temp1, temp2, _rotation);
+    std::copy(temp2.points.begin(), temp2.points.end(), buffer->points.begin());
 }
 
-void DepthRotator::captureRawColoredVertex(PointXYZRGBVector& buffer) {
+void DepthRotator::captureRawColoredVertex(ColoredPointCloud::Ptr buffer) {
     _camera->captureColoredVertex(buffer);
 }
 

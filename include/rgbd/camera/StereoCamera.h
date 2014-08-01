@@ -35,9 +35,9 @@ public:
 
     virtual void captureColorR(cv::Mat& buffer);
 
-    virtual void captureVertex(PointXYZVector& buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
-    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
 
 protected:
     std::shared_ptr<ColorCamera> _lcamera, _rcamera;

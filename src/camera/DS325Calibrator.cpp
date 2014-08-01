@@ -120,7 +120,7 @@ void DS325Calibrator::captureAmplitude(cv::Mat& buffer) {
     _calib.calibrateAmplitude(buffer, buffer);
 }
 
-void DS325Calibrator::captureVertex(PointXYZVector& buffer) {
+void DS325Calibrator::captureVertex(PointCloud::Ptr buffer) {
     _camera->captureVertex(buffer);
 }
 

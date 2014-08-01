@@ -31,7 +31,7 @@ public:
 
     virtual void captureAmplitude(cv::Mat& buffer);
 
-    virtual void captureVertex(PointXYZVector& buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
 protected:
     boost::mutex _mutex;

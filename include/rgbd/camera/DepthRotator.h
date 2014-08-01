@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <pcl/common/transforms.h>
 #include "rgbd/camera/DepthCamera.h"
 #include "rgbd/camera/ColorRotator.h"
 
@@ -35,13 +36,13 @@ public:
 
     virtual void captureRawAmplitude(cv::Mat& buffer);
 
-    virtual void captureVertex(PointXYZVector& buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
-    virtual void captureRawVertex(PointXYZVector& buffer);
+    virtual void captureRawVertex(PointCloud::Ptr buffer);
 
-    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
 
-    virtual void captureRawColoredVertex(PointXYZRGBVector& buffer);
+    virtual void captureRawColoredVertex(ColoredPointCloud::Ptr buffer);
 
 protected:
     std::shared_ptr<DepthCamera> _camera;
@@ -51,6 +52,8 @@ protected:
     cv::Mat _dbuffer;
 
     cv::Mat _abuffer;
+
+    Eigen::Matrix4f _rotation;
 };
 
 }

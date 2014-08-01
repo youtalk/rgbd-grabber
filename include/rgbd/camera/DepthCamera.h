@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <Eigen/StdVector>
 #include "../common/Error.h"
@@ -17,11 +18,9 @@
 
 namespace rgbd {
 
-typedef std::vector<pcl::PointXYZ, Eigen::aligned_allocator<pcl::PointXYZ>>
-        PointXYZVector;
+typedef pcl::PointCloud<pcl::PointXYZ> PointCloud;
 
-typedef std::vector<pcl::PointXYZRGB, Eigen::aligned_allocator<pcl::PointXYZRGB>>
-        PointXYZRGBVector;
+typedef pcl::PointCloud<pcl::PointXYZRGB> ColoredPointCloud;
 
 class DepthCamera: public ColorCamera {
 public:
@@ -64,17 +63,17 @@ public:
      * Copy the latest 3D point cloud data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
-     * @param buffer Returned vector of pcl::PointXYZ
+     * @param buffer Returned pcl::PointCloud<pcl::PointXYZ>::Ptr
      */
-    virtual void captureVertex(PointXYZVector& buffer);
+    virtual void captureVertex(PointCloud::Ptr buffer);
 
     /**
      * Copy the latest 3D point cloud data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
-     * @param buffer Returned vector of pcl::PointXYZRGB
+     * @param buffer Returned pcl::PointCloud<pcl::PointXYZRGB>::Ptr
      */
-    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
 
 private:
     std::shared_ptr<ColorCamera> _camera;
