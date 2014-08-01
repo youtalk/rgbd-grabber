@@ -36,9 +36,9 @@ public:
 
     virtual void captureColor(cv::Mat& buffer);
 
-    virtual void captureVertex(PointXYZVector& buffer);
+    virtual void captureVertex(PointCloud buffer);
 
-    virtual void captureColoredVertex(PointXYZRGBVector& buffer);
+    virtual void captureColoredVertex(ColoredPointCloud buffer);
 
     /**
      * Copy the latest audio data to the buffer.

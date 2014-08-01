@@ -22,6 +22,9 @@ DepthRotator::DepthRotator(std::shared_ptr<DepthCamera> camera, int angle) :
     } else {
         throw UnsupportedException("Angle must be -90, 0, 90, or 180.");
     }
+
+    double cos_theta = std::cos(_angle * M_PI / 180.0);
+    double sin_theta = std::sin(_angle * M_PI / 180.0);
 }
 
 DepthRotator::~DepthRotator() {
@@ -87,21 +90,21 @@ void DepthRotator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
 }
 
-void DepthRotator::captureVertex(PointXYZVector& buffer) {
+void DepthRotator::captureVertex(PointCloud buffer) {
     _camera->captureVertex(buffer);
     // TODO: Rotate buffer
 }
 
-void DepthRotator::captureRawVertex(PointXYZVector& buffer) {
+void DepthRotator::captureRawVertex(PointCloud buffer) {
     _camera->captureVertex(buffer);
 }
 
-void DepthRotator::captureColoredVertex(PointXYZRGBVector& buffer) {
+void DepthRotator::captureColoredVertex(ColoredPointCloud buffer) {
     _camera->captureColoredVertex(buffer);
     // TODO: Rotate buffer
 }
 
-void DepthRotator::captureRawColoredVertex(PointXYZRGBVector& buffer) {
+void DepthRotator::captureRawColoredVertex(ColoredPointCloud buffer) {
     _camera->captureColoredVertex(buffer);
 }
 

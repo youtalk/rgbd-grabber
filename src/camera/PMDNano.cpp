@@ -85,16 +85,16 @@ void PMDNano::captureAmplitude(cv::Mat& buffer) {
     std::memcpy(buffer.data, _buffer, _size * sizeof (float));
 }
 
-void PMDNano::captureVertex(PointXYZVector& buffer) {
+void PMDNano::captureVertex(PointCloud buffer) {
     boost::mutex::scoped_lock lock(_mutex);
 
     if (pmdGet3DCoordinates(_handle, _vbuffer, 3 * _size * sizeof (float)))
         closeByError("pmdGet3DCoordinates");
 
-    for (size_t i = 0; i < _width * _height; i++) {
-        buffer[i].x = _vbuffer[3 * i];
-        buffer[i].y = _vbuffer[3 * i + 1];
-        buffer[i].z = _vbuffer[3 * i + 2];
+    for (size_t i = 0; i < buffer->size(); i++) {
+        buffer->points[i].x = _vbuffer[3 * i];
+        buffer->points[i].y = _vbuffer[3 * i + 1];
+        buffer->points[i].z = _vbuffer[3 * i + 2];
     }
 }
 

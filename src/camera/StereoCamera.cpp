@@ -71,11 +71,11 @@ void StereoCamera::reprojectImage(cv::Mat& xyz) {
     cv::reprojectImageTo3D(disparity, xyz, _Q, true);
 }
 
-void StereoCamera::captureVertex(PointXYZVector& buffer) {
+void StereoCamera::captureVertex(PointCloud buffer) {
     cv::Mat xyz;
     reprojectImage(xyz);
 
-    buffer.clear();
+    buffer->points.clear();
     size_t index = 0;
     double zmax = 1.0e4;
 
@@ -91,19 +91,19 @@ void StereoCamera::captureVertex(PointXYZVector& buffer) {
             point.y = -p[1];
             point.z = -p[2];
 
-            buffer.push_back(point);
+            buffer->points.push_back(point);
         }
     }
 }
 
-void StereoCamera::captureColoredVertex(PointXYZRGBVector& buffer) {
+void StereoCamera::captureColoredVertex(ColoredPointCloud buffer) {
     captureColorL(_lcolor);
     captureColorR(_rcolor);
 
     cv::Mat xyz;
     reprojectImage(xyz);
 
-    buffer.clear();
+    buffer->points.clear();
     size_t index = 0;
     double zmax = 1.0e4;
 
@@ -123,7 +123,7 @@ void StereoCamera::captureColoredVertex(PointXYZRGBVector& buffer) {
             point.g = bgr[1];
             point.r = bgr[2];
 
-            buffer.push_back(point);
+            buffer->points.push_back(point);
         }
     }
 }

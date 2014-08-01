@@ -107,11 +107,11 @@ void DS325::captureColor(cv::Mat& buffer) {
         cv::cvtColor(buffer, buffer, CV_YUV2BGR_YUY2);
 }
 
-void DS325::captureVertex(PointXYZVector& buffer) {
+void DS325::captureVertex(PointCloud buffer) {
     boost::mutex::scoped_lock lock(_dmutex);
     std::size_t index = 0;
 
-    for (auto& point: buffer) {
+    for (auto& point: buffer->points) {
         auto& f = _ddata.verticesFloatingPoint[index++];
         point.x = f.x;
         point.y = f.y;
@@ -119,12 +119,12 @@ void DS325::captureVertex(PointXYZVector& buffer) {
     }
 }
 
-void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
+void rgbd::DS325::captureColoredVertex(ColoredPointCloud buffer) {
     cv::Mat color = cv::Mat::zeros(_csize, CV_8UC3);
     captureColor(color);
 
     boost::mutex::scoped_lock dlock(_dmutex);
-    buffer.clear();
+    buffer->points.clear();
 
     for (size_t i = 0; i < _ddata.verticesFloatingPoint.size(); i++) {
         auto& f = _ddata.verticesFloatingPoint[i];
@@ -144,7 +144,7 @@ void rgbd::DS325::captureColoredVertex(PointXYZRGBVector& buffer) {
         point.g = p[1];
         point.r = p[2];
 
-        buffer.push_back(point);
+        buffer->points.push_back(point);
     }
 }
 

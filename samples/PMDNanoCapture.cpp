@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
     while (cv::waitKey(10) != 0x1b) {
         camera->captureDepth(depth);
         camera->captureAmplitude(amplitude);
-        camera->captureVertex(cloud->points);
+        camera->captureVertex(cloud);
 
         cv::flip(depth, depth, 0);
         cv::flip(amplitude, amplitude, 0);
