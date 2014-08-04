@@ -110,7 +110,6 @@ int main(int argc, char *argv[]) {
     loadImages(lefts, rights, FLAGS_size);
     FLAGS_size = findChessboards(lefts, rights, imagePoints, patternSize, FLAGS_size);
     std::cout << "number of correct files = " << FLAGS_size << std::endl;
-
     setWorldPoints(worldPoints, patternSize, 0.024, FLAGS_size);
 
     std::cout << "calibrate stereo cameras" << std::endl;
@@ -164,8 +163,8 @@ int main(int argc, char *argv[]) {
     cv::Rect validROI[2];
     stereoRectify(cameraMatrix[0], distCoeffs[0], cameraMatrix[1],
                   distCoeffs[1], lefts[0].size(), R, T, R1, R2, P1, P2, Q,
-                  cv::CALIB_ZERO_DISPARITY, 1, lefts[0].size(), &validROI[0],
-                  &validROI[1]);
+                  cv::CALIB_ZERO_DISPARITY, 1, lefts[0].size(),
+                  &validROI[0], &validROI[1]);
 
     {
         cv::FileStorage fs(FLAGS_intrinsics.c_str(), cv::FileStorage::WRITE);
