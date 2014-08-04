@@ -12,8 +12,6 @@
 
 DEFINE_int32(id, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
-DEFINE_string(depth, "depth_", "depth file prefix");
-DEFINE_string(color, "color_", "color file prefix");
 DEFINE_string(suffix, ".png", "file suffix");
 
 void findChessboards(cv::Mat& color, cv::Mat& amplitude) {
@@ -42,8 +40,8 @@ void findChessboards(cv::Mat& color, cv::Mat& amplitude) {
                 CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE)) {
         if (cv::waitKey(1) == 't') {
             std::stringstream cs, as;
-            cs << FLAGS_dir << "/" << FLAGS_color << imageNum << FLAGS_suffix;
-            as << FLAGS_dir << "/" << FLAGS_depth << imageNum << FLAGS_suffix;
+            cs << FLAGS_dir << "/color_" << imageNum << FLAGS_suffix;
+            as << FLAGS_dir << "/depth_" << imageNum << FLAGS_suffix;
 
             cv::imwrite(cs.str(), color);
             cv::imwrite(as.str(), amplitude);

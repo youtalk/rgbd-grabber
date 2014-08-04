@@ -14,7 +14,7 @@ DEFINE_string(intrinsics, "intrinsics.xml", "intrinsics file");
 DEFINE_string(extrinsics, "extrinsics.xml", "extrinsics file");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(suffix, ".png", "file suffix");
-DEFINE_int32(number, 1, "number of files");
+DEFINE_int32(size, 1, "number of files");
 
 void loadImages(cv::vector<cv::Mat> &lefts, cv::vector<cv::Mat> &rights,
                 const int &fileNum) {
@@ -105,13 +105,13 @@ int main(int argc, char *argv[]) {
     cv::vector<cv::vector<cv::vector<cv::Point2f>>> imagePoints(2);
 
     for (size_t i = 0; i < 2; i++)
-        imagePoints[i].resize(FLAGS_number);
+        imagePoints[i].resize(FLAGS_size);
 
-    loadImages(lefts, rights, FLAGS_number);
-    FLAGS_number = findChessboards(lefts, rights, imagePoints, patternSize, FLAGS_number);
-    std::cout << "number of correct files = " << FLAGS_number << std::endl;
+    loadImages(lefts, rights, FLAGS_size);
+    FLAGS_size = findChessboards(lefts, rights, imagePoints, patternSize, FLAGS_size);
+    std::cout << "number of correct files = " << FLAGS_size << std::endl;
 
-    setWorldPoints(worldPoints, patternSize, 0.024, FLAGS_number);
+    setWorldPoints(worldPoints, patternSize, 0.024, FLAGS_size);
 
     std::cout << "calibrate stereo cameras" << std::endl;
     cv::vector<cv::Mat> cameraMatrix(2);
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 
     double err = 0;
     int npoints = 0;
-    for (int i = 0; i < FLAGS_number; i++) {
+    for (int i = 0; i < FLAGS_size; i++) {
         int size = (int) imagePoints[0][i].size();
         cv::vector<cv::Vec3f> lines[2];
         cv::Mat imgpt[2];
@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
 
     cv::namedWindow("Rectified", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
-    for (int i = 0; i < FLAGS_number; i++) {
+    for (int i = 0; i < FLAGS_size; i++) {
         for (int k = 0; k < 2; k++) {
             if (k == 0) {
                 cv::Mat img = lefts[i].clone(), rimg, cimg;

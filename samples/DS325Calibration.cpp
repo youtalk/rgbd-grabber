@@ -11,10 +11,8 @@
 #include <gflags/gflags.h>
 
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
-DEFINE_string(depth, "depth_", "depth file prefix");
-DEFINE_string(color, "color_", "color file prefix");
 DEFINE_string(suffix, ".png", "file suffix");
-DEFINE_int32(number, 1, "number of files");
+DEFINE_int32(size, 1, "number of files");
 
 void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
                 const int &fileNum) {
@@ -23,8 +21,8 @@ void loadImages(cv::vector<cv::Mat> &colors, cv::vector<cv::Mat> &depths,
 
     for (int i = 0; i < fileNum; ++i) {
         std::stringstream colorFile, depthFile;
-        colorFile << FLAGS_dir << "/" << FLAGS_color << i << FLAGS_suffix;
-        depthFile << FLAGS_dir << "/" << FLAGS_depth << i << FLAGS_suffix;
+        colorFile << FLAGS_dir << "/color_" << i << FLAGS_suffix;
+        depthFile << FLAGS_dir << "/depth_" << i << FLAGS_suffix;
         std::cout << colorFile.str() << ", " << depthFile.str() << ": load" << std::endl;
 
         cv::Mat color = cv::imread(colorFile.str(), 0);
@@ -108,7 +106,7 @@ int main(int argc, char *argv[]) {
     cv::namedWindow("depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
 
     cv::vector<cv::Mat> colors(0), depths(0);
-    int numFile = FLAGS_number;
+    int numFile = FLAGS_size;
     const cv::Size patternSize(9, 6);
     cv::vector<cv::vector<cv::Point3f>> worldPoints;
     cv::vector<cv::vector<cv::vector<cv::Point2f>>> imagePoints(2);
@@ -117,7 +115,7 @@ int main(int argc, char *argv[]) {
     for (size_t i = 0; i < 2; i++)
         imagePoints[i].resize(numFile);
 
-    loadImages(colors, depths, FLAGS_number);
+    loadImages(colors, depths, FLAGS_size);
     numFile = findChessboards(colors, depths, imagePoints, patternSize, numFile);
 
     std::cout << "number of correct files:" << numFile << std::endl;
@@ -299,7 +297,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "check quality" << std::endl;
-    loadImages(colors, depths, FLAGS_number);
+    loadImages(colors, depths, FLAGS_size);
 
     cv::Mat canvas;
     double sf;
