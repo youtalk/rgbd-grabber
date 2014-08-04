@@ -4,15 +4,12 @@
  * @date Jun 20, 2014
  */
 
-#include <opencv2/opencv.hpp>
-#include <gflags/gflags.h>
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <opencv2/opencv.hpp>
+#include <gflags/gflags.h>
 
-using namespace gflags;
-
-DEFINE_int32(camera, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(depth, "depth_", "depth file prefix");
 DEFINE_string(color, "color_", "color file prefix");
@@ -105,7 +102,7 @@ void setWorldPoints(cv::vector<cv::vector<cv::Point3f>> &worldPoints,
 }
 
 int main(int argc, char *argv[]) {
-    ParseCommandLineFlags(&argc, &argv, true);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     cv::namedWindow("color", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);
     cv::namedWindow("depth", CV_WINDOW_AUTOSIZE | CV_WINDOW_FREERATIO);

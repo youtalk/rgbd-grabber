@@ -8,6 +8,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <gflags/gflags.h>
 #include "rgbd/camera/UEye.h"
 #include "rgbd/camera/DistortionCalibrator.h"
 #include "rgbd/camera/ColorCalibrator.h"
@@ -15,13 +16,16 @@
 
 using namespace rgbd;
 
-int main(int argc, char *argv[]) {
-    if (argc < 4)
-        return -1;
+DEFINE_int32(id, 0, "camera id");
+DEFINE_string(conf, "data/ueye-conf.ini", "camera configuration");
+DEFINE_string(intrinsics, "data/ueye-calib.xml", "camera intrinsic data");
 
-    std::shared_ptr<UEye> original(new UEye(std::atoi(argv[1]), argv[2]));
+int main(int argc, char *argv[]) {
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    std::shared_ptr<UEye> original(new UEye(FLAGS_id, FLAGS_conf));
     std::shared_ptr<rgbd::DistortionCalibrator> undistorted(
-            new rgbd::DistortionCalibrator(original, argv[3]));
+            new rgbd::DistortionCalibrator(original, FLAGS_intrinsics));
     std::shared_ptr<rgbd::ColorCalibrator> camera(
             new rgbd::ColorCalibrator(undistorted));
 //    std::shared_ptr<rgbd::CameraRotator> camera(

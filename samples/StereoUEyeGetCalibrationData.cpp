@@ -10,12 +10,10 @@
 #include <gflags/gflags.h>
 #include "rgbd/camera/UEye.h"
 
-using namespace gflags;
-
-DEFINE_int32(lcamera, 0, "left camera id");
-DEFINE_int32(rcamera, 0, "right camera id");
-DEFINE_string(lconf, "", "left camera conf");
-DEFINE_string(rconf, "", "right camera conf");
+DEFINE_int32(left_id, 0, "left camera id");
+DEFINE_int32(right_id, 0, "right camera id");
+DEFINE_string(left_conf, "data/ueye-conf.ini", "left camera conf");
+DEFINE_string(right_conf, "data/ueye-conf.ini", "right camera conf");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(suffix, ".png", "file suffix");
 
@@ -63,14 +61,14 @@ void findChessboards(cv::Mat& left, cv::Mat& right) {
 }
 
 int main(int argc, char* argv[]) {
-    ParseCommandLineFlags(&argc, &argv, true);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     std::shared_ptr<rgbd::ColorCamera> lcamera(
-            new rgbd::UEye(FLAGS_lcamera, FLAGS_lconf, "left"));
+            new rgbd::UEye(FLAGS_left_id, FLAGS_left_conf, "left"));
     lcamera->start();
 
     std::shared_ptr<rgbd::ColorCamera> rcamera(
-            new rgbd::UEye(FLAGS_rcamera, FLAGS_rconf, "right"));
+            new rgbd::UEye(FLAGS_right_id, FLAGS_right_conf, "right"));
     rcamera->start();
 
     std::string execstr = "mkdir -p " + FLAGS_dir;

@@ -8,15 +8,20 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <gflags/gflags.h>
 #include "rgbd/camera/UVCamera.h"
 
 using namespace rgbd;
 
-int main(int argc, char *argv[]) {
-    if (argc < 2)
-        return -1;
+DEFINE_int32(id, 0, "camera id");
+DEFINE_int32(width, 640, "image width");
+DEFINE_int32(height, 480, "image height");
 
-    std::shared_ptr<ColorCamera> camera(new UVCamera(std::atoi(argv[1]), cv::Size(640, 480)));
+int main(int argc, char *argv[]) {
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    std::shared_ptr<ColorCamera> camera(new UVCamera(
+            FLAGS_id, cv::Size(FLAGS_width, FLAGS_height)));
     camera->start();
 
     cv::Mat color = cv::Mat::zeros(camera->colorSize(), CV_8UC3);

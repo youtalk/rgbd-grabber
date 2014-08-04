@@ -19,7 +19,7 @@
 
 DEFINE_int32(id, 0, "camera id");
 DEFINE_string(conf, "data/ueye-conf.ini", "camera configuration");
-DEFINE_string(output, "data/ueye-calib.xml", "camera intrinsic data");
+DEFINE_string(intrinsics, "data/ueye-calib.xml", "camera intrinsic data");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(suffix, ".png", "file suffix");
 
@@ -135,7 +135,7 @@ int main(int argc, char* argv[]) {
     {
         std::cout << "UEyeCalibration: start calibration" << std::endl;
 
-        cv::FileStorage file(FLAGS_output, cv::FileStorage::READ);
+        cv::FileStorage file(FLAGS_intrinsics, cv::FileStorage::READ);
         std::vector<cv::Mat> tvecs;
         std::vector<cv::Mat> rvecs;
 
@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
                                     apertureWidth, apertureHeight, fovx, fovy,
                                     focalLength, principalPoint, aspectRatio);
 
-        cv::FileStorage file(FLAGS_output, cv::FileStorage::WRITE);
+        cv::FileStorage file(FLAGS_intrinsics, cv::FileStorage::WRITE);
         file << "cameraMatrix" << cameraMatrix;
         file << "distCoeffs" << distCoeffs;
         file << "imageSize" << camera->colorSize();
@@ -178,7 +178,7 @@ int main(int argc, char* argv[]) {
         file << "aspectRatio" << aspectRatio;
         file.release();
 
-        std::cout << "UEyeCalibration: saved " << FLAGS_output << std::endl;
+        std::cout << "UEyeCalibration: saved " << FLAGS_intrinsics << std::endl;
     }
 
     return 0;

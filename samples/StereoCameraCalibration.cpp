@@ -10,12 +10,6 @@
 #include <string>
 #include <sstream>
 
-using namespace gflags;
-
-DEFINE_int32(lcamera, 0, "left camera id");
-DEFINE_int32(rcamera, 0, "right camera id");
-DEFINE_string(lconf, "", "left camera conf");
-DEFINE_string(rconf, "", "right camera conf");
 DEFINE_string(intrinsics, "intrinsics.xml", "intrinsics file");
 DEFINE_string(extrinsics, "extrinsics.xml", "extrinsics file");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
@@ -103,7 +97,7 @@ void setWorldPoints(cv::vector<cv::vector<cv::Point3f>> &worldPoints,
 }
 
 int main(int argc, char *argv[]) {
-    ParseCommandLineFlags(&argc, &argv, true);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     cv::vector<cv::Mat> lefts, rights;
     const cv::Size patternSize(9, 6);

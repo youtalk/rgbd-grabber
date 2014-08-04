@@ -9,15 +9,18 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/visualization/cloud_viewer.h>
+#include <gflags/gflags.h>
 #include "rgbd/camera/PMDNano.h"
 
 using namespace rgbd;
 
-int main(int argc, char *argv[]) {
-    if (argc < 3)
-        return -1;
+DEFINE_string(pap, "", "ppp file");
+DEFINE_string(ppp, "", "pap file");
 
-    std::shared_ptr<DepthCamera> camera(new PMDNano(argv[1], argv[2]));
+int main(int argc, char *argv[]) {
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    std::shared_ptr<DepthCamera> camera(new PMDNano(FLAGS_pap, FLAGS_ppp));
     camera->start();
 
     cv::Mat depth = cv::Mat::zeros(camera->depthSize(), CV_32F);

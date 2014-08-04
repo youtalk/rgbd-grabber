@@ -9,19 +9,26 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <pcl/visualization/cloud_viewer.h>
+#include <gflags/gflags.h>
 #include "rgbd/camera/UEye.h"
 #include "rgbd/camera/StereoCamera.h"
 
 using namespace rgbd;
 
-int main(int argc, char *argv[]) {
-    if (argc < 5)
-        return -1;
+DEFINE_int32(left_id, 0, "left camera id");
+DEFINE_int32(right_id, 0, "right camera id");
+DEFINE_string(left_conf, "data/ueye-conf.ini", "left camera conf");
+DEFINE_string(right_conf, "data/ueye-conf.ini", "right camera conf");
+DEFINE_string(intrinsics, "intrinsics.xml", "intrinsics file");
+DEFINE_string(extrinsics, "extrinsics.xml", "extrinsics file");
 
-    std::shared_ptr<UEye> left(new UEye(std::atoi(argv[1]), argv[3], "Left"));
-    std::shared_ptr<UEye> right(new UEye(std::atoi(argv[2]), argv[3], "Right"));
+int main(int argc, char *argv[]) {
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+    std::shared_ptr<UEye> left(new UEye(FLAGS_left_id, FLAGS_left_conf, "Left"));
+    std::shared_ptr<UEye> right(new UEye(FLAGS_right_id, FLAGS_right_conf, "Right"));
     std::shared_ptr<StereoCamera> camera(new StereoCamera(
-            left, right, argv[4], argv[5]));
+            left, right, FLAGS_intrinsics, FLAGS_extrinsics));
     camera->start();
 
     cv::Mat lcolor;

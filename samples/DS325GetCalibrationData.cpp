@@ -10,9 +10,7 @@
 #include <gflags/gflags.h>
 #include "rgbd/camera/DS325.h"
 
-using namespace gflags;
-
-DEFINE_int32(camera, 0, "camera id");
+DEFINE_int32(id, 0, "camera id");
 DEFINE_string(dir, "/tmp/calib", "calibration data directory");
 DEFINE_string(depth, "depth_", "depth file prefix");
 DEFINE_string(color, "color_", "color file prefix");
@@ -69,10 +67,10 @@ void findChessboards(cv::Mat& color, cv::Mat& amplitude) {
 }
 
 int main(int argc, char* argv[]) {
-    ParseCommandLineFlags(&argc, &argv, true);
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
     std::shared_ptr<rgbd::DepthCamera> camera(
-            new rgbd::DS325(FLAGS_camera, FRAME_FORMAT_VGA));
+            new rgbd::DS325(FLAGS_id, FRAME_FORMAT_VGA));
     camera->start();
 
     std::string execstr = "mkdir -p " + FLAGS_dir;
