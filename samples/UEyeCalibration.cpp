@@ -14,19 +14,21 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/calib3d/calib3d.hpp>
+#include <gflags/gflags.h>
 #include "rgbd/camera/UEye.h"
 
-static const std::string FILE_PREFIX = "/tmp/template";
-static const std::string FILE_EXTENSION = ".jpg";
-static const std::string CAMERA_MATRIX = "cameraMatrix";
-static const std::string DIST_COEFFS = "distCoeffs";
+DEFINE_int32(id, 0, "camera id");
+DEFINE_string(conf, "data/ueye-conf.ini", "camera configuration");
+DEFINE_string(output, "data/ueye-calib.xml", "camera intrinsic data");
+DEFINE_string(dir, "/tmp/calib", "calibration data directory");
+DEFINE_string(suffix, ".png", "file suffix");
 
 bool captureBoardImage(cv::Mat& frame, size_t& count) {
     int key = cv::waitKey(10);
 
     if (key == 'c') {
         std::stringstream stream;
-        stream << FILE_PREFIX << count << FILE_EXTENSION;
+        stream << FLAGS_dir << "/" << count << FLAGS_suffix;
         std::string fileName = stream.str();
         cv::imwrite(fileName, frame);
 
@@ -47,7 +49,7 @@ std::vector<cv::Mat> readBoardImage(size_t count) {
 
     for (size_t i = 0; i < count; i++) {
         std::stringstream stream;
-        stream << FILE_PREFIX << i << FILE_EXTENSION;
+        stream << FLAGS_dir << "/" << i << FLAGS_suffix;
         std::string fileName = stream.str();
         images.push_back(cv::imread(fileName));
 
@@ -101,10 +103,9 @@ std::vector<std::vector<cv::Point3f>> calculateWorldPoints(
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 4)
-        return -1;
+    gflags::ParseCommandLineFlags(&argc, &argv, true);
 
-    std::shared_ptr<rgbd::ColorCamera> camera(new rgbd::UEye(std::atoi(argv[1]), argv[2]));
+    std::shared_ptr<rgbd::ColorCamera> camera(new rgbd::UEye(FLAGS_id, FLAGS_conf));
     camera->start();
 
     size_t index = 0;
@@ -134,13 +135,13 @@ int main(int argc, char* argv[]) {
     {
         std::cout << "UEyeCalibration: start calibration" << std::endl;
 
-        cv::FileStorage file(argv[3], cv::FileStorage::READ);
+        cv::FileStorage file(FLAGS_output, cv::FileStorage::READ);
         std::vector<cv::Mat> tvecs;
         std::vector<cv::Mat> rvecs;
 
         if (file.isOpened()) {
-            file[CAMERA_MATRIX] >> cameraMatrix;
-            file[DIST_COEFFS] >> distCoeffs;
+            file["cameraMatrix"] >> cameraMatrix;
+            file["distCoeffs"] >> distCoeffs;
             file.release();
 
             cv::calibrateCamera(worldPoints, imagePoints, images[0].size(),
@@ -164,9 +165,9 @@ int main(int argc, char* argv[]) {
                                     apertureWidth, apertureHeight, fovx, fovy,
                                     focalLength, principalPoint, aspectRatio);
 
-        cv::FileStorage file(argv[3], cv::FileStorage::WRITE);
-        file << CAMERA_MATRIX << cameraMatrix;
-        file << DIST_COEFFS << distCoeffs;
+        cv::FileStorage file(FLAGS_output, cv::FileStorage::WRITE);
+        file << "cameraMatrix" << cameraMatrix;
+        file << "distCoeffs" << distCoeffs;
         file << "imageSize" << camera->colorSize();
         file << "apertureWidth" << apertureWidth;
         file << "apertureHeight" << apertureHeight;
@@ -177,7 +178,7 @@ int main(int argc, char* argv[]) {
         file << "aspectRatio" << aspectRatio;
         file.release();
 
-        std::cout << "UEyeCalibration: saved " << argv[3] << std::endl;
+        std::cout << "UEyeCalibration: saved " << FLAGS_output << std::endl;
     }
 
     return 0;
