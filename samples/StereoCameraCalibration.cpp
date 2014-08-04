@@ -1,7 +1,7 @@
 /**
  * @file StereoCameraCalibration.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
- * @date July 17, 2014
+ * @date Jul 17, 2014
  */
 
 #include <opencv2/opencv.hpp>

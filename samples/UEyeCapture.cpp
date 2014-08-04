@@ -1,7 +1,7 @@
 /**
- * @file UVCameraCapture.cpp
+ * @file UEyeCapture.cpp
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
- * @date Feb 10, 2014
+ * @date Apr 20, 2014
  */
 
 #include <memory>

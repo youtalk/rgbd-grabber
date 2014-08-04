@@ -20,7 +20,7 @@ StereoCamera::StereoCamera(std::shared_ptr<ColorCamera> left, std::shared_ptr<Co
         std::exit(-1);
     }
 
-    loadInExtrinsics(intrinsics, extrinsics);
+    loadCameraParams(intrinsics, extrinsics);
     setUpStereoParams();
 }
 
@@ -64,16 +64,17 @@ void StereoCamera::captureColorR(cv::Mat& buffer) {
     _rcolor = buffer;
 }
 
-void StereoCamera::reprojectImage(cv::Mat& xyz) {
-    cv::Mat disparity;
+cv::Mat StereoCamera::reprojectImage() {
+    cv::Mat disparity, xyz;
 
     _sgbm(_lcolor, _rcolor, disparity);
     cv::reprojectImageTo3D(disparity, xyz, _Q, true);
+
+    return xyz;
 }
 
 void StereoCamera::captureVertex(PointCloud::Ptr buffer) {
-    cv::Mat xyz;
-    reprojectImage(xyz);
+    cv::Mat xyz = reprojectImage();
 
     buffer->points.clear();
     size_t index = 0;
@@ -99,9 +100,7 @@ void StereoCamera::captureVertex(PointCloud::Ptr buffer) {
 void StereoCamera::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
     captureColorL(_lcolor);
     captureColorR(_rcolor);
-
-    cv::Mat xyz;
-    reprojectImage(xyz);
+    cv::Mat xyz = reprojectImage();
 
     buffer->points.clear();
     size_t index = 0;
@@ -128,7 +127,7 @@ void StereoCamera::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
     }
 }
 
-void StereoCamera::loadInExtrinsics(const std::string& intrinsics,
+void StereoCamera::loadCameraParams(const std::string& intrinsics,
                                     const std::string& extrinsics) {
     cv::FileStorage fs(intrinsics, CV_STORAGE_READ);
     cv::Mat M1, D1, M2, D2;

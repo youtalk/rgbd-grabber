@@ -53,9 +53,9 @@ private:
 
     cv::Mat _Q;
 
-    void loadInExtrinsics(const std::string& intrinsics, const std::string& extrinsics);
+    void loadCameraParams(const std::string& intrinsics, const std::string& extrinsics);
 
-    void reprojectImage(cv::Mat& xyz);
+    cv::Mat reprojectImage();
 };
 
 }

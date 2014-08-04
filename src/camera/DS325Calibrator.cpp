@@ -94,7 +94,7 @@ void DS325CalibWorker::loadParameters(const std::string& params) {
 
 DS325Calibrator::DS325Calibrator(std::shared_ptr<DS325> camera,
                                    const std::string& file):
-        DepthCameraCalibrator(camera),
+        DepthCalibrator(camera),
         _calib(file) {
     if (_camera->colorSize().width != _camera->depthSize().width * 2 ||
         _camera->colorSize().height != _camera->depthSize().height * 2) {

@@ -1,5 +1,5 @@
 /**
- * @file DepthCameraCalibrator.h
+ * @file DepthCalibrator.h
  * @author Yutaka Kondo <yutaka.kondo@youtalk.jp>
  * @date Jul 4, 2014
  */
@@ -10,11 +10,11 @@
 
 namespace rgbd {
 
-class DepthCameraCalibrator: public DepthCamera {
+class DepthCalibrator: public DepthCamera {
 public:
-    DepthCameraCalibrator(std::shared_ptr<DepthCamera> camera);
+    DepthCalibrator(std::shared_ptr<DepthCamera> camera);
 
-    virtual ~DepthCameraCalibrator();
+    virtual ~DepthCalibrator();
 
     virtual cv::Size colorSize() const;
 

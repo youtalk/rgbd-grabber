@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include <memory>
-#include "DepthCameraCalibrator.h"
+#include "DepthCalibrator.h"
 #include "DS325.h"
 
 namespace rgbd {
@@ -41,7 +41,7 @@ private:
     void loadParameters(const std::string& params);
 };
 
-class DS325Calibrator: public DepthCameraCalibrator {
+class DS325Calibrator: public DepthCalibrator {
 public:
     DS325Calibrator(std::shared_ptr<DS325> camera, const std::string& file);
 
