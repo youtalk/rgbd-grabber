@@ -70,6 +70,9 @@ std::vector<std::vector<cv::Point2f>> calculateBoardCorners(
                                       CV_CALIB_CB_ADAPTIVE_THRESH +
                                       CV_CALIB_CB_NORMALIZE_IMAGE +
                                       CV_CALIB_CB_FAST_CHECK)) {
+            cv::cornerSubPix(
+                    images[i], points, cv::Size(11, 11), cv::Size(-1, -1),
+                    cv::TermCriteria(CV_TERMCRIT_ITER + CV_TERMCRIT_EPS, 30, 0.01));
             imagePoints.push_back(points);
             cv::drawChessboardCorners(images[i], patternSize,
                                       (cv::Mat) (points), true);
