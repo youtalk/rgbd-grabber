@@ -21,7 +21,7 @@ Dependencies:
 ~~~ sh
 $ cmake .
 $ make
-$ bin/UVCameraCapture 0
+$ bin/UVCameraCapture -id 0
 ~~~
 
 ### Creative Senz3D / SoftKinetic DS325
