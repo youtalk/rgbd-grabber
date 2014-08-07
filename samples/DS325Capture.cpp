@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
         camera->captureDepth(depth);
         camera->captureAmplitude(amplitude);
         camera->captureColor(color);
-        camera->captureColoredVertex(cloud);
+        camera->captureColoredPointCloud(cloud);
 
         cv::Mat d, a;
         depth.convertTo(d, CV_8U, 255.0 / 1000.0);

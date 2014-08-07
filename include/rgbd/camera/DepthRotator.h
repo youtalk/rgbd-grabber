@@ -36,11 +36,11 @@ public:
 
     virtual void captureRawAmplitude(cv::Mat& buffer);
 
-    virtual void captureVertex(PointCloud::Ptr buffer);
+    virtual void capturePointCloud(PointCloud::Ptr buffer);
 
     virtual void captureRawVertex(PointCloud::Ptr buffer);
 
-    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
+    virtual void captureColoredPointCloud(ColoredPointCloud::Ptr buffer);
 
     virtual void captureRawColoredVertex(ColoredPointCloud::Ptr buffer);
 

@@ -94,10 +94,10 @@ void DepthRotator::captureRawAmplitude(cv::Mat& buffer) {
     _camera->captureAmplitude(buffer);
 }
 
-void DepthRotator::captureVertex(PointCloud::Ptr buffer) {
+void DepthRotator::capturePointCloud(PointCloud::Ptr buffer) {
     PointCloud temp1, temp2;
 
-    _camera->captureVertex(buffer);
+    _camera->capturePointCloud(buffer);
     std::copy(buffer->points.begin(), buffer->points.end(),
               std::back_inserter(temp1.points));
     pcl::transformPointCloud(temp1, temp2, _rotation);
@@ -105,13 +105,13 @@ void DepthRotator::captureVertex(PointCloud::Ptr buffer) {
 }
 
 void DepthRotator::captureRawVertex(PointCloud::Ptr buffer) {
-    _camera->captureVertex(buffer);
+    _camera->capturePointCloud(buffer);
 }
 
-void DepthRotator::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
+void DepthRotator::captureColoredPointCloud(ColoredPointCloud::Ptr buffer) {
     ColoredPointCloud temp1, temp2;
 
-    _camera->captureColoredVertex(buffer);
+    _camera->captureColoredPointCloud(buffer);
     std::copy(buffer->points.begin(), buffer->points.end(),
               std::back_inserter(temp1.points));
     pcl::transformPointCloud(temp1, temp2, _rotation);
@@ -119,7 +119,7 @@ void DepthRotator::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
 }
 
 void DepthRotator::captureRawColoredVertex(ColoredPointCloud::Ptr buffer) {
-    _camera->captureColoredVertex(buffer);
+    _camera->captureColoredPointCloud(buffer);
 }
 
 }

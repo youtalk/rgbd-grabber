@@ -73,7 +73,7 @@ cv::Mat StereoCamera::reprojectImage() {
     return xyz;
 }
 
-void StereoCamera::captureVertex(PointCloud::Ptr buffer) {
+void StereoCamera::capturePointCloud(PointCloud::Ptr buffer) {
     cv::Mat xyz = reprojectImage();
 
     buffer->points.clear();
@@ -97,7 +97,7 @@ void StereoCamera::captureVertex(PointCloud::Ptr buffer) {
     }
 }
 
-void StereoCamera::captureColoredVertex(ColoredPointCloud::Ptr buffer) {
+void StereoCamera::captureColoredPointCloud(ColoredPointCloud::Ptr buffer) {
     captureColorL(_lcolor);
     captureColorR(_rcolor);
     cv::Mat xyz = reprojectImage();

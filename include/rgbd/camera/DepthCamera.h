@@ -65,15 +65,15 @@ public:
      *
      * @param buffer Returned pcl::PointCloud<pcl::PointXYZ>::Ptr
      */
-    virtual void captureVertex(PointCloud::Ptr buffer);
+    virtual void capturePointCloud(PointCloud::Ptr buffer);
 
     /**
-     * Copy the latest 3D point cloud data to the buffer.
+     * Copy the latest colored 3D point cloud data to the buffer.
      * Note that the buffer must be allocated in advance.
      *
      * @param buffer Returned pcl::PointCloud<pcl::PointXYZRGB>::Ptr
      */
-    virtual void captureColoredVertex(ColoredPointCloud::Ptr buffer);
+    virtual void captureColoredPointCloud(ColoredPointCloud::Ptr buffer);
 
 private:
     std::shared_ptr<ColorCamera> _camera;

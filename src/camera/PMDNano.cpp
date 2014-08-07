@@ -85,7 +85,7 @@ void PMDNano::captureAmplitude(cv::Mat& buffer) {
     std::memcpy(buffer.data, _buffer, _size * sizeof (float));
 }
 
-void PMDNano::captureVertex(PointCloud::Ptr buffer) {
+void PMDNano::capturePointCloud(PointCloud::Ptr buffer) {
     boost::mutex::scoped_lock lock(_mutex);
     size_t index = 0;
 

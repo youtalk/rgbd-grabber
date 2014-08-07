@@ -53,7 +53,7 @@ public:
 
     virtual void captureAmplitude(cv::Mat& buffer);
 
-    virtual void captureVertex(PointCloud::Ptr buffer);
+    virtual void capturePointCloud(PointCloud::Ptr buffer);
 
 private:
     DS325CalibWorker _calib;

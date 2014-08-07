@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     while ((key = cv::waitKey(10)) != 0x1b) {
         camera->captureColorL(lcolor);
         camera->captureColorR(rcolor);
-        camera->captureColoredVertex(cloud);
+        camera->captureColoredPointCloud(cloud);
 
         cv::imshow("Left", lcolor);
         cv::imshow("Right", rcolor);
