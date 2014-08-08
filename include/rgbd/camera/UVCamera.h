@@ -19,7 +19,8 @@ namespace rgbd {
 class UVCamera: public ColorCamera {
 public:
     UVCamera(size_t deviceNo,
-             const cv::Size& size = cv::Size(640, 480));
+             const cv::Size& size = cv::Size(640, 480),
+             double fps = 60.0);
 
     virtual ~UVCamera();
 
@@ -30,9 +31,11 @@ public:
     virtual void captureColor(cv::Mat& buffer);
 
 private:
+    cv::VideoCapture _capture;
+
     const cv::Size _size;
 
-    cv::VideoCapture _capture;
+    const long _usleep;
 
     cv::Mat _buffer;
 

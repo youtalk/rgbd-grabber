@@ -8,8 +8,10 @@
 
 namespace rgbd {
 
-UVCamera::UVCamera(size_t deviceNo, const cv::Size& size) :
-        _size(size), _capture(deviceNo) {
+UVCamera::UVCamera(size_t deviceNo, const cv::Size& size, double fps) :
+        _capture(deviceNo),
+        _size(size),
+        _usleep(1000000 / fps) {
     _capture.set(CV_CAP_PROP_FRAME_WIDTH, size.width);
     _capture.set(CV_CAP_PROP_FRAME_HEIGHT, size.height);
     if (!_capture.isOpened())
@@ -32,7 +34,7 @@ void UVCamera::start() {
 
 void UVCamera::update() {
     while (_capture.isOpened()) {
-        usleep(16667); // 60 [Hz]
+        usleep(_usleep);
 
         {
             boost::mutex::scoped_lock lock(_mutex);
