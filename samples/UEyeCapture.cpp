@@ -12,7 +12,7 @@
 #include "rgbd/camera/UEye.h"
 #include "rgbd/camera/DistortionCalibrator.h"
 #include "rgbd/camera/ColorCalibrator.h"
-#include "rgbd/camera/CameraRotator.h"
+#include "rgbd/camera/ColorRotator.h"
 
 using namespace rgbd;
 
@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
             new rgbd::DistortionCalibrator(original, FLAGS_intrinsics));
     std::shared_ptr<rgbd::ColorCalibrator> camera(
             new rgbd::ColorCalibrator(undistorted));
-//    std::shared_ptr<rgbd::CameraRotator> camera(
-//            new rgbd::CameraRotator(calibrated, 90));
+//    std::shared_ptr<rgbd::ColorRotator> camera(
+//            new rgbd::ColorRotator(calibrated, 90));
     camera->start();
 
     cv::Mat raw = cv::Mat::zeros(camera->colorSize(), CV_8UC3);
