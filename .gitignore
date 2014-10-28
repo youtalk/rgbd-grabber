@@ -22,6 +22,7 @@
 
 .project
 .cproject
+.settings
 
 CMakeCache.txt
 CMakeFiles
