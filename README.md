@@ -17,6 +17,12 @@ Dependencies:
 * [PCL](https://github.com/PointCloudLibrary/pcl) 1.7 or newer
 * [gflags](https://github.com/gflags/gflags) 2.1 or newer
 
+~~~ sh
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
+$ sudo apt-get update
+$ sudo apt-get install libboost-all-dev libopencv-dev libpcl-all gflags
+~~~
+
 ### UVC
 ~~~ sh
 $ cmake .
