@@ -12,10 +12,10 @@ Installation
 ------------
 
 Dependencies:
-* **Boost 1.46** or newer
-* **OpenCV 2.3** or newer
-* **PCL 1.7** or newer
-* **gflags 2.1** or newer
+* [Boost](https://github.com/boostorg/boost) 1.46 or newer
+* [OpenCV](https://github.com/Itseez/opencv) 2.3 or newer
+* [PCL](https://github.com/PointCloudLibrary/pcl) 1.7 or newer
+* [gflags](https://github.com/gflags/gflags) 2.1 or newer
 
 ### UVC
 ~~~ sh
