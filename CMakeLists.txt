@@ -55,7 +55,7 @@ SET(SRC_UEYE
   src/camera/UEye.cpp src/camera/ueye_cam_driver.cpp)
 
 SET(LIB_EXTERNAL
-  ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES} gflags)
+  ${Boost_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES} gflags pthread)
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${SRC})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${LIB_EXTERNAL})
