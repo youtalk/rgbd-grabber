@@ -20,7 +20,7 @@ Dependencies:
 ~~~ sh
 $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
 $ sudo apt-get update
-$ sudo apt-get install libboost-all-dev libopencv-dev libpcl-all gflags
+$ sudo apt-get install libboost-all-dev libopencv-dev libpcl-all libgflags-dev
 ~~~
 
 ### UVC
