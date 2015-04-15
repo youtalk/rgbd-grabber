@@ -18,9 +18,14 @@ Dependencies:
 * [gflags](https://github.com/gflags/gflags) 2.1 or newer
 
 ~~~ sh
+$ git clone https://github.com/gflags/gflags
+$ cd gflags
+$ cmake .
+$ make
+$ sudo make install
 $ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
 $ sudo apt-get update
-$ sudo apt-get install libboost-all-dev libopencv-dev libpcl-1.7-all libgflags-dev
+$ sudo apt-get install libboost-all-dev libopencv-dev libpcl-1.7-all
 ~~~
 
 ### UVC
