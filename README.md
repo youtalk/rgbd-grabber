@@ -51,9 +51,20 @@ $ bin/PMDNanoCapture --pap=/path/to/camboardnano.L64.pap --ppp=/path/to/camboard
 
 ### iDS uEye LE
 See also the examples of configuration file `data/ueye-conf.ini` and calibration data `data/ueye-calib.xml` for an uEye camera.
+
+**Single camera**
 ~~~ sh
 $ cmake -DUSE_UEYE=ON .
 $ make
 $ bin/UEyeCalibration --id=0 --conf=/path/to/conf.ini --intrinsics=/path/to/calib.xml
 $ bin/UEyeCapture --id=0 --conf=/path/to/conf.ini --intrinsics=/path/to/calib.xml
+~~~
+
+**Stereo camera**
+~~~ sh
+$ cmake -DUSE_UEYE=ON .
+$ make
+$ bin/StereoUEyeGetCalibrationData --left_id=0 --right_id=1 --left_conf=/path/to/conf.ini --right_conf=/path/to/conf.ini
+$ bin/StereoCameraCalibration --intrinsics=/path/to/intrinsics.xml --extrinsics=/path/to/extrinsics.xml
+$ bin/StereoUEyeCapture --left_id=0 --right_id=1 --left_conf=/path/to/conf.ini --right_conf=/path/to/conf.ini --intrinsics=/path/to/intrinsics.xml --extrinsics=/path/to/extrinsics.xml
 ~~~
