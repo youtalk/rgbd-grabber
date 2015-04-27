@@ -57,6 +57,8 @@ See also the examples of configuration file `data/ueye-conf.ini` and calibration
 $ cmake -DUSE_UEYE=ON .
 $ make
 $ bin/UEyeCalibration --id=0 --conf=/path/to/conf.ini --intrinsics=/path/to/calib.xml
+# Enter 'c' to capture an image.
+# Enter 'q' to quit capture and start calibration.
 $ bin/UEyeCapture --id=0 --conf=/path/to/conf.ini --intrinsics=/path/to/calib.xml
 ~~~
 
@@ -66,7 +68,5 @@ $ cmake -DUSE_UEYE=ON .
 $ make
 $ bin/StereoUEyeGetCalibrationData --left_id=0 --right_id=1 --left_conf=/path/to/conf.ini --right_conf=/path/to/conf.ini
 $ bin/StereoCameraCalibration --intrinsics=/path/to/intrinsics.xml --extrinsics=/path/to/extrinsics.xml
-# Enter 'c' to capture image and 'q' to quit capture.
-# Please enter 'c' after about 20 image capturing.
 $ bin/StereoUEyeCapture --left_id=0 --right_id=1 --left_conf=/path/to/conf.ini --right_conf=/path/to/conf.ini --intrinsics=/path/to/intrinsics.xml --extrinsics=/path/to/extrinsics.xml
 ~~~
