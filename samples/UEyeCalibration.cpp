@@ -20,7 +20,7 @@
 DEFINE_int32(id, 0, "camera id");
 DEFINE_string(conf, "data/ueye-conf.ini", "camera configuration");
 DEFINE_string(intrinsics, "data/ueye-calib.xml", "camera intrinsic data");
-DEFINE_string(dir, "/tmp/calib", "calibration data directory");
+DEFINE_string(dir, "/tmp", "calibration data directory");
 DEFINE_string(suffix, ".png", "file suffix");
 
 bool captureBoardImage(cv::Mat& frame, size_t& count) {
@@ -51,7 +51,7 @@ std::vector<cv::Mat> readBoardImage(size_t count) {
         std::stringstream stream;
         stream << FLAGS_dir << "/" << i << FLAGS_suffix;
         std::string fileName = stream.str();
-        images.push_back(cv::imread(fileName));
+        images.push_back(cv::imread(fileName, 0));
 
         std::cout << "UEyeCalibration: loaded image " << fileName << std::endl;
     }

@@ -12,7 +12,7 @@
 
 DEFINE_string(intrinsics, "intrinsics.xml", "intrinsics file");
 DEFINE_string(extrinsics, "extrinsics.xml", "extrinsics file");
-DEFINE_string(dir, "/tmp/calib", "calibration data directory");
+DEFINE_string(dir, "/tmp", "calibration data directory");
 DEFINE_string(suffix, ".png", "file suffix");
 DEFINE_int32(size, 1, "number of files");
 
